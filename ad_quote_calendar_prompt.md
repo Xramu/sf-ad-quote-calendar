@@ -67,33 +67,32 @@ The Calendar View shows the current year by default and lets the user go back an
 
 Whenever the selected year gets changed, the calendar will update its contents to show the reserved campaign time periods of the newly selected year.
 
-The Calendar View has a grid of `Day Cell` components inside it. Every day of the currently selected year is shown inside the calendar view. There should not be empty space between the Day Cells, making the whole calendar one continious compact grid of days.
+The Calendar View has a grid of `Week Cell`s inside it. Each Cell representing a week within the currently selected year.
 
-When showing the day cells, take in account leap years and make sure the day cells get updated when the year changes.
+The Week Cells are spaced tightly together and show their week numbers inside them. The color of the week cell depends on any campaigns happening during it.
 
-### Day Cell Component
+### Week Cell Component
 
-A `Day Cell` is a separate component that shows a single day's number as a label and any campaign that are happening during it.
+A `Week Cell` is a separate component that is used inside the Calendar View to show a singular week.
 
-The Day Cell's label is the day of the month number that it falls on.
+The Week Cell has a label and color. The label will have the week's number and the color changes based on campaigns happening during it.
 
-A Day Cell's color is determined by its month and possible campaigns during its date.
+#### Week Cell's Color Definition
 
-The Day Cell is colored green if any of the campaigns happening during it belong to the currently logged in account.
+Any Week Cell that has at least one of their days fall into at least one campaign's period will have a specific color indicating a campaign happening during that specific week.
 
-The campaign periods are the time periods between the campaign start and end of each `AdWebCart__c` record. The current account is compared to the account reference inside the same record.
+**White**:<br>
+If a no campaings are happening during any of the days of a single week, the Week Cell will be colored with the default white color.
 
-If none of the campaigns that exist for the Day Cell's specific day belong to the current account, the Day Cell will be colored dark grey.
+**Green**:<br>
+If any of the campaigns happening during any of the days of the specific week belongs to the current account, color the Week Cell with a light green color. Check for the matching account using the current account and the `AdWebCart__c` field `Account__c`.
 
-If there are no campaigns happening during the Day Cell's date, the Day Cell will be colored white.
+**Grey**:<br>
+If the week has any days that belong to any campaign's period but does not have any that belong to the current user, color the Week Cell light grey color.
 
-The Day Cell will have a slightly darker color when it is part of every other month, making the months stand out inside the grid of days. For example all of February's and April's Day Cells will be slightly darker and January's and March's Day Cells.
+#### Definition of a Campaign
 
-The original color of the day cell based on the campaigns it has will stay, the tint will just be slightly darker for every other month starting from February.
-
-The Day Cells get dynamically updated to match the currently selected year if it is changed.
-
-Clicking a Day Cell that has campaigns happening during it will show the `AdWebCartItem__c` records that have their `AdSpaceSpecification`'s defined advertisement period happening during that day.
+All of the campaigns are defined within the `AdWebCart__c` records' `CampaignStartDate` and `CampaignEndDate` fields. A single campaign spans through the given time period. The campaign is not shown if the start or end date are missing or if the end date is before the start date.
 
 ### Details View
 
