@@ -15,8 +15,8 @@ Object `AdSpaceSpecification` function:
 - Only detail needed for the calendar are the StartDateTime and EndTimeDate fields for seeing the advertisement period.
 
 `AdSpaceSpecification` fields:
-- `StartDateTime`: 
-- `EndDateTime`: 
+- `StartDateTime`: Start time of the advertisement space period.
+- `EndDateTime`: End time of the adverisement space period.
 
 ### Ad Web Cart
 
@@ -47,7 +47,7 @@ Custom Object `AdWebCartItem__c` function:
 - `Cart__c`: Reference to the `AdWebCart__c` record that this item is a child of.
 - `ItemName__c`: Human readable name of this cart item.
 - `ExtraJsonData__c`: Text field contaning any extra specifications of this cart item in JSON format.
-- `Specification__c`: Reference to a `AdSpaceSpecification` record that has extra details about the advertisement of this item.
+- `Specification__c`: Reference to a `AdSpaceSpecification` record that has extra details about the advertisement of this item. Includes the start and end date times for tracking when the advertiesement space is reserved for the item.
 
 ## Related Colors
 
@@ -93,7 +93,7 @@ The original color of the day cell based on the campaigns it has will stay, the 
 
 The Day Cells get dynamically updated to match the currently selected year if it is changed.
 
-Clicking a Day Cell that has campaigns happening during it will show the `AdWebCartItem__c` records that have their AdSpaceSpecification 
+Clicking a Day Cell that has campaigns happening during it will show the `AdWebCartItem__c` records that have their `AdSpaceSpecification`'s defined advertisement period happening during that day.
 
 ### Details View
 
