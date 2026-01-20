@@ -1,6 +1,6 @@
 ## Task Description
 
-Create a day-based advertisement campaign calendar for showing reserved time periods of advertisement campaigns and their individual items.
+Create a week-based advertisement campaign calendar for showing reserved time periods of advertisement campaigns.
 
 The code should follow standard Salesforce styling and development best practices and be deployable to a scratch org or sandbox.
 
@@ -8,7 +8,7 @@ Keep it fun and readable.
 
 ## Object References
 
-## Ad Space Specification
+### Ad Space Specification
 
 Object `AdSpaceSpecification` function:
 - Contains the details of the advertiesement of a `AdWebCartItem__c` record.
@@ -23,6 +23,7 @@ Object `AdSpaceSpecification` function:
 Custom Object `AdWebCart__c` function:
 - Works as the parent object to `AdWebCartItem__c` records.
 - Has campaign start and end dates for tracking the total length of the advertising campaign.
+- Has the name of the campaign.
 - Contains the description of the whole advertising campaign.
 - References the contact and account of the campaign.
 - Keeps track of the cart's confirmation status.
@@ -30,9 +31,10 @@ Custom Object `AdWebCart__c` function:
 `AdWebCart__c` fields:
 - `Account__c`: Reference of the account record that created this cart.
 - `Contact__c`: Reference to a contact record that is assigned to this cart.
+- `CampaignName__c`: Human readable name of the campaign used as its title inside the UI.
 - `CampaignStartDate__c`: Start date of the whole cart's advertising campaign.
 - `CampaignEndDate__c`: End date of the whole cart's advertising campaign.
-- `Description`: Rich text area containing detailed description of the cart and it's campaign.
+- `Description__c`: Rich text area containing detailed description of the cart and it's campaign.
 - `Status__c`: Picklist field defining the confimation status of this cart. Uses the global value set `WebAdCartStatusOptions`.
 
 ### Ad Web Cart Item
@@ -50,6 +52,15 @@ Custom Object `AdWebCartItem__c` function:
 - `Specification__c`: Reference to a `AdSpaceSpecification` record that has extra details about the advertisement of this item. Includes the start and end date times for tracking when the advertiesement space is reserved for the item.
 
 ## Related Colors
+
+## Definition of a Campaign
+
+All of the campaigns are defined within the `AdWebCart__c` records' `CampaignStartDate` and `CampaignEndDate` fields. A single campaign spans through the given time period.
+
+Only valid campaigns should be shown within the calendar.
+
+- A campaign is not valid if the start or end date are missing.
+- A campaign is not valid if the end date is earlier than the start date.
 
 ## Window Layout Specifications
 
@@ -90,15 +101,50 @@ If any of the campaigns happening during any of the days of the specific week be
 **Grey**:<br>
 If the week has any days that belong to any campaign's period but does not have any that belong to the current user, color the Week Cell light grey color.
 
-#### Definition of a Campaign
+#### Week Cell Clicking
 
-All of the campaigns are defined within the `AdWebCart__c` records' `CampaignStartDate` and `CampaignEndDate` fields. A single campaign spans through the given time period. The campaign is not shown if the start or end date are missing or if the end date is before the start date.
+When the user clicks a Week Cell that has at least one campaign happening during it, the Details View's List View will show a list of all the campaigns happening during it. The list will show each campaign's `AdWebCart__c` record's `CampaignName__c` as its name.
+
+The user can then click one of the items inside the list to open the Details View's Edit View to show the `CampaignName__c` as editable text field and `Description__c` as editable rich text field.
 
 ### Details View
 
-The Details View is the secondary child component taking the last 20% of the screen width from the right.
+The `Details View` is the secondary child component taking the last 20% of the screen width from the right.
+
+On the top of the Details View, taking 30% of the height is the List View that will be used to show a list of campaigns from a selected Week Cell. List View will be empty if no Week Cell is selected.
+
+Underneath the List View is the Edit View which takes the rest of the space to allow the user to edit the currently selected campaign's information. Edit View will be empty if no Week Cell or Campaign is selected.
+
+#### List View
+
+The `List View` is a scrollable list of clickable campaign buttons from the currently selected Week Cell's campaigns. Each campaign button has its label set as that campaign's name.
+
+If the campaign's cart has the current account assigned to it, color the button light green, otherwise the button will be light grey. Match the colors with the ones used for the Week Cell coloring.
+
+If a campaign is selected, highlight the button of the selected campaign.
+
+Do not use lignting button since it can not be colored with custom colors.
+
+#### Edit View
+
+The `Edit View` will show the currently selected campaign's information inside it.
+
+For now all the information needed will be the name, description and time period.
+
+The name should be a lightning input text area that saves the name into the record once unfocused from.
+
+The description should be a lightning input rich text area that saves the description into the record ince unfocused from.
+
+The time period will is not editable but should be shown in the format of `DD.MM.YYYY - DD.MM.YYYY`.
+
+The information is stacked vertically in the order:
+- Name
+- Description
+- Time Period
 
 ## User Interface Requirements
+
+The Week Cells should update in real time whenever the currently selected year gets changed by the user.
 
 ## Extra Specifications
 
