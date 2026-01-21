@@ -17,7 +17,7 @@
       <div class="grid">
         <template for:each={weeksWithClasses} for:item="w">
           <div key={w.weekNumber} class={w.cellClass} onclick={handleCellClick} data-week={w.weekNumber} role="button" tabindex="0" onkeydown={handleCellKeydown} aria-pressed="false">
-            <div class="wk-label">Wk {w.weekNumber}</div>
+            <div class="wk-label">{w.weekNumber}</div>
           </div>
         </template>
       </div>

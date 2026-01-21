@@ -27,7 +27,7 @@ export default class WeekCell extends LightningElement {
   }
 
   get labelText() {
-    return `Wk ${this.weekNumber || ''}`;
+    return `${this.weekNumber || ''}`;
   }
 
   get titleText() {
