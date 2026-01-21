@@ -11,7 +11,6 @@ Keep it fun and readable.
 ### Ad Web Cart
 
 Custom Object `AdWebCart__c` function:
-- Works as the parent object to `AdWebCartItem__c` records.
 - Has campaign start and end dates for tracking the total length of the advertising campaign.
 - Has the name of the campaign.
 - Contains the description of the whole advertising campaign.
@@ -22,16 +21,16 @@ Custom Object `AdWebCart__c` function:
 `AdWebCart__c` fields:
 - `Account__c`: Reference of the account record that is assigned to this cart.
 - `Contact__c`: Reference to a contact record that is assigned to this cart.
-- `User__c`: Referecne to the User that created this cart.
+- `User__c`: Reference to the User that created this cart.
 - `CampaignName__c`: Human readable name of the campaign used as its title inside the UI.
 - `CampaignStartDate__c`: Start date of the whole cart's advertising campaign.
 - `CampaignEndDate__c`: End date of the whole cart's advertising campaign.
-- `Description__c`: Rich text area containing detailed description of the cart and it's campaign.
-- `Status__c`: Picklist field defining the confimation status of this cart. Uses the global value set `WebAdCartStatusOptions`.
+- `Description__c`: Rich text area containing detailed description of the cart and its campaign.
+- `Status__c`: Picklist field defining the confirmation status of this cart. Uses the global value set `WebAdCartStatusOptions`.
 
 ## Definition of a Campaign
 
-All of the campaigns are defined within the `AdWebCart__c` records' `CampaignStartDate` and `CampaignEndDate` fields. A single campaign spans through the given time period.
+All of the campaigns are defined within the `AdWebCart__c` records' `CampaignStartDate__c` and `CampaignEndDate__c` fields. A single campaign spans through the given time period.
 
 Only valid campaigns should be shown within the calendar.
 
@@ -40,7 +39,7 @@ Only valid campaigns should be shown within the calendar.
 
 ## Window Layout Specifications
 
-Create each window in a modular way, creating their own component for each window. When communicating between the components, use Salesforce standards and best practices. Share common functionality like Apex classes for fetching data and reuse code where ever possible and acceptable to keep it readable.
+Create each window in a modular way, creating their own component for each window. When communicating between the components, use Salesforce standards and best practices. Share common functionality like Apex classes for fetching data and reuse code wherever possible and acceptable to keep it readable.
 
 The whole component is supposed to be a full window sized component showing a lot of information at once to the user.
 
@@ -69,7 +68,7 @@ The Week Cell has a label and color. The label will have the week's number and t
 Any Week Cell that has at least one of their days fall into at least one campaign's period will have a specific color indicating a campaign happening during that specific week.
 
 **White**:<br>
-If a no campaings are happening during any of the days of a single week, the Week Cell will be colored with the default white color.
+If a no campaigns are happening during any of the days of a single week, the Week Cell will be colored with the default white color.
 
 **Green**:<br>
 If any of the campaigns happening during any of the days of the specific week belongs to the current user, color the Week Cell with a light green color. Check for the matching user using the current user and the `AdWebCart__c` field `User__c`.
@@ -103,7 +102,7 @@ If a campaign button is pressed, open the campaign's details inside the Edit Vie
 
 If a campaign is selected, highlight the button of the selected campaign.
 
-Do not use lignting button since it can not be colored with custom colors.
+Do not use lightning button since it can not be colored with custom colors.
 
 #### Edit View
 
