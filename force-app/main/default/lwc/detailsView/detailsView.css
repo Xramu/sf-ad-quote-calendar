@@ -1,21 +1,10 @@
 /* Details View layout and list/edit visuals */
-:host {
-  display: block;
-  height: 100%;
-}
-
-.details-root {
-  height: 100%;
-}
-
 .list-pane {
-  height: 30%;
   border-bottom: 1px solid #e5e7eb;
   background: #ffffff;
 }
 
 .edit-pane {
-  height: 70%;
   overflow-x: hidden;
   background: #ffffff;
 }

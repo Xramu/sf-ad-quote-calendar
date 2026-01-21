@@ -7,7 +7,6 @@
 }
 
 .root {
-  min-height: 100vh;
   background: #fafafa;
 }
 
@@ -24,7 +23,6 @@
 
 .detailsPane {
   padding: 0.5rem;
-  min-height: calc(100vh - 56px);
   background: #ffffff;
 }
 
