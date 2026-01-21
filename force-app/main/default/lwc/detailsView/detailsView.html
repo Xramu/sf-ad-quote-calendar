@@ -1,0 +1,83 @@
+<!--
+  Details View (right pane)
+  - Top 30%: List View (campaign buttons for selected week)
+  - Bottom 70%: Edit View (name + description + status + non-editable time period)
+  Behavior:
+  - When week changes, loads campaigns for that week.
+  - If only one campaign, auto-open it while still listing it.
+  - Button colors match calendar: green if owned by current user, grey otherwise.
+  - Save on blur using lightning-record-edit-form submit.
+-->
+<template>
+  <section class="slds-grid slds-wrap details-root">
+    <!-- List View -->
+    <div class="slds-col slds-size_1-of-1 list-pane">
+      <div class="slds-text-title_caps slds-p-around_x-small">Campaigns in Week</div>
+      <div class="list-scroll">
+        <template if:true={hasWeek}>
+          <template if:true={hasCampaigns}>
+            <template for:each={campaigns} for:item="c">
+              <div
+                key={c.id}
+                data-id={c.id}
+                class={getItemClass(c)}
+                onclick={handleSelect}
+                role="button"
+                tabindex="0"
+                onkeydown={handleItemKeydown}
+                title={c.name}
+              >
+                <span class="item-label">{c.name}</span>
+              </div>
+            </template>
+          </template>
+          <template if:false={hasCampaigns}>
+            <div class="slds-p-around_small slds-text-color_weak">No campaigns in this week.</div>
+          </template>
+        </template>
+        <template if:false={hasWeek}>
+          <div class="slds-p-around_small slds-text-color_weak">Select a week to view campaigns.</div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Edit View -->
+    <div class="slds-col slds-size_1-of-1 edit-pane">
+      <div class="slds-text-title_caps slds-p-horizontal_x-small slds-p-top_x-small">Campaign Details</div>
+      <template if:true={selectedCampaignId}>
+        <lightning-record-edit-form record-id={selectedCampaignId} object-api-name="AdWebCart__c" onsuccess={handleFormSuccess} onerror={handleFormError}>
+          <div class="slds-p-around_small slds-grid slds-wrap slds-gutters_small">
+            <!-- Confirmation Status (read-only display) -->
+            <div class="slds-col slds-size_1-of-1">
+              <label class="slds-form-element__label">Campaign Confirmation Status</label>
+              <div class="slds-form-element__control">
+                <div class="slds-input slds-text-color_weak slds-truncate" title={statusText}>{statusText}</div>
+              </div>
+            </div>
+
+            <!-- Name (save-on-blur) -->
+            <div class="slds-col slds-size_1-of-1">
+              <lightning-input-field field-name="CampaignName__c" onchange={handleBlurSubmit}></lightning-input-field>
+            </div>
+
+            <!-- Description (save-on-blur) -->
+            <div class="slds-col slds-size_1-of-1">
+              <lightning-input-field field-name="Description__c" onchange={handleBlurSubmit}></lightning-input-field>
+            </div>
+
+            <!-- Time Period (read-only formatted) -->
+            <div class="slds-col slds-size_1-of-1">
+              <label class="slds-form-element__label">Campaign Time Period</label>
+              <div class="slds-form-element__control">
+                <div class="slds-input slds-text-color_weak">{timePeriodText}</div>
+              </div>
+            </div>
+          </div>
+        </lightning-record-edit-form>
+      </template>
+      <template if:false={selectedCampaignId}>
+        <div class="slds-p-around_small slds-text-color_weak">Select a campaign to edit.</div>
+      </template>
+    </div>
+  </section>
+</template>

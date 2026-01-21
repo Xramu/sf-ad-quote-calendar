@@ -1,0 +1,41 @@
+<!--
+  Parent container: Ad Quote Calendar
+  - Left 80%: Calendar View (grid of week cells, year nav)
+  - Right 20%: Details View (list + edit)
+  Notes:
+  - Uses Sunday-start week numbering
+  - Colors via CSS vars defined in adQuoteCalendar.css
+-->
+<template>
+  <section class="slds-grid slds-wrap root">
+    <div class="slds-col slds-size_1-of-1 header">
+      <div class="slds-grid slds-grid_align-spread slds-p-around_small">
+        <div class="slds-text-heading_medium">Ad Campaign Calendar</div>
+        <div class="slds-grid slds-grid_vertical-align-center yearControls">
+          <button class="btn-nav" title="Previous Year" onclick={handlePrevYear} aria-label="Previous Year">&#9664;</button>
+          <div class="slds-m-horizontal_small slds-text-heading_small" data-id="currentYear">
+            {currentYearLabel}
+          </div>
+          <button class="btn-nav" title="Next Year" onclick={handleNextYear} aria-label="Next Year">&#9654;</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="slds-col slds-size_4-of-5 calendarPane">
+      <c-calendar-view
+        year={currentYear}
+        week-summaries={weekSummariesArray}
+        onweekselected={handleWeekSelected}
+      ></c-calendar-view>
+    </div>
+
+    <div class="slds-col slds-size_1-of-5 detailsPane">
+      <c-details-view
+        year={currentYear}
+        week-number={selectedWeek}
+        campaign-id={selectedCampaignId}
+        oncampaignselected={handleCampaignSelected}
+      ></c-details-view>
+    </div>
+  </section>
+</template>

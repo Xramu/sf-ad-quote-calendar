@@ -1,0 +1,50 @@
+/* Calendar grid and week cell visuals */
+:host {
+  display: block;
+}
+
+.calendar {
+  height: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr); /* 13 columns x 4 rows ~ 52 weeks (+1 overflows) */
+  gap: 4px;
+}
+
+.cell {
+  border: 1px solid var(--week-border, #d0d5dd);
+  border-radius: 4px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.cell.empty {
+  background: var(--week-default-bg, #ffffff);
+}
+
+.cell.other {
+  background: var(--week-other-bg, #e5e7eb);
+}
+
+.cell.own {
+  background: var(--week-own-bg, #c8f7c5);
+}
+
+.cell.clickable {
+  cursor: pointer;
+}
+.cell.clickable:focus,
+.cell.clickable:hover {
+  outline: 2px solid #1b96ff;
+  outline-offset: 1px;
+}
+
+.wk-label {
+  font-size: 0.75rem;
+  color: #111827;
+}

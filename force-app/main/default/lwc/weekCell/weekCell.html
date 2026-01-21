@@ -1,0 +1,20 @@
+<!--
+  Week Cell (reusable)
+  - Displays a single week number with color based on props
+  - Emits click only when hasAnyCampaign = true
+  - Accessible: role=button, keyboard support
+-->
+<template>
+  <div
+    class={cellClass}
+    role="button"
+    tabindex="0"
+    aria-pressed="false"
+    onclick={handleClick}
+    onkeydown={handleKeydown}
+    data-week={weekNumber}
+    title={titleText}
+  >
+    <div class="wk-label">{labelText}</div>
+  </div>
+</template>

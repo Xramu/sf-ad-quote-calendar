@@ -1,0 +1,65 @@
+/* Details View layout and list/edit visuals */
+:host {
+  display: block;
+  height: 100%;
+}
+
+.details-root {
+  height: 100%;
+}
+
+.list-pane {
+  height: 30%;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.list-scroll {
+  height: calc(100% - 28px); /* subtract header height approx */
+  overflow: auto;
+  padding: 0.25rem;
+}
+
+.list-item {
+  border: 1px solid var(--week-border, #d0d5dd);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  margin: 0.25rem 0;
+  cursor: pointer;
+  background: var(--week-other-bg, #e5e7eb);
+  color: #111827;
+}
+.list-item:hover,
+.list-item:focus {
+  outline: 2px solid #1b96ff;
+  outline-offset: 1px;
+}
+.list-item.selected {
+  border-color: #1b96ff;
+  box-shadow: 0 0 0 2px rgba(27, 150, 255, 0.2);
+}
+
+.item-label {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.edit-pane {
+  height: 70%;
+  overflow: auto;
+  background: #ffffff;
+}
+
+.slds-input[readonly],
+.slds-input:disabled {
+  background: #f9fafb;
+}
+
+/* Optional: owned button variant if ownership is detected later
+.list-item.owned {
+  background: var(--week-own-bg, #c8f7c5);
+}
+*/

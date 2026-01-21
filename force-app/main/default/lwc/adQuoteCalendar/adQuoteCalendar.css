@@ -1,0 +1,45 @@
+/* Parent container styles and color tokens */
+:host {
+  --week-default-bg: #ffffff;   /* default white */
+  --week-own-bg: #c8f7c5;       /* light green */
+  --week-other-bg: #e5e7eb;     /* light grey */
+  --week-border: #d0d5dd;
+}
+
+.root {
+  min-height: 100vh;
+  background: #fafafa;
+}
+
+.header {
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.calendarPane {
+  padding: 0.5rem;
+  border-right: 1px solid #e5e7eb;
+  min-height: calc(100vh - 56px);
+}
+
+.detailsPane {
+  padding: 0.5rem;
+  min-height: calc(100vh - 56px);
+  background: #ffffff;
+}
+
+.yearControls .btn-nav {
+  border: 1px solid #d0d5dd;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  cursor: pointer;
+}
+.yearControls .btn-nav:hover {
+  background: #f3f4f6;
+}
+.yearControls .btn-nav:focus {
+  outline: 2px solid #1b96ff;
+  outline-offset: 1px;
+}

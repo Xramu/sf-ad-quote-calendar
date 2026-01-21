@@ -1,0 +1,177 @@
+/**
+ * @description Service for aggregating AdWebCart__c campaigns into weekly summaries and listing week campaigns.
+ * Enforces sharing and FLS via WITH SECURITY_ENFORCED. Operates in USER_MODE for DML (none currently).
+ * Weeks are Sunday-start per requirements. Week numbers are computed accordingly (non-ISO).
+ *
+ * UI usage:
+ *  - getWeeklySummary(year): summary coloring flags per week (1..53)
+ *  - getWeekCampaigns(year, weekNumber): list of minimal campaign DTOs for details list/edit
+ *
+ * Notes:
+ *  - Valid campaign: CampaignStartDate__c and CampaignEndDate__c present AND EndDate >= StartDate
+ *  - Only campaigns overlapping the selected year are considered
+ *  - Current-user-owned: AdWebCart__c.User__c == running user id
+ */
+public with sharing class AdCampaignCalendarService {
+    public class WeekSummaryDTO {
+        @AuraEnabled public Integer weekNumber;
+        @AuraEnabled public Boolean hasAnyCampaign;
+        @AuraEnabled public Boolean hasCurrentUserCampaign;
+    }
+    public class CampaignDTO {
+        @AuraEnabled public Id id;
+        @AuraEnabled public String name;
+        @AuraEnabled public Id ownerUserId;
+        @AuraEnabled public Date startDate;
+        @AuraEnabled public Date endDate;
+        @AuraEnabled public String status; // optional for display if needed
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Map<Integer, WeekSummaryDTO> getWeeklySummary(Integer year) {
+        if (year == null) {
+            throw new AuraHandledException('Year is required');
+        }
+        Date yearStart = Date.newInstance(year, 1, 1);
+        Date yearEnd   = Date.newInstance(year, 12, 31);
+
+        List<AdWebCart__c> carts = [
+            SELECT Id, CampaignName__c, CampaignStartDate__c, CampaignEndDate__c, User__c, Status__c
+            FROM AdWebCart__c
+            WHERE CampaignStartDate__c != NULL
+              AND CampaignEndDate__c != NULL
+              AND CampaignEndDate__c >= CampaignStartDate__c
+              AND CampaignStartDate__c <= :yearEnd
+              AND CampaignEndDate__c >= :yearStart
+            WITH SECURITY_ENFORCED
+        ];
+
+        Map<Integer, WeekSummaryDTO> result = new Map<Integer, WeekSummaryDTO>();
+        // Pre-seed 1..53
+        for (Integer i = 1; i <= 53; i++) {
+            WeekSummaryDTO dto = new WeekSummaryDTO();
+            dto.weekNumber = i;
+            dto.hasAnyCampaign = false;
+            dto.hasCurrentUserCampaign = false;
+            result.put(i, dto);
+        }
+
+        Id runningUserId = UserInfo.getUserId();
+        // Build a per-day coverage for relevant dates to map to weeks
+        // To minimize per-day iteration, compute week index ranges for each campaign.
+        for (AdWebCart__c cart : carts) {
+            Date start = cart.CampaignStartDate__c;
+            Date end   = cart.CampaignEndDate__c;
+
+            // Clamp to current year window
+            if (start < yearStart) start = yearStart;
+            if (end > yearEnd) end = yearEnd;
+
+            if (start > end) {
+                continue;
+            }
+
+            Integer startWeek = getSundayStartWeekNumber(start, year);
+            Integer endWeek   = getSundayStartWeekNumber(end, year);
+
+            // Protect bounds to 1..53
+            startWeek = Math.max(1, Math.min(53, startWeek));
+            endWeek   = Math.max(1, Math.min(53, endWeek));
+
+            Boolean isCurrentUserOwned = (cart.User__c == runningUserId);
+
+            for (Integer w = startWeek; w <= endWeek; w++) {
+                WeekSummaryDTO dto = result.get(w);
+                if (dto == null) {
+                    dto = new WeekSummaryDTO();
+                    dto.weekNumber = w;
+                    dto.hasAnyCampaign = false;
+                    dto.hasCurrentUserCampaign = false;
+                    result.put(w, dto);
+                }
+                dto.hasAnyCampaign = true;
+                if (isCurrentUserOwned) {
+                    dto.hasCurrentUserCampaign = true;
+                }
+            }
+        }
+
+        // Remove trailing weeks that have no days in the year (some years will not need week 53 at all)
+        // We will keep all 1..53 to simplify client rendering; client can hide weeks where both flags are false and computed week has no dates.
+        return result;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<CampaignDTO> getWeekCampaigns(Integer year, Integer weekNumber) {
+        if (year == null || weekNumber == null) {
+            throw new AuraHandledException('Year and weekNumber are required');
+        }
+        // Compute the date range (Sunday..Saturday) for the given week in that year
+        Date weekStart = getSundayOfWeek(year, weekNumber);
+        if (weekStart == null) {
+            return new List<CampaignDTO>();
+        }
+        Date weekEnd = weekStart.addDays(6);
+
+        List<AdWebCart__c> carts = [
+            SELECT Id, CampaignName__c, CampaignStartDate__c, CampaignEndDate__c, User__c, Status__c
+            FROM AdWebCart__c
+            WHERE CampaignStartDate__c != NULL
+              AND CampaignEndDate__c != NULL
+              AND CampaignEndDate__c >= CampaignStartDate__c
+              AND CampaignStartDate__c <= :weekEnd
+              AND CampaignEndDate__c >= :weekStart
+            WITH SECURITY_ENFORCED
+        ];
+
+        List<CampaignDTO> out = new List<CampaignDTO>();
+        for (AdWebCart__c c : carts) {
+            CampaignDTO dto = new CampaignDTO();
+            dto.id = c.Id;
+            dto.name = c.CampaignName__c;
+            dto.ownerUserId = c.User__c;
+            dto.startDate = c.CampaignStartDate__c;
+            dto.endDate = c.CampaignEndDate__c;
+            dto.status = c.Status__c;
+            out.add(dto);
+        }
+        return out;
+    }
+
+    // Helper: compute Sunday-start week number within the given year
+    // Week 1 starts on the first Sunday on or before Jan 1, but constrained to the year’s first week containing Jan 1.
+    private static Integer getSundayStartWeekNumber(Date d, Integer year) {
+        Date yearStart = Date.newInstance(year, 1, 1);
+        Date firstSunday = getPreviousOrSameSunday(yearStart);
+        // If firstSunday is in prior year, still fine as week 1 range begins there
+        Integer daysDiff = firstSunday.daysBetween(d);
+        Integer weekIndex = (Integer)Math.floor((Decimal.valueOf(daysDiff)) / 7) + 1;
+        return Math.max(1, weekIndex);
+    }
+
+    // Get the Sunday for the given year/weekNumber
+    private static Date getSundayOfWeek(Integer year, Integer weekNumber) {
+        if (weekNumber < 1 || weekNumber > 53) {
+            return null;
+        }
+        Date yearStart = Date.newInstance(year, 1, 1);
+        Date firstSunday = getPreviousOrSameSunday(yearStart);
+        Date sunday = firstSunday.addDays((weekNumber - 1) * 7);
+        // If computed sunday goes beyond Dec 31, it might belong to next year; still return as the week bucket start.
+        return sunday;
+    }
+
+    private static Date getPreviousOrSameSunday(Date d) {
+        // Date.dayOfWeek() is not a valid Apex Date method
+        // Instead, we'll use the fact that Date.getDay() returns 0=Sunday, 1=Monday, ..., 6=Saturday
+        // So to get the previous Sunday or same Sunday, we calculate:
+        // If today is Sunday (0), we want today (0 days back)
+        // If today is Monday (1), we want last Sunday (6 days back)
+        // If today is Tuesday (2), we want last Sunday (5 days back)
+        // ...
+        // If today is Saturday (6), we want last Sunday (1 day back)
+        Integer dayOfWeek = d.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+        Integer back = dayOfWeek; // 0 if Sunday, 1 if Monday, ..., 6 if Saturday
+        return d.addDays(-back);
+    }
+}

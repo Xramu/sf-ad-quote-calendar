@@ -1,0 +1,90 @@
+/**
+ * Calendar View (left pane)
+ * - Displays 1..53 weeks for given year
+ * - Colors each week cell using summary flags
+ * - Emits 'weekselected' when a week with campaigns is clicked
+ *
+ * Notes:
+ * - No inline template expressions; classes computed via getters/helpers
+ * - Sunday-start week numbers, provided by server in weekSummaries
+ */
+import { LightningElement, api, track } from 'lwc';
+
+export default class CalendarView extends LightningElement {
+  @api year;
+  @api weekSummaries = []; // array of { weekNumber, hasAnyCampaign, hasCurrentUserCampaign }
+
+  @track _weeks = [];
+
+  connectedCallback() {
+    this.computeWeeks();
+  }
+
+  renderedCallback() {
+    // nothing for now
+  }
+
+  @api
+  set weekSummaries(value) {
+    this._weeks = Array.isArray(value) ? value : [];
+  }
+  get weekSummaries() {
+    return this._weeks;
+  }
+
+  get calendarTitle() {
+    return `Calendar ${this.year || ''}`;
+  }
+
+  get weeks() {
+    return this._weeks;
+  }
+
+  getCellClass(dto) {
+    const base = ['cell'];
+    if (dto && dto.hasAnyCampaign) {
+      if (dto.hasCurrentUserCampaign) {
+        base.push('own');
+      } else {
+        base.push('other');
+      }
+      base.push('clickable');
+    } else {
+      base.push('empty');
+    }
+    return base.join(' ');
+  }
+
+  handleCellClick = (evt) => {
+    const week = Number(evt.currentTarget?.dataset?.week);
+    const dto = this._weeks.find((w) => w.weekNumber === week);
+    if (!dto || !dto.hasAnyCampaign) {
+      return;
+    }
+    this.dispatchEvent(
+      new CustomEvent('weekselected', {
+        detail: { weekNumber: week },
+        bubbles: true,
+        composed: true
+      })
+    );
+  };
+
+  handleCellKeydown = (evt) => {
+    if (evt.key === 'Enter' || evt.key === ' ') {
+      evt.preventDefault();
+      this.handleCellClick(evt);
+    }
+  };
+
+  computeWeeks() {
+    // Ensure there are always 1..53 entries for layout stability
+    if (!Array.isArray(this._weeks) || this._weeks.length === 0) {
+      const arr = [];
+      for (let i = 1; i <= 53; i += 1) {
+        arr.push({ weekNumber: i, hasAnyCampaign: false, hasCurrentUserCampaign: false });
+      }
+      this._weeks = arr;
+    }
+  }
+}
