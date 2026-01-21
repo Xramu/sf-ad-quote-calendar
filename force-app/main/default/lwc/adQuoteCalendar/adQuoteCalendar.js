@@ -72,10 +72,12 @@ export default class AdQuoteCalendar extends LightningElement {
   }
 
   handleWeekSelected = (evt) => {
-    const { weekNumber } = evt.detail || {};
-    this.selectedWeek = weekNumber || null;
     // If week changes, clear selected campaign until user chooses one (or details view auto-opens if single)
     this.selectedCampaignId = null;
+
+    const { weekNumber } = evt.detail || {};
+    this.selectedWeek = weekNumber || null;
+    console.log(this.selectedWeek);
   };
 
   handleCampaignSelected = (evt) => {

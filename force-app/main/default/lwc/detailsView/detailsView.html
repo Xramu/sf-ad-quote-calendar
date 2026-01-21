@@ -12,7 +12,7 @@
   <section class="slds-grid slds-wrap details-root">
     <!-- List View -->
     <div class="slds-col slds-size_1-of-1 list-pane">
-      <div class="slds-text-title_caps slds-p-around_x-small">Campaigns in Week</div>
+      <div class="slds-text-title_caps slds-p-around_x-small">Campaigns During Week {weekNumber}</div>
       <div class="list-scroll">
         <template if:true={hasWeek}>
           <template if:true={hasCampaigns}>
@@ -57,12 +57,12 @@
 
             <!-- Name (save-on-blur) -->
             <div class="slds-col slds-size_1-of-1">
-              <lightning-input-field field-name="CampaignName__c" onchange={handleBlurSubmit}></lightning-input-field>
+              <lightning-input-field field-name="CampaignName__c" onblur={handleBlurSubmit}></lightning-input-field>
             </div>
 
             <!-- Description (save-on-blur) -->
             <div class="slds-col slds-size_1-of-1">
-              <lightning-input-field field-name="Description__c" onchange={handleBlurSubmit}></lightning-input-field>
+              <lightning-input-field field-name="Description__c" onblur={handleBlurSubmit}></lightning-input-field>
             </div>
 
             <!-- Time Period (read-only formatted) -->

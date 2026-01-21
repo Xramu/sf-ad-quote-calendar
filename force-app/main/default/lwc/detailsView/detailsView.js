@@ -62,7 +62,8 @@ export default class DetailsView extends LightningElement {
       const list = await getWeekCampaigns({ year: this.year, weekNumber: this.weekNumber });
       this.campaigns = Array.isArray(list) ? list : [];
 
-      if (this.campaigns.length === 1) {
+      if (this.campaigns.length > 0) {
+        // Select first campaign by default
         this.selectedCampaignId = this.campaigns[0].id;
         // Notify parent of auto-selection
         this.dispatchEvent(
