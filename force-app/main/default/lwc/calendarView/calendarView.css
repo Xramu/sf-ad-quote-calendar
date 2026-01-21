@@ -9,18 +9,24 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(13, 1fr); /* 13 columns x 4 rows ~ 52 weeks (+1 overflows) */
+  /* Changed to make cells square and responsive */
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
   gap: 4px;
+  /* Ensure cells maintain square aspect ratio */
+  grid-auto-rows: 1fr;
 }
 
 .cell {
   border: 1px solid var(--week-border, #d0d5dd);
   border-radius: 4px;
-  min-height: 48px;
+  /* Make cells square by using equal width and height */
+  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
+  min-height: 40px;
+  min-width: 40px;
 }
 
 .cell.empty {

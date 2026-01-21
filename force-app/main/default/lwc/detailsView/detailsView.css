@@ -14,10 +14,10 @@
   background: #ffffff;
 }
 
-.list-scroll {
-  height: calc(100% - 28px); /* subtract header height approx */
+.edit-pane {
+  height: 70%;
   overflow: auto;
-  padding: 0.25rem;
+  background: #ffffff;
 }
 
 .list-item {
