@@ -16,7 +16,7 @@
 
 .edit-pane {
   height: 70%;
-  overflow: auto;
+  overflow-x: hidden;
   background: #ffffff;
 }
 
@@ -47,15 +47,20 @@
   text-overflow: ellipsis;
 }
 
-.edit-pane {
-  height: 70%;
-  overflow: auto;
-  background: #ffffff;
-}
-
 .slds-input[readonly],
 .slds-input:disabled {
   background: #f9fafb;
+}
+
+/* Prevent horizontal scrolling in edit pane */
+.edit-pane .slds-grid {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.edit-pane .slds-col {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Optional: owned button variant if ownership is detected later
