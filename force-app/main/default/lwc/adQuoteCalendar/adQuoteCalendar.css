@@ -18,7 +18,6 @@
 .calendarPane {
   padding: 0.5rem;
   border-right: 1px solid #e5e7eb;
-  min-height: calc(100vh - 56px);
 }
 
 .detailsPane {
