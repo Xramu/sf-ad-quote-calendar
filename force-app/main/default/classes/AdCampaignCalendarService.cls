@@ -40,7 +40,6 @@ public with sharing class AdCampaignCalendarService {
             FROM AdWebCart__c
             WHERE CampaignStartDate__c != NULL
               AND CampaignEndDate__c != NULL
-              AND CampaignEndDate__c >= CampaignStartDate__c
               AND CampaignStartDate__c <= :yearEnd
               AND CampaignEndDate__c >= :yearStart
             WITH SECURITY_ENFORCED
@@ -60,19 +59,19 @@ public with sharing class AdCampaignCalendarService {
         // Build a per-day coverage for relevant dates to map to weeks
         // To minimize per-day iteration, compute week index ranges for each campaign.
         for (AdWebCart__c cart : carts) {
-            Date start = cart.CampaignStartDate__c;
-            Date end   = cart.CampaignEndDate__c;
+            Date startDate = cart.CampaignStartDate__c;
+            Date endDate   = cart.CampaignEndDate__c;
 
             // Clamp to current year window
-            if (start < yearStart) start = yearStart;
-            if (end > yearEnd) end = yearEnd;
+            if (startDate < yearStart) startDate = yearStart;
+            if (endDate > yearEnd) endDate = yearEnd;
 
-            if (start > end) {
+            if (startDate > endDate) {
                 continue;
             }
 
-            Integer startWeek = getSundayStartWeekNumber(start, year);
-            Integer endWeek   = getSundayStartWeekNumber(end, year);
+            Integer startWeek = getSundayStartWeekNumber(startDate, year);
+            Integer endWeek   = getSundayStartWeekNumber(endDate, year);
 
             // Protect bounds to 1..53
             startWeek = Math.max(1, Math.min(53, startWeek));
@@ -118,7 +117,6 @@ public with sharing class AdCampaignCalendarService {
             FROM AdWebCart__c
             WHERE CampaignStartDate__c != NULL
               AND CampaignEndDate__c != NULL
-              AND CampaignEndDate__c >= CampaignStartDate__c
               AND CampaignStartDate__c <= :weekEnd
               AND CampaignEndDate__c >= :weekStart
             WITH SECURITY_ENFORCED
@@ -162,16 +160,13 @@ public with sharing class AdCampaignCalendarService {
     }
 
     private static Date getPreviousOrSameSunday(Date d) {
-        // Date.dayOfWeek() is not a valid Apex Date method
-        // Instead, we'll use the fact that Date.getDay() returns 0=Sunday, 1=Monday, ..., 6=Saturday
-        // So to get the previous Sunday or same Sunday, we calculate:
-        // If today is Sunday (0), we want today (0 days back)
-        // If today is Monday (1), we want last Sunday (6 days back)
-        // If today is Tuesday (2), we want last Sunday (5 days back)
-        // ...
-        // If today is Saturday (6), we want last Sunday (1 day back)
-        Integer dayOfWeek = d.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
-        Integer back = dayOfWeek; // 0 if Sunday, 1 if Monday, ..., 6 if Saturday
+        Date myDate = Date.today();
+        Date referenceDate = Date.newInstance(1900, 1, 7); // This was a Sunday
+
+        Integer daysBetween = referenceDate.daysBetween(myDate);
+        Integer dayOfWeekNum = Math.mod(Math.abs(daysBetween), 7);
+        
+        Integer back = dayOfWeekNum; // 0 if Sunday, 1 if Monday, ..., 6 if Saturday
         return d.addDays(-back);
     }
 }
