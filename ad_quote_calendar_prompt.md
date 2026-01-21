@@ -26,11 +26,13 @@ Custom Object `AdWebCart__c` function:
 - Has the name of the campaign.
 - Contains the description of the whole advertising campaign.
 - References the contact and account of the campaign.
+- Reference to the User that created the campaign.
 - Keeps track of the cart's confirmation status.
 
 `AdWebCart__c` fields:
-- `Account__c`: Reference of the account record that created this cart.
+- `Account__c`: Reference of the account record that is assigned to this cart.
 - `Contact__c`: Reference to a contact record that is assigned to this cart.
+- `User__c`: Referecne to the User that created this cart.
 - `CampaignName__c`: Human readable name of the campaign used as its title inside the UI.
 - `CampaignStartDate__c`: Start date of the whole cart's advertising campaign.
 - `CampaignEndDate__c`: End date of the whole cart's advertising campaign.
@@ -96,7 +98,7 @@ Any Week Cell that has at least one of their days fall into at least one campaig
 If a no campaings are happening during any of the days of a single week, the Week Cell will be colored with the default white color.
 
 **Green**:<br>
-If any of the campaigns happening during any of the days of the specific week belongs to the current account, color the Week Cell with a light green color. Check for the matching account using the current account and the `AdWebCart__c` field `Account__c`.
+If any of the campaigns happening during any of the days of the specific week belongs to the current user, color the Week Cell with a light green color. Check for the matching user using the current user and the `AdWebCart__c` field `User__c`.
 
 **Grey**:<br>
 If the week has any days that belong to any campaign's period but does not have any that belong to the current user, color the Week Cell light grey color.
@@ -121,7 +123,7 @@ Underneath the List View is the Edit View which takes the rest of the space to a
 
 The `List View` is a scrollable list of clickable campaign buttons from the currently selected Week Cell's campaigns. Each campaign button has its label set as that campaign's name.
 
-If the campaign's cart has the current account assigned to it, color the button light green, otherwise the button will be light grey. Match the colors with the ones used for the Week Cell coloring.
+If the campaign's cart has the current user assigned to it, color the button light green, otherwise the button will be light grey. Match the colors with the ones used for the Week Cell coloring.
 
 If a campaign button is pressed, open the campaign's details inside the Edit View.
 
