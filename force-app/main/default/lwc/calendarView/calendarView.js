@@ -24,7 +24,6 @@ export default class CalendarView extends LightningElement {
     // nothing for now
   }
 
-  @api
   set weekSummaries(value) {
     this._weeks = Array.isArray(value) ? value : [];
   }
@@ -38,6 +37,13 @@ export default class CalendarView extends LightningElement {
 
   get weeks() {
     return this._weeks;
+  }
+
+  get weeksWithClasses() {
+    return this._weeks.map(week => ({
+      ...week,
+      cellClass: this.getCellClass(week)
+    }));
   }
 
   getCellClass(dto) {

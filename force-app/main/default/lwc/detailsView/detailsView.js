@@ -33,7 +33,6 @@ export default class DetailsView extends LightningElement {
     // no-op
   }
 
-  @api
   set weekNumber(value) {
     this._weekNumber = value;
     this.loadWeek();
@@ -42,7 +41,6 @@ export default class DetailsView extends LightningElement {
     return this._weekNumber;
   }
 
-  @api
   set campaignId(value) {
     this._campaignId = value || null;
     if (this._campaignId) {
@@ -100,6 +98,13 @@ export default class DetailsView extends LightningElement {
     // Since no current user id prop is provided, we keep neutral base; button color will be 'other' by default.
     base.push('other-btn');
     return base.join(' ');
+  }
+
+  get campaignsWithClasses() {
+    return this.campaigns.map(campaign => ({
+      ...campaign,
+      itemClass: this.getItemClass(campaign)
+    }));
   }
 
   handleSelect = (evt) => {

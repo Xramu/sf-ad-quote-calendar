@@ -15,8 +15,8 @@
     </div>
     <div class="slds-card__body slds-card__body_inner">
       <div class="grid">
-        <template for:each={weeks} for:item="w">
-          <div key={w.weekNumber} class={getCellClass(w)} onclick={handleCellClick} data-week={w.weekNumber} role="button" tabindex="0" onkeydown={handleCellKeydown} aria-pressed="false">
+        <template for:each={weeksWithClasses} for:item="w">
+          <div key={w.weekNumber} class={w.cellClass} onclick={handleCellClick} data-week={w.weekNumber} role="button" tabindex="0" onkeydown={handleCellKeydown} aria-pressed="false">
             <div class="wk-label">Wk {w.weekNumber}</div>
           </div>
         </template>

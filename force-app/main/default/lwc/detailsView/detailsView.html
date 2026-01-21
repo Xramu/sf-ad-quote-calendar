@@ -16,20 +16,20 @@
       <div class="list-scroll">
         <template if:true={hasWeek}>
           <template if:true={hasCampaigns}>
-            <template for:each={campaigns} for:item="c">
-              <div
-                key={c.id}
-                data-id={c.id}
-                class={getItemClass(c)}
-                onclick={handleSelect}
-                role="button"
-                tabindex="0"
-                onkeydown={handleItemKeydown}
-                title={c.name}
-              >
-                <span class="item-label">{c.name}</span>
-              </div>
-            </template>
+          <template for:each={campaignsWithClasses} for:item="c">
+            <div
+              key={c.id}
+              data-id={c.id}
+              class={c.itemClass}
+              onclick={handleSelect}
+              role="button"
+              tabindex="0"
+              onkeydown={handleItemKeydown}
+              title={c.name}
+            >
+              <span class="item-label">{c.name}</span>
+            </div>
+          </template>
           </template>
           <template if:false={hasCampaigns}>
             <div class="slds-p-around_small slds-text-color_weak">No campaigns in this week.</div>
