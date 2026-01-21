@@ -107,6 +107,8 @@ When the user clicks a Week Cell that has at least one campaign happening during
 
 The user can then click one of the items inside the list to open the Details View's Edit View to show the `CampaignName__c` as editable text field and `Description__c` as editable rich text field.
 
+If the Week Cell has only one campaign happening during it, show it in the List View like usual but also open it right away in the Edit View as well, since there is only one campaign to be selected during that week.
+
 ### Details View
 
 The `Details View` is the secondary child component taking the last 20% of the screen width from the right.
@@ -121,6 +123,8 @@ The `List View` is a scrollable list of clickable campaign buttons from the curr
 
 If the campaign's cart has the current account assigned to it, color the button light green, otherwise the button will be light grey. Match the colors with the ones used for the Week Cell coloring.
 
+If a campaign button is pressed, open the campaign's details inside the Edit View.
+
 If a campaign is selected, highlight the button of the selected campaign.
 
 Do not use lignting button since it can not be colored with custom colors.
@@ -131,16 +135,19 @@ The `Edit View` will show the currently selected campaign's information inside i
 
 For now all the information needed will be the name, description and time period.
 
-The name should be a lightning input text area that saves the name into the record once unfocused from.
+The name should be a lightning input text area.
 
-The description should be a lightning input rich text area that saves the description into the record ince unfocused from.
+The description should be a lightning input rich text area.
 
-The time period will is not editable but should be shown in the format of `DD.MM.YYYY - DD.MM.YYYY`.
+The name and the description input fields should save the changes to the record once the user unfocuses from the field.
 
-The information is stacked vertically in the order:
-- Name
-- Description
-- Time Period
+The time period is not editable but should be shown in the format of `DD.MM.YYYY - DD.MM.YYYY`.
+
+The information is stacked vertically and labeled in the following order:
+- Confirmation Status (Label: `Campaign Confirmation Status`)
+- Name (Label: `Campaign Name`)
+- Description (Label: `Campaign Description`)
+- Time Period (Label: `Campaign Time Period`)
 
 ## User Interface Requirements
 
