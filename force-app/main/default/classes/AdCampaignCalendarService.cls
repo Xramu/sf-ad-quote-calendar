@@ -138,6 +138,75 @@ public with sharing class AdCampaignCalendarService {
         return out;
     }
 
+    /**
+     * @description Save updates to an AdWebCart__c record. Updates allowed fields only.
+     * @param recordId Id of AdWebCart__c to update (required)
+     * @param campaignName Optional new value for CampaignName__c
+     * @param description Optional new value for Description__c
+     * @return CampaignDTO with updated basic info
+     */
+    @AuraEnabled
+    public static CampaignDTO saveCampaign(Id recordId, String campaignName, String description) {
+        if (recordId == null) {
+            throw new AuraHandledException('recordId is required');
+        }
+
+        // Pre-query WITH SECURITY_ENFORCED to respect FLS and sharing
+        AdWebCart__c existing = [
+            SELECT Id, CampaignName__c, Description__c, CampaignStartDate__c, CampaignEndDate__c, User__c, Status__c
+            FROM AdWebCart__c
+            WHERE Id = :recordId
+            WITH SECURITY_ENFORCED
+            LIMIT 1
+        ];
+
+        // Make sure a record exists before inserting
+        if (existing == null) {
+            throw new AuraHandledException('No record found for recordId ' + recordId);
+        }
+
+        // Prepare update with only provided fields
+        AdWebCart__c upd = new AdWebCart__c(Id = existing.Id);
+        Boolean hasChange = false;
+        if (campaignName != null && campaignName != existing.CampaignName__c) {
+            upd.CampaignName__c = campaignName;
+            hasChange = true;
+        }
+        if (description != null && description != existing.Description__c) {
+            upd.Description__c = description;
+            hasChange = true;
+        }
+
+        if (hasChange) {
+            // User mode DML and partial success handling
+            Database.SaveResult sr = Database.update(upd, false, AccessLevel.USER_MODE);
+            if (!sr.isSuccess()) {
+                Database.Error err = sr.getErrors().isEmpty() ? null : sr.getErrors()[0];
+                String msg = (err != null && String.isNotBlank(err.getMessage())) ? err.getMessage() : 'Unknown error during save';
+                throw new AuraHandledException(msg);
+            }
+        }
+
+        // Re-query the latest values (or use existing if no change)
+        AdWebCart__c refreshed = [
+            SELECT Id, CampaignName__c, Description__c, CampaignStartDate__c, CampaignEndDate__c, User__c, Status__c
+            FROM AdWebCart__c
+            WHERE Id = :recordId
+            WITH SECURITY_ENFORCED
+            LIMIT 1
+        ];
+
+        CampaignDTO dto = new CampaignDTO();
+        dto.id = refreshed.Id;
+        dto.name = refreshed.CampaignName__c;
+        dto.ownerUserId = refreshed.User__c;
+        dto.startDate = refreshed.CampaignStartDate__c;
+        dto.endDate = refreshed.CampaignEndDate__c;
+        dto.hasCurrentUserCampaign = refreshed.User__c == UserInfo.getUserId();
+        dto.status = refreshed.Status__c;
+        return dto;
+    }
+
     // Helper: compute Sunday-start week number within the given year
     // Week 1 starts on the first Sunday on or before Jan 1, but constrained to the year’s first week containing Jan 1.
     private static Integer getSundayStartWeekNumber(Date d, Integer year) {
