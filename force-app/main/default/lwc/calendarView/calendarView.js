@@ -33,7 +33,7 @@ export default class CalendarView extends LightningElement {
   }
 
   get calendarTitle() {
-    return `Calendar ${this.year || ''}`;
+    return `Viikot ${this.year || ''}`;
   }
 
   get weeks() {
