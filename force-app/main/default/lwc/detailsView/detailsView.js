@@ -11,6 +11,7 @@
  */
 import { LightningElement, api, track } from 'lwc';
 import getWeekCampaigns from '@salesforce/apex/AdCampaignCalendarService.getWeekCampaigns';
+import saveCampaign from '@salesforce/apex/AdCampaignCalendarService.saveCampaign';
 
 export default class DetailsView extends LightningElement {
   @api year;
@@ -19,6 +20,11 @@ export default class DetailsView extends LightningElement {
 
   @track campaigns = [];
   @track selectedCampaignId = null;
+
+  // Local editable state
+  @track nameValue = '';
+  @track descriptionValue = '';
+  @track isSaving = false;
 
   // Derived display fields (status/time period) resolved from selected campaign
   get hasWeek() {
@@ -108,6 +114,8 @@ export default class DetailsView extends LightningElement {
     const id = evt.currentTarget?.dataset?.id;
     if (!id) return;
     this.selectedCampaignId = id;
+    // populate inputs from current selected campaign
+    this.hydrateFormFromSelection();
     this.dispatchEvent(
       new CustomEvent('campaignselected', {
         detail: { campaignId: id },
@@ -124,24 +132,39 @@ export default class DetailsView extends LightningElement {
     }
   };
 
-  // Record edit form support
-  handleBlurSubmit = () => {
-    // Submit the surrounding edit form when inputs change (on blur/change)
-    const form = this.template.querySelector('lightning-record-edit-form');
-    if (form) {
-      form.submit();
+  // Manual input handlers and save
+  handleNameChange = (evt) => {
+    this.nameValue = evt.detail?.value;
+  };
+
+  handleDescriptionChange = (evt) => {
+    this.descriptionValue = evt.detail?.value;
+  };
+
+  async handleSave() {
+    if (!this.selectedCampaignId) return;
+    try {
+      this.isSaving = true;
+      console.log(this.selectedCampaignId);
+      const updated = await saveCampaign({
+        recordId: this.selectedCampaignId,
+        campaignName: this.nameValue,
+        description: this.descriptionValue
+      });
+      // Update local list with returned dto
+      this.mergeUpdatedCampaign(updated);
+      // Refresh list from server to sync derived flags and texts
+      await this.loadWeek();
+      // Keep selection after refresh
+      this.selectedCampaignId = updated?.id || this.selectedCampaignId;
+      this.hydrateFormFromSelection();
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to save campaign', e);
+    } finally {
+      this.isSaving = false;
     }
-  };
-
-  handleFormSuccess = () => {
-    // After save, refresh the list to reflect any potential name/status changes
-    this.loadWeek();
-  };
-
-  handleFormError = (evt) => {
-    // eslint-disable-next-line no-console
-    console.error('Form error', evt?.detail);
-  };
+  }
 
   // Display helpers (read-only)
   get statusText() {
@@ -159,11 +182,42 @@ export default class DetailsView extends LightningElement {
     // d is a Date in Apex-serialized form; treat as YYYY-MM-DD
     try {
       const s = String(d);
-      const [yyyy, mm, dd] = s.split('-');
+      const parts = s.split('-');
+      const yyyy = parts.length > 0 ? parts[0] : null;
+      const mm = parts.length > 1 ? parts[1] : null;
+      const dd = parts.length > 2 ? parts[2] : null;
       if (!yyyy || !mm || !dd) return s;
-      return `${dd}.${mm}.${yyyy}`;
+      return [dd, mm, yyyy].join('.');
     } catch (e) {
       return String(d);
+    }
+  }
+
+  hydrateFormFromSelection() {
+    const sel = this.campaigns.find((c) => c.id === this.selectedCampaignId);
+    // Default to empty strings per project rules (no inline concatenation)
+    this.nameValue = sel?.name || '';
+    // Description is not in DTO; leave as previous input unless later included
+    // For initial load, keep as empty until we add it to DTO backend if needed
+    // Keeping user-entered value intact across selections might be confusing, so reset when selection changes.
+    this.descriptionValue = '';
+  }
+
+  mergeUpdatedCampaign(updated) {
+    if (!updated) return;
+    const idx = this.campaigns.findIndex((c) => c.id === updated.id);
+    if (idx >= 0) {
+      const copy = [...this.campaigns];
+      copy[idx] = {
+        ...copy[idx],
+        name: updated.name,
+        status: updated.status,
+        startDate: updated.startDate,
+        endDate: updated.endDate,
+        ownerUserId: updated.ownerUserId,
+        hasCurrentUserCampaign: updated.hasCurrentUserCampaign
+      };
+      this.campaigns = copy;
     }
   }
 }

@@ -45,35 +45,55 @@
     <div class="slds-col slds-size_1-of-1 edit-pane">
       <div class="slds-text-title_caps slds-p-horizontal_x-small slds-p-top_x-small">Kampanjan Tiedot</div>
       <template if:true={selectedCampaignId}>
-        <lightning-record-edit-form record-id={selectedCampaignId} object-api-name="AdWebCart__c" onsuccess={handleFormSuccess} onerror={handleFormError}>
-          <div class="slds-p-around_small slds-grid slds-wrap slds-gutters_small">
-            <!-- Confirmation Status (read-only display) -->
-            <div class="slds-col slds-size_1-of-1">
-              <label class="slds-form-element__label">Kampanjan Tilanne</label>
-              <div class="slds-form-element__control">
-                <div class="slds-input slds-text-color_weak slds-truncate" title={statusText}>{statusText}</div>
-              </div>
-            </div>
-
-            <!-- Name (save-on-blur) -->
-            <div class="slds-col slds-size_1-of-1">
-              <lightning-input-field field-name="CampaignName__c" onblur={handleBlurSubmit}></lightning-input-field>
-            </div>
-
-            <!-- Description (save-on-blur) -->
-            <div class="slds-col slds-size_1-of-1">
-              <lightning-input-field field-name="Description__c" onblur={handleBlurSubmit}></lightning-input-field>
-            </div>
-
-            <!-- Time Period (read-only formatted) -->
-            <div class="slds-col slds-size_1-of-1">
-              <label class="slds-form-element__label">Kampanjan Aikaväli</label>
-              <div class="slds-form-element__control">
-                <div class="slds-input slds-text-color_weak">{timePeriodText}</div>
-              </div>
+        <div class="slds-p-around_small slds-grid slds-wrap slds-gutters_small">
+          <!-- Confirmation Status (read-only display) -->
+          <div class="slds-col slds-size_1-of-1">
+            <label class="slds-form-element__label">Kampanjan Tilanne</label>
+            <div class="slds-form-element__control">
+              <div class="slds-input slds-text-color_weak slds-truncate" title={statusText}>{statusText}</div>
             </div>
           </div>
-        </lightning-record-edit-form>
+
+          <!-- Name -->
+          <div class="slds-col slds-size_1-of-1">
+            <lightning-input
+              type="text"
+              label="Kampanjan Nimi"
+              value={nameValue}
+              onchange={handleNameChange}
+            ></lightning-input>
+          </div>
+
+          <!-- Description -->
+          <div class="slds-col slds-size_1-of-1">
+            <lightning-textarea
+              label="Kuvaus"
+              value={descriptionValue}
+              onchange={handleDescriptionChange}
+            ></lightning-textarea>
+          </div>
+
+          <!-- Time Period (read-only formatted) -->
+          <div class="slds-col slds-size_1-of-1">
+            <label class="slds-form-element__label">Kampanjan Aikaväli</label>
+            <div class="slds-form-element__control">
+              <div class="slds-input slds-text-color_weak">{timePeriodText}</div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="slds-col slds-size_1-of-1 slds-m-top_small">
+            <lightning-button
+              variant="brand"
+              label="Tallenna"
+              onclick={handleSave}
+              disabled={isSaving}
+            ></lightning-button>
+            <template if:true={isSaving}>
+              <lightning-spinner size="small" alternative-text="Tallennetaan"></lightning-spinner>
+            </template>
+          </div>
+        </div>
       </template>
       <template if:false={selectedCampaignId}>
         <div class="slds-p-around_small slds-text-color_weak">Valitse kampanja nähdäksesi sen tiedot.</div>
