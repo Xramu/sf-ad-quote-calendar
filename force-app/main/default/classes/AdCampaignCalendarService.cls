@@ -21,6 +21,7 @@ public with sharing class AdCampaignCalendarService {
     public class CampaignDTO {
         @AuraEnabled public Id id;
         @AuraEnabled public String name;
+        @AuraEnabled public String description;
         @AuraEnabled public Id ownerUserId;
         @AuraEnabled public Boolean hasCurrentUserCampaign;
         @AuraEnabled public Date startDate;
@@ -114,7 +115,7 @@ public with sharing class AdCampaignCalendarService {
         Date weekEnd = weekStart.addDays(6);
 
         List<AdWebCart__c> carts = [
-            SELECT Id, CampaignName__c, CampaignStartDate__c, CampaignEndDate__c, User__c, Status__c
+            SELECT Id, CampaignName__c, Description__c, CampaignStartDate__c, CampaignEndDate__c, User__c, Status__c
             FROM AdWebCart__c
             WHERE CampaignStartDate__c != NULL
               AND CampaignEndDate__c != NULL
@@ -128,6 +129,7 @@ public with sharing class AdCampaignCalendarService {
             CampaignDTO dto = new CampaignDTO();
             dto.id = c.Id;
             dto.name = c.CampaignName__c;
+            dto.description = c.Description__c;
             dto.ownerUserId = c.User__c;
             dto.startDate = c.CampaignStartDate__c;
             dto.endDate = c.CampaignEndDate__c;
@@ -199,6 +201,7 @@ public with sharing class AdCampaignCalendarService {
         CampaignDTO dto = new CampaignDTO();
         dto.id = refreshed.Id;
         dto.name = refreshed.CampaignName__c;
+        dto.description = refreshed.Description__c;
         dto.ownerUserId = refreshed.User__c;
         dto.startDate = refreshed.CampaignStartDate__c;
         dto.endDate = refreshed.CampaignEndDate__c;
