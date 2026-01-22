@@ -1,8 +1,4 @@
 /* Calendar grid and week cell visuals */
-:host {
-  display: block;
-}
-
 .calendar {
   height: 100%;
 }
@@ -10,7 +6,7 @@
 .grid {
   display: grid;
   /* Changed to make cells square and responsive */
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--cell-size), 1fr));
   gap: 8px;
   /* Ensure cells maintain square aspect ratio */
   grid-auto-rows: 1fr;
@@ -25,8 +21,8 @@
   align-items: center;
   justify-content: center;
   user-select: none;
-  min-height: 80px;
-  min-width: 80px;
+  min-height: var(--cell-size);
+  min-width: var(--cell-size);
 }
 
 .cell.empty {
@@ -46,11 +42,10 @@
 }
 .cell.clickable:focus,
 .cell.clickable:hover {
-  outline: 2px solid #1b96ff;
-  outline-offset: 1px;
+  outline: 2px solid var(--highlight-color);
 }
 
 .wk-label {
   font-size: 1rem;
-  color: #111827;
+  color: #4a4a4a;
 }

@@ -20,11 +20,10 @@
 }
 .list-item:hover,
 .list-item:focus {
-  outline: 2px solid #1b96ff;
-  outline-offset: 1px;
+  outline: 2px solid var(--highlight-color);
 }
 .list-item.selected {
-  border-color: #1b96ff;
+  border-color: var(--highlight-color);
   box-shadow: 0 0 0 2px rgba(27, 150, 255, 0.2);
 }
 
@@ -52,8 +51,6 @@
   box-sizing: border-box;
 }
 
-/* Optional: owned button variant if ownership is detected later
 .list-item.owned {
   background: var(--week-own-bg, #c8f7c5);
 }
-*/

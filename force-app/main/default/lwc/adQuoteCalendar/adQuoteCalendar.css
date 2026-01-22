@@ -4,6 +4,8 @@
   --week-own-bg: #c8f7c5;       /* light green */
   --week-other-bg: #e5e7eb;     /* light grey */
   --week-border: #d0d5dd;
+  --highlight-color: #337546;
+  --cell-size: 5rem;              /* cell size in pixels */
 }
 
 .root {
@@ -37,6 +39,6 @@
   background: #f3f4f6;
 }
 .yearControls .btn-nav:focus {
-  outline: 2px solid #1b96ff;
+  outline: 2px solid var(--highlight-color);
   outline-offset: 1px;
 }
