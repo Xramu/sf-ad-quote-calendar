@@ -15,6 +15,7 @@ export default class CalendarView extends LightningElement {
   @api weekSummaries = []; // array of { weekNumber, hasAnyCampaign, hasCurrentUserCampaign }
 
   @track _weeks = [];
+  @api selectedWeek = null;
 
   connectedCallback() {
     this.computeWeeks();
@@ -54,7 +55,12 @@ export default class CalendarView extends LightningElement {
       } else {
         base.push('other');
       }
+
       base.push('clickable');
+
+      if (dto.weekNumber === this.selectedWeek) {
+        base.push('selected');
+      }
     } else {
       base.push('empty');
     }
