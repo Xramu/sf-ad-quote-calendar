@@ -12,6 +12,7 @@
   --week-other-bg: #e5e7eb;     /* light grey */
   --week-other-bg-highlight: hsl(220, 13%, 60%);     
   
+  --pane-border-style : 1px solid #e5e7eb;
 }
 
 .root {
@@ -19,17 +20,19 @@
 }
 
 .header {
-  border-bottom: 1px solid #e5e7eb;
+  border: var(--pane-border-style);
   background: #ffffff;
 }
 
 .calendarPane {
   padding: 0.5rem;
-  border-right: 1px solid #e5e7eb;
 }
 
 .detailsPane {
   padding: 0.5rem;
+  border-left: var(--pane-border-style);
+  border-right: var(--pane-border-style);
+  border-bottom: var(--pane-border-style);
   background: #ffffff;
 }
 

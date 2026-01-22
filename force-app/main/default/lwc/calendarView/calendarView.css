@@ -1,6 +1,6 @@
 /* Calendar grid and week cell visuals */
 .calendar {
-  height: 100%;
+  border: var(--pane-border-style);
 }
 
 .grid {
