@@ -149,7 +149,6 @@ export default class DetailsView extends LightningElement {
     if (!this.selectedCampaignId) return;
     try {
       this.isSaving = true;
-      console.log(this.selectedCampaignId);
       const updated = await saveCampaign({
         recordId: this.selectedCampaignId,
         campaignName: this.nameValue,
@@ -212,6 +211,7 @@ export default class DetailsView extends LightningElement {
       copy[idx] = {
         ...copy[idx],
         name: updated.name,
+        description: updated.description,
         status: updated.status,
         startDate: updated.startDate,
         endDate: updated.endDate,
