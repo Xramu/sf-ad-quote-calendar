@@ -51,6 +51,8 @@ export default class DetailsView extends LightningElement {
     this._campaignId = value || null;
     if (this._campaignId) {
       this.selectedCampaignId = this._campaignId;
+      // Initialize form values from the selected campaign when campaignId is set externally
+      this.hydrateFormFromSelection();
     }
   }
   get campaignId() {
@@ -71,6 +73,8 @@ export default class DetailsView extends LightningElement {
       if (this.campaigns.length > 0) {
         // Select first campaign by default
         this.selectedCampaignId = this.campaigns[0].id;
+        // Initialize form values from the selected campaign
+        this.hydrateFormFromSelection();
         // Notify parent of auto-selection
         this.dispatchEvent(
           new CustomEvent('campaignselected', {
@@ -197,10 +201,7 @@ export default class DetailsView extends LightningElement {
     const sel = this.campaigns.find((c) => c.id === this.selectedCampaignId);
     // Default to empty strings per project rules (no inline concatenation)
     this.nameValue = sel?.name || '';
-    // Description is not in DTO; leave as previous input unless later included
-    // For initial load, keep as empty until we add it to DTO backend if needed
-    // Keeping user-entered value intact across selections might be confusing, so reset when selection changes.
-    this.descriptionValue = '';
+    this.descriptionValue = sel?.description || '';
   }
 
   mergeUpdatedCampaign(updated) {

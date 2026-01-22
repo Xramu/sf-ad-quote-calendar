@@ -66,11 +66,12 @@
 
           <!-- Description -->
           <div class="slds-col slds-size_1-of-1">
-            <lightning-textarea
+            <lightning-input-rich-text
+              label-visible
               label="Kuvaus"
               value={descriptionValue}
               onchange={handleDescriptionChange}
-            ></lightning-textarea>
+            ></lightning-input-rich-text>
           </div>
 
           <!-- Time Period (read-only formatted) -->
