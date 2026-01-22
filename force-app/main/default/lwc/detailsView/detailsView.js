@@ -88,16 +88,12 @@ export default class DetailsView extends LightningElement {
     if (c && c.id === this.selectedCampaignId) {
       base.push('selected');
     }
-    // ownerUserId presence implies current-user-owned coloring is done in CSS via data-owned attr
-    // But since we don't know current user in LWC without extra wire, color choice is delegated:
-    // We'll emulate by using a heuristic: server returns ownerUserId, but we don't compare here.
-    // Instead, parent color scheme requirement: green for "owned by current user".
-    // For demo, we provide both classes and parent CSS vars handle visuals; we default to "other".
-    // To properly color ownership client-side, we'd need a wire to get user id, which isn't requested.
-    // As an alternative, we render a data attribute and let CSS default to other color; ownership will be handled
-    // by adding 'owned' class when we detect a match via optional current user input.
-    // Since no current user id prop is provided, we keep neutral base; button color will be 'other' by default.
-    base.push('other-btn');
+
+    if (c && c.hasCurrentUserCampaign) {
+      base.push('owned');
+    } else {
+      base.push('other-btn');
+    }
     return base.join(' ');
   }
 

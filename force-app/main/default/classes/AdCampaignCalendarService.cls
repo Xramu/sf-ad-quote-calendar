@@ -22,6 +22,7 @@ public with sharing class AdCampaignCalendarService {
         @AuraEnabled public Id id;
         @AuraEnabled public String name;
         @AuraEnabled public Id ownerUserId;
+        @AuraEnabled public Boolean hasCurrentUserCampaign;
         @AuraEnabled public Date startDate;
         @AuraEnabled public Date endDate;
         @AuraEnabled public String status; // optional for display if needed
@@ -130,6 +131,7 @@ public with sharing class AdCampaignCalendarService {
             dto.ownerUserId = c.User__c;
             dto.startDate = c.CampaignStartDate__c;
             dto.endDate = c.CampaignEndDate__c;
+            dto.hasCurrentUserCampaign = c.User__c == UserInfo.getUserId();
             dto.status = c.Status__c;
             out.add(dto);
         }
