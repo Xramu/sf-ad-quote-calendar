@@ -8,6 +8,10 @@ The extra information JSON of an item can have many any amount of key value pair
 
 When showing the title add a `:` at the end of the title value.
 
+Files that you should go through for the context of the project include:
+- Apex class: AdCampaignCalendarService
+- Lightning Web Components: AdQuoteCalendar, CalendarView, DetailsView
+
 ## Extra Information Format
 
 The extra information is located inside the extraJsonData of the loaded record through AdCampaignCalendarService Apex class.
