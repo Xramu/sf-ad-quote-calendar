@@ -154,6 +154,7 @@ export default class DetailsView extends LightningElement {
         campaignName: this.nameValue,
         description: this.descriptionValue
       });
+      console.log(updated);
       // Update local list with returned dto
       this.mergeUpdatedCampaign(updated);
       // Refresh list from server to sync derived flags and texts
@@ -201,6 +202,7 @@ export default class DetailsView extends LightningElement {
     // Default to empty strings per project rules (no inline concatenation)
     this.nameValue = sel?.name || '';
     this.descriptionValue = sel?.description || '';
+    console.log("Hydrated from:", sel)
   }
 
   mergeUpdatedCampaign(updated) {
@@ -219,6 +221,8 @@ export default class DetailsView extends LightningElement {
         hasCurrentUserCampaign: updated.hasCurrentUserCampaign
       };
       this.campaigns = copy;
+
+      console.log("All Campaigns: ", this.campaigns);
     }
   }
 }

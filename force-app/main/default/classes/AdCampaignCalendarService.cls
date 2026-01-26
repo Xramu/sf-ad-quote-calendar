@@ -102,7 +102,7 @@ public with sharing class AdCampaignCalendarService {
         return result;
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static List<CampaignDTO> getWeekCampaigns(Integer year, Integer weekNumber) {
         if (year == null || weekNumber == null) {
             throw new AuraHandledException('Year and weekNumber are required');
