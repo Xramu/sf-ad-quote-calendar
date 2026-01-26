@@ -82,6 +82,23 @@
             </div>
           </div>
 
+          <!-- Campaign Items -->
+          <div class="slds-col slds-size_1-of-1">
+            <div class="slds-m-top_small">
+              <div class="slds-text-title_caps slds-p-bottom_x-small">Kampanjan Tuotteet</div>
+              <div class="slds-grid slds-wrap slds-gutters_xx-small">
+                <template for:each={selectedCampaignItems} for:item="it">
+                  <div key={it.id} class="slds-m-right_xx-small slds-m-bottom_xx-small">
+                    <lightning-badge label={it.itemName}></lightning-badge>
+                  </div>
+                </template>
+                <template if:true={selectedCampaignItemsIsEmpty}>
+                  <div class="slds-text-color_weak slds-p-vertical_xx-small">Ei tuotteita.</div>
+                </template>
+              </div>
+            </div>
+          </div>
+
           <!-- Actions -->
           <div class="slds-col slds-size_1-of-1 slds-m-top_small">
             <lightning-button

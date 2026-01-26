@@ -11,6 +11,7 @@
  */
 import { LightningElement, api, track } from 'lwc';
 import getWeekCampaigns from '@salesforce/apex/AdCampaignCalendarService.getWeekCampaigns';
+import getCartItemsByCartIds from '@salesforce/apex/AdCampaignCalendarService.getCartItemsByCartIds';
 import saveCampaign from '@salesforce/apex/AdCampaignCalendarService.saveCampaign';
 
 export default class DetailsView extends LightningElement {
@@ -20,6 +21,9 @@ export default class DetailsView extends LightningElement {
 
   @track campaigns = [];
   @track selectedCampaignId = null;
+
+  // Items fetched for all campaigns in the selected week
+  @track campaignItems = [];
 
   // Local editable state
   @track nameValue = '';
@@ -62,6 +66,7 @@ export default class DetailsView extends LightningElement {
   async loadWeek() {
     this.campaigns = [];
     this.selectedCampaignId = null;
+    this.campaignItems = [];
 
     if (!this.year || !this.weekNumber) {
       return;
@@ -69,6 +74,15 @@ export default class DetailsView extends LightningElement {
     try {
       const list = await getWeekCampaigns({ year: this.year, weekNumber: this.weekNumber });
       this.campaigns = Array.isArray(list) ? list : [];
+
+      // After campaigns load, fetch all items for these campaigns in a single call
+      const cartIds = this.campaigns.map((c) => c.id).filter((v) => !!v);
+      if (cartIds.length > 0) {
+        const items = await getCartItemsByCartIds({ cartIds });
+        this.campaignItems = Array.isArray(items) ? items : [];
+      } else {
+        this.campaignItems = [];
+      }
 
       if (this.campaigns.length > 0) {
         // Select first campaign by default
@@ -86,9 +100,10 @@ export default class DetailsView extends LightningElement {
       }
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.error('Failed to load week campaigns', e);
+      console.error('Failed to load week campaigns/items', e);
       this.campaigns = [];
       this.selectedCampaignId = null;
+      this.campaignItems = [];
     }
   }
 
@@ -167,6 +182,18 @@ export default class DetailsView extends LightningElement {
     } finally {
       this.isSaving = false;
     }
+  }
+
+  // Items for the currently selected campaign
+  get selectedCampaignItems() {
+    const selId = this.selectedCampaignId;
+    if (!selId || !Array.isArray(this.campaignItems)) return [];
+    return this.campaignItems.filter((it) => it.cartId === selId);
+  }
+
+  get selectedCampaignItemsIsEmpty() {
+    const arr = this.selectedCampaignItems;
+    return !arr || arr.length === 0;
   }
 
   // Display helpers (read-only)

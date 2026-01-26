@@ -29,6 +29,50 @@ public with sharing class AdCampaignCalendarService {
         @AuraEnabled public String status; // optional for display if needed
     }
 
+    public class ItemDTO {
+        @AuraEnabled public Id id;
+        @AuraEnabled public Id cartId;
+        @AuraEnabled public String itemName;
+        @AuraEnabled public String extraJsonData;
+    }
+
+    /**
+     * @description Fetch AdWebCartItem__c records for the provided AdWebCart__c (campaign) Ids.
+     * Returns flat DTOs including ExtraJsonData__c for future use.
+     */
+    @AuraEnabled(cacheable=true)
+    public static List<ItemDTO> getCartItemsByCartIds(List<Id> cartIds) {
+        if (cartIds == null || cartIds.isEmpty()) {
+            return new List<ItemDTO>();
+        }
+        // Ensure only AdWebCart__c Ids are used (defensive)
+        Set<Id> uniqueIds = new Set<Id>();
+        for (Id i : cartIds) {
+            if (i != null) uniqueIds.add(i);
+        }
+        if (uniqueIds.isEmpty()) {
+            return new List<ItemDTO>();
+        }
+
+        List<AdWebCartItem__c> items = [
+            SELECT Id, Cart__c, ItemName__c, ExtraJsonData__c
+            FROM AdWebCartItem__c
+            WHERE Cart__c IN :uniqueIds
+            WITH SECURITY_ENFORCED
+        ];
+
+        List<ItemDTO> out = new List<ItemDTO>();
+        for (AdWebCartItem__c it : items) {
+            ItemDTO dto = new ItemDTO();
+            dto.id = it.Id;
+            dto.cartId = it.Cart__c;
+            dto.itemName = it.ItemName__c;
+            dto.extraJsonData = it.ExtraJsonData__c;
+            out.add(dto);
+        }
+        return out;
+    }
+
     @AuraEnabled(cacheable=true)
     public static Map<Integer, WeekSummaryDTO> getWeeklySummary(Integer year) {
         if (year == null) {
