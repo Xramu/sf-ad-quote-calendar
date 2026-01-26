@@ -46,14 +46,6 @@
       <div class="slds-text-title_caps slds-p-horizontal_x-small slds-p-top_x-small">Kampanjan Tiedot</div>
       <template if:true={selectedCampaignId}>
         <div class="slds-p-around_small slds-grid slds-wrap slds-gutters_small">
-          <!-- Confirmation Status (read-only display) -->
-          <div class="slds-col slds-size_1-of-1">
-            <label class="slds-form-element__label">Kampanjan Tilanne</label>
-            <div class="slds-form-element__control">
-              <div class="slds-input slds-text-color_weak slds-truncate" title={statusText}>{statusText}</div>
-            </div>
-          </div>
-
           <!-- Name -->
           <div class="slds-col slds-size_1-of-1">
             <lightning-input
@@ -64,21 +56,29 @@
             ></lightning-input>
           </div>
 
+          <!-- Time Period (read-only formatted) -->
+          <div class="slds-col slds-size_1-of-1">
+            <label class="slds-form-element__label">Kampanjan Aikaväli</label>
+            <div class="slds-form-element__control">
+              <div class="slds-text-color_weak">{timePeriodText}</div>
+            </div>
+          </div>
+
           <!-- Description -->
           <div class="slds-col slds-size_1-of-1">
             <lightning-input-rich-text
               label-visible
-              label="Kuvaus"
+              label="Kampanjan Kuvaus"
               value={descriptionValue}
               onchange={handleDescriptionChange}
             ></lightning-input-rich-text>
           </div>
 
-          <!-- Time Period (read-only formatted) -->
+          <!-- Confirmation Status (read-only display) -->
           <div class="slds-col slds-size_1-of-1">
-            <label class="slds-form-element__label">Kampanjan Aikaväli</label>
+            <label class="slds-form-element__label">Kampanjan Tilanne</label>
             <div class="slds-form-element__control">
-              <div class="slds-input slds-text-color_weak">{timePeriodText}</div>
+              <div class="slds-input slds-text-color_weak slds-truncate" title={statusText}>{statusText}</div>
             </div>
           </div>
 
