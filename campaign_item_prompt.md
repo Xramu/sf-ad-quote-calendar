@@ -10,6 +10,8 @@ Files that you should go through for the context of the project include:
 - Apex class: AdCampaignCalendarService
 - Lightning Web Components: AdQuoteCalendar, CalendarView, DetailsView
 
+Make sure to load the ExtraJsonData field as well from the items, it will be used in the future, but for now we want to just have access to it when needed. Note that the extra info can be empty as well.
+
 ## Object References
 
 ### Ad Web Cart Item
@@ -26,7 +28,6 @@ Custom Object `AdWebCartItem__c` function:
 - `ExtraJsonData__c`: Text field containing any extra specifications of this cart item in JSON format.
 
 Look at the project's metadata for a better idea of the needed custom objects.
-
 
 ## Definition of a Campaign
 
