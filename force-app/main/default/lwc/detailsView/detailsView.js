@@ -13,6 +13,7 @@ import { LightningElement, api, track } from 'lwc';
 import getWeekCampaigns from '@salesforce/apex/AdCampaignCalendarService.getWeekCampaigns';
 import getCartItemsByCartIds from '@salesforce/apex/AdCampaignCalendarService.getCartItemsByCartIds';
 import saveCampaign from '@salesforce/apex/AdCampaignCalendarService.saveCampaign';
+import ItemInfoModal from 'c/itemInfoModal';
 
 export default class DetailsView extends LightningElement {
   @api year;
@@ -158,6 +159,25 @@ export default class DetailsView extends LightningElement {
 
   handleDescriptionChange = (evt) => {
     this.descriptionValue = evt.detail?.value;
+  };
+
+  handleItemInfoClick = async (evt) => {
+    const id = evt.currentTarget?.dataset?.id;
+    if (!id) return;
+    // Find item from already-loaded client data
+    const item = (this.campaignItems || []).find((it) => it.id === id);
+    // Defensive copy with only the fields the modal needs
+    const modalInput = item
+      ? {
+          itemName: item.itemName,
+          extraJsonData: item.extraJsonData // expected to be string JSON or array
+        }
+      : { itemName: '', extraJsonData: null };
+
+    await ItemInfoModal.open({
+      size: 'medium',
+      item: modalInput
+    });
   };
 
   async handleSave() {
