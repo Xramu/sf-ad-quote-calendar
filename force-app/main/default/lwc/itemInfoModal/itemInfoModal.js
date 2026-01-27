@@ -30,6 +30,10 @@ export default class ItemInfoModal extends LightningModal {
     return this.entries.length > 0;
   }
 
+  get modalTitle() {
+    
+  }
+
   handleClose = () => {
     this.close();
   };
