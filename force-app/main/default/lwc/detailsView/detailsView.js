@@ -162,6 +162,7 @@ export default class DetailsView extends LightningElement {
   };
 
   handleItemInfoClick = async (evt) => {
+    console.log("CLICK");
     const id = evt.currentTarget?.dataset?.id;
     if (!id) return;
     // Find item from already-loaded client data
