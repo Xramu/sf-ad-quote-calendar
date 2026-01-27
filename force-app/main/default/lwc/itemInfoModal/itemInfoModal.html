@@ -8,7 +8,7 @@
         <template if:true={hasEntries}>
           <template for:each={entries} for:item="e">
             <div key={e.key} class="slds-m-bottom_small">
-              <p class="slds-text-title">{e.titleWithColon}</p>
+              <p class="slds-text-title"><b>{e.titleWithColon}</b></p>
               <p class="slds-m-top_xx-small">{e.value}</p>
             </div>
           </template>
