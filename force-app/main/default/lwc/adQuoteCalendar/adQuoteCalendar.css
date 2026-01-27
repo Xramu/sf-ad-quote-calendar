@@ -10,29 +10,32 @@
   --week-own-bg-highlight: hsl(116, 76%, 66%);
 
   --week-other-bg: #e5e7eb;     /* light grey */
-  --week-other-bg-highlight: hsl(220, 13%, 60%);     
+  --week-other-bg-highlight: hsl(220, 13%, 60%);
   
+  --pane-spacing: 0.5rem;
   --pane-border-style : 1px solid #e5e7eb;
-}
-
-.root {
-  background: #fafafa;
+  --pane-border-radius : 1rem;
 }
 
 .header {
   border: var(--pane-border-style);
   background: #ffffff;
+  
+  border-radius: var(--pane-border-radius);
 }
 
 .calendarPane {
-  padding: 0.5rem;
+  padding-right: var(--pane-spacing);
+  padding-top: var(--pane-spacing);
 }
 
 .detailsPane {
+  margin-top: var(--pane-spacing);
   padding: 0.5rem;
-  border-left: var(--pane-border-style);
-  border-right: var(--pane-border-style);
-  border-bottom: var(--pane-border-style);
+
+  border: var(--pane-border-style);
+  border-radius: var(--pane-border-radius);
+
   background: #ffffff;
 }
 

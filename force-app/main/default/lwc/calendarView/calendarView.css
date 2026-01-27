@@ -1,6 +1,8 @@
 /* Calendar grid and week cell visuals */
 .calendar {
   border: var(--pane-border-style);
+  border-radius: var(--pane-border-radius);
+  background: #ffffff;
 }
 
 .grid {
