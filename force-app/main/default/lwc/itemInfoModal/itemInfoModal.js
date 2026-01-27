@@ -31,7 +31,7 @@ export default class ItemInfoModal extends LightningModal {
   }
 
   get modalTitle() {
-    
+    return this.item ? `${this.item.itemName} ` : "Lisätiedot";
   }
 
   handleClose = () => {
