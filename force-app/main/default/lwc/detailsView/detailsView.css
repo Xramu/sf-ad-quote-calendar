@@ -28,7 +28,6 @@
 
 .item-label {
   display: inline-block;
-  max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -41,12 +40,10 @@
 
 /* Prevent horizontal scrolling in edit pane */
 .edit-pane .slds-grid {
-  width: 100%;
   box-sizing: border-box;
 }
 
 .edit-pane .slds-col {
-  width: 100%;
   box-sizing: border-box;
 }
 
