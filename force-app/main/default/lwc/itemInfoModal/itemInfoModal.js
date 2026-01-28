@@ -1,6 +1,5 @@
 import { api, track } from 'lwc';
 import LightningModal from 'lightning/modal';
-import getProductDataFromUrl from '@salesforce/apex/EanScraperService.getProductDataFromUrl';
 import getHtmlBodyFromUrl from '@salesforce/apex/EanScraperService.getHtmlBodyFromUrl';
 
 export default class ItemInfoModal extends LightningModal {
