@@ -4,30 +4,17 @@ import LightningModal from 'lightning/modal';
 export default class ItemInfoModal extends LightningModal {
   @api item;
 
-  get entries() {
+  errorMessage = 'Tuotteen tietojen lataaminen epäonnistui';
+  get extraDataJson() {
     const raw = this.item?.extraJsonData;
-    if (!raw) return [];
-    try {
-      const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
-      if (!Array.isArray(parsed)) return [];
-      return parsed
-        .filter((x) => x && (x.name || x.value))
-        .map((x, idx) => {
-          const title = x.name ?? '';
-          const value = x.value ?? '';
-          return {
-            key: `${idx}`,
-            titleWithColon: title ? `${title}:` : '',
-            value
-          };
-        });
-    } catch (e) {
-      return [];
-    }
-  }
+    if (!raw) return this.errorMessage;
 
-  get hasEntries() {
-    return this.entries.length > 0;
+    try {
+      return typeof raw === 'string' ? JSON.stringify(JSON.parse(raw)) : raw;
+    } catch (e) {
+      console.log(e);
+      return this.errorMessage;
+    }
   }
 
   get modalTitle() {
