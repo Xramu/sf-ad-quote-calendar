@@ -6,6 +6,10 @@ public with sharing class EanScraperService {
         @AuraEnabled public String productCountryOfOrigin;
     }
 
+    /**
+     * Tries to get the html body of the given url.
+     * Follows permanent redirect 308 with a relative path.
+     */
     @AuraEnabled
     public static String getHtmlBodyFromUrl(String url) {
         Http http = new Http();
