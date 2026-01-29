@@ -50,49 +50,59 @@ export default class ItemInfoModal extends LightningModal {
     this.isLoading = false;
   }
 
-  getDataTestIdElement(doc, dataTestId) {
-    return doc.querySelector('[data-test-id="' + dataTestId + '"]');
-  }
+  parseProductDataFromHtmlString(htmlString) {
+    const startMarker = '<script id="__NEXT_DATA__" type="application/json">';
+    const startIdx = htmlString.indexOf(startMarker);
 
-  getProductNameFromHtmlBody(doc) {
-    const productTitleElement = this.getDataTestIdElement(doc, 'product-name');
+    console.log(htmlString);
 
-    if (!productTitleElement) {
-      return 'Nimeä ei voitu löytää.';
+    if (startIdx === -1) return {error: 'Failed to find start marker in html string'};
+
+    try {
+      const jsonStart = startIdx + startMarker.length;
+      const jsonEnd = htmlString.indexOf('</script>', jsonStart);
+
+      const rawJson = htmlString.substring(jsonStart, jsonEnd);
+      const parsed = JSON.parse(rawJson);
+
+      // Find the root of the product and the product key
+      const apolloState = parsed.props.pageProps.apolloState;
+      const productKey = Object.keys(apolloState).find(key => key.startsWith('Product:'));
+
+      // No product key found
+      if (!productKey) {
+        return {error: 'Failed to find product key in apollo state'};
+      }
+
+      // Product key found, return data behind it
+      const productData = apolloState[productKey];
+      return productData;
+    } catch (e) {
+      console.log(e);
     }
 
-    return productTitleElement.textContent;
-  }
-
-  getProductDescriptionFromHtmlBody(doc) {
-    const productDescriptionElement = this.getDataTestIdElement(doc, 'product-info-description').querySelector('div div span p');
-
-    if (!productDescriptionElement) {
-      return 'Kuvausta ei voitu löytää.'
-    }
-
-    return productDescriptionElement.textContent;
-  }
-
-  getProductCountryOfOriginFromHtmlBody(doc) {
-    const productCountryOfOriginElement = this.getDataTestIdElement(doc, 'product-info-country').querySelector('[class="sc-186ce282-2 bCfrWu"]');
-
-    if (!productCountryOfOriginElement) {
-      return 'Valmistusmaata ei voitu löytää.';
-    }
-
-    return productCountryOfOriginElement.textContent;
+    return {error: 'Failed to parse product data from html string'};
   }
 
   scrapeProductDataFromHtml(htmlString) {
-    const parser = new DOMParser();
+    var pName = 'Tuotteen nimeä ei löytynyt.';
+    var pDesc = 'Tuotteen kuvausta ei löytynyt.';
+    var pCoO = 'Tuotteen valmistusmaata ei löytynyt.';
 
-    const doc = parser.parseFromString(htmlString, 'text/html');
+    const parsedData = this.parseProductDataFromHtmlString(htmlString);
+
+    console.log(parsedData);
+
+    if (!parsedData.error) {
+      pName = parsedData.name ?? pName;
+      pDesc = parsedData.description ?? pDesc;
+      pCoO = parsedData.countryName.fi ?? pCoO;
+    }
 
     this.productData = {
-      productName: this.getProductNameFromHtmlBody(doc),
-      productDescription: this.getProductDescriptionFromHtmlBody(doc),
-      productCountryOfOrigin: this.getProductCountryOfOriginFromHtmlBody(doc),
+      productName: pName,
+      productDescription: pDesc,
+      productCountryOfOrigin: pCoO,
     };
   }
 
