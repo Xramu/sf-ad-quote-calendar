@@ -5,6 +5,7 @@ import getHtmlBodyFromUrl from '@salesforce/apex/EanScraperService.getHtmlBodyFr
 export default class ItemInfoModal extends LightningModal {
   @api item;
 
+  @track productImageUrl= '';
   @track productData = [];
   @track isLoading = false;
   @track hasError = false;
@@ -97,6 +98,7 @@ export default class ItemInfoModal extends LightningModal {
   scrapeProductDataFromHtml(htmlString) {
     // Clear product data in case some of the previously shown data was not found.
     this.productData = [];
+    this.productImageUrl = '';
 
     const parsedData = this.parseProductDataFromHtmlString(htmlString);
 
@@ -110,6 +112,7 @@ export default class ItemInfoModal extends LightningModal {
 
     // Sub data
     const productDetails = parsedData.productDetails;
+    const productImages = productDetails.productImages;
 
     // Info we are exposing in the modal
     this.addProductDataEntry('Nimi', parsedData.name);
@@ -138,6 +141,11 @@ export default class ItemInfoModal extends LightningModal {
     }
 
     this.addProductDataEntry('EAN Koodi', parsedData.ean);
+
+    // Image URL build
+    if (productImages.mainImage.urlTemplate) {
+      this.productImageUrl = productImages.mainImage.urlTemplate.replace('{MODIFIERS}', 'w360h360@_q75').replace('{EXTENSION}', 'webp')
+    }
   }
 
   get modalTitle() {
