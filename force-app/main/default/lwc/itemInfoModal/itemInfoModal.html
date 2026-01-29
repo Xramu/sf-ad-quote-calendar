@@ -11,14 +11,15 @@
       <p>{errorMessage}</p>
     </template>
     <template if:true={productData}>
-      <p class="slds-text-title">Tuotteen Nimi:</p>
-      <p>{productName}</p>
-      <br>
-      <p class="slds-text-title">Tuotteen Kuvaus:</p>
-      <p>{productDescription}</p>
-      <br>
-      <p class="slds-text-title">Tuotteen Valmistusmaa:</p>
-      <p>{productCountryOfOrigin}</p>
+      <template for:each={productData} for:item="pData">
+        <div key={pData.title}>
+          <p class="slds-text-title">{pData.title}:</p>
+          <p>
+            <lightning-formatted-rich-text value={pData.value}></lightning-formatted-rich-text>
+          </p>
+          <br>
+        </div>
+      </template>
     </template>
   </div>
   <footer class="slds-modal__footer">

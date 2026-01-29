@@ -5,7 +5,7 @@ import getHtmlBodyFromUrl from '@salesforce/apex/EanScraperService.getHtmlBodyFr
 export default class ItemInfoModal extends LightningModal {
   @api item;
 
-  @track productData;
+  @track productData = [];
   @track isLoading = false;
   @track hasError = false;
 
@@ -54,8 +54,6 @@ export default class ItemInfoModal extends LightningModal {
     const startMarker = '<script id="__NEXT_DATA__" type="application/json">';
     const startIdx = htmlString.indexOf(startMarker);
 
-    console.log(htmlString);
-
     if (startIdx === -1) return {error: 'Failed to find start marker in html string'};
 
     try {
@@ -84,42 +82,62 @@ export default class ItemInfoModal extends LightningModal {
     return {error: 'Failed to parse product data from html string'};
   }
 
+  addProductDataEntry(title, value) {
+    if (!value) {
+      console.log(`Value of ${title} data entry is null or undefined`);
+      return;
+    }
+
+    this.productData.push({
+      title: title,
+      value: value
+    });
+  }
+
   scrapeProductDataFromHtml(htmlString) {
-    var pName = 'Tuotteen nimeä ei löytynyt.';
-    var pDesc = 'Tuotteen kuvausta ei löytynyt.';
-    var pCoO = 'Tuotteen valmistusmaata ei löytynyt.';
+    // Clear product data in case some of the previously shown data was not found.
+    this.productData = [];
 
     const parsedData = this.parseProductDataFromHtmlString(htmlString);
 
-    console.log(parsedData);
-
-    if (!parsedData.error) {
-      pName = parsedData.name ?? pName;
-      pDesc = parsedData.description ?? pDesc;
-      pCoO = parsedData.countryName.fi ?? pCoO;
+    if (parsedData.error) {
+      console.log(parsedData.error);
+      this.hasError = true;
+      return;
     }
 
-    this.productData = {
-      productName: pName,
-      productDescription: pDesc,
-      productCountryOfOrigin: pCoO,
-    };
-  }
+    this.hasError = false;
 
-  get errorMessage() {
-    return this.productData?.errorMessage;
-  }
+    // Sub data
+    const productDetails = parsedData.productDetails;
 
-  get productName() {
-    return this.productData?.productName;
-  }
+    // Info we are exposing in the modal
+    this.addProductDataEntry('Nimi', parsedData.name);
 
-  get productDescription() {
-    return this.productData?.productDescription;
-  }
+    // Price and price unit
+    if (parsedData.price && parsedData.priceUnit) {
+      this.addProductDataEntry('Hinta', `${parsedData.price}€ ${parsedData.priceUnit}`);
+    }
 
-  get productCountryOfOrigin() {
-    return this.productData?.productCountryOfOrigin;
+    // Comparison price
+    if (parsedData.comparisonPrice && parsedData.comparisonUnit && !parsedData.comparisonUnit.localeCompare('KGM')) {
+      this.addProductDataEntry('Kilohinta', `${parsedData.comparisonPrice}€/kg`)
+    }
+
+    this.addProductDataEntry('Kuvaus', parsedData.description);
+
+    this.addProductDataEntry('Ainesosat', parsedData.ingredientStatement);
+    this.addProductDataEntry('Säilytysohje', productDetails.storageGuideForConsumer);
+    
+    this.addProductDataEntry('Valmistusmaa', parsedData.countryName.fi);
+    this.addProductDataEntry('Valmistaja', parsedData.brandName);
+
+    // Contact information cleanup
+    if (productDetails.contactInformation) {
+      this.addProductDataEntry('Yhteystiedot', productDetails.contactInformation.replaceAll('###', '').replace('Yhteystiedot', ''));
+    }
+
+    this.addProductDataEntry('EAN Koodi', parsedData.ean);
   }
 
   get modalTitle() {
