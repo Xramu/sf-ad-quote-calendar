@@ -8,11 +8,14 @@
   grid-template-columns: 1fr minmax(200px, 360px); /* data grows, image column constrained */
   gap: 1rem;
   align-items: start;
+  max-height: 70vh; /* keep content within viewport-friendly height */
 }
 
 /* Left column: data takes available width */
 .product-data {
   min-width: 0; /* allow content to shrink within grid */
+  overflow: auto;            /* scroll only when needed */
+  -webkit-overflow-scrolling: touch; /* smooth on iOS */
 }
 
 /* Right column: image area */
