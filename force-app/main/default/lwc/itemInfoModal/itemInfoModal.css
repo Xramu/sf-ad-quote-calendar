@@ -1,0 +1,51 @@
+/* Layout the modal content so that product data takes most of the space on the left
+   and the product image sits on the right with a constrained width.
+   No JavaScript changes; styling only. */
+
+/* Two-column layout for content */
+.body-scroll {
+  display: grid;
+  grid-template-columns: 1fr minmax(200px, 360px); /* data grows, image column constrained */
+  gap: 1rem;
+  align-items: start;
+}
+
+/* Left column: data takes available width */
+.product-data {
+  min-width: 0; /* allow content to shrink within grid */
+}
+
+/* Right column: image area */
+.product-image {
+  display: flex;
+  justify-content: flex-end; /* push image to the right edge */
+  align-items: flex-start;
+}
+
+/* Constrain image size and preserve aspect ratio */
+.product-image__img {
+  max-width: 360px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Rich text content should wrap nicely */
+.product-data lightning-formatted-rich-text {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Responsive: stack columns on small viewports */
+@media (max-width: 600px) {
+  .body-scroll {
+    grid-template-columns: 1fr;
+  }
+  .product-image {
+    justify-content: flex-start;
+  }
+  .product-image__img {
+    max-width: 100%;
+  }
+}
