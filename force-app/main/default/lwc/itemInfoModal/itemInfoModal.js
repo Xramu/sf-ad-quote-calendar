@@ -7,6 +7,8 @@ export default class ItemInfoModal extends LightningModal {
 
   @track productImageUrl= '';
   @track productData = [];
+  @track productNutrients = [];
+
   @track isLoading = false;
   @track hasError = false;
 
@@ -95,6 +97,37 @@ export default class ItemInfoModal extends LightningModal {
     });
   }
 
+  addProductNutrientsEntry(title, value) {
+    if (!title || !value) {
+      console.log(`Invalid nutrient entry with the title: ${title} and value: ${value}`);
+      return;
+    }
+
+    this.productNutrients.push({
+      title: title,
+      value: value
+    });
+  }
+
+  updateProductNutrients(productDetails) {
+    if (!productDetails || !productDetails.nutrients || !productDetails.nutrients[0]) {
+      this.productNutrients = [];
+      return;
+    }
+
+    // Goofy structure but it is what it is
+    const nutrients = productDetails.nutrients[0].nutrients;
+
+    console.log(nutrients);
+
+    // Push each entry to the nutrients array
+    nutrients.map((entry) => {
+      if (entry.name !== undefined && entry.value !== undefined) {
+        this.addProductNutrientsEntry(entry.name, entry.value);
+      }
+    });
+  }
+
   scrapeProductDataFromHtml(htmlString) {
     // Clear product data in case some of the previously shown data was not found.
     this.productData = [];
@@ -141,6 +174,9 @@ export default class ItemInfoModal extends LightningModal {
     }
 
     this.addProductDataEntry('EAN Koodi', parsedData.ean);
+
+    // Nutrients
+    this.updateProductNutrients(productDetails);
 
     // Image URL build
     if (productImages.mainImage.urlTemplate) {

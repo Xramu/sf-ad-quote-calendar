@@ -11,6 +11,8 @@
         <p>Virhe ladattaessa tuotetta:</p>
         <p>{errorMessage}</p>
       </template>
+
+      <!-- Product Data -->
       <template if:true={productData}>
         <template for:each={productData} for:item="pData">
           <div key={pData.title} class="product-data__row">
@@ -24,10 +26,22 @@
       </template>
     </div>
     <div class="product-image" data-id="product-image">
+      <!-- Product Image -->
       <template lwc:if={productImageUrl}>
         <img class="product-image__img" width="360" height="360" decoding="async" loading="eager" style="color:transparent" src={productImageUrl}>
       </template>
     </div>
+    <!-- Product Nutrients -->
+      <template if:true={productNutrients}>
+        <template for:each={productNutrients} for:item="pNutrient">
+          <div key={pNutrient.title} class="product-data__row">
+            <p class="slds-text-title">{pNutrient.title}:</p>
+            <p>
+              <lightning-formatted-rich-text value={pNutrient.value}></lightning-formatted-rich-text>
+            </p>  
+          </div>
+        </template>
+      </template>
   </div>
   <footer class="slds-modal__footer">
     <lightning-button variant="neutral" label="Sulje" onclick={handleClose}></lightning-button>
