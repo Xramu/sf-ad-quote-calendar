@@ -7,6 +7,8 @@ export default class ItemInfoModal extends LightningModal {
 
   @track productImageUrl= '';
   @track productData = [];
+
+  @track productNutrientsReferenceQuantity = '';
   @track productNutrients = [];
 
   @track isLoading = false;
@@ -118,7 +120,8 @@ export default class ItemInfoModal extends LightningModal {
     // Goofy structure but it is what it is
     const nutrients = productDetails.nutrients[0].nutrients;
 
-    console.log(nutrients);
+    // Set the quantity reference
+    this.productNutrientsReferenceQuantity = productDetails.nutrients[0].referenceQuantity;
 
     // Push each entry to the nutrients array
     nutrients.map((entry) => {

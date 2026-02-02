@@ -35,7 +35,12 @@
 
       <!-- Product Nutrients -->
       <template if:true={hasProductNutrients}>
-        <p class="slds-text-title">Ravintosisältö:</p>
+        <div class="product-data__row">
+          <p class="slds-text-title">Ravintosisältö:</p>
+          <p>
+            <lightning-formatted-rich-text value={productNutrientsReferenceQuantity}></lightning-formatted-rich-text>
+          </p>
+        </div>
         <template for:each={productNutrients} for:item="pNutrient">
           <div key={pNutrient.title} class="product-data__row">
             <p class="slds-text-title">{pNutrient.title}:</p>
