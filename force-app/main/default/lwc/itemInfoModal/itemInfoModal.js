@@ -188,6 +188,14 @@ export default class ItemInfoModal extends LightningModal {
     return this.item ? `${this.item.itemName} ` : "Lisätiedot";
   }
 
+  get hasProductData() {
+    return this.productData.length > 0;
+  }
+
+  get hasProductNutrients() {
+    return this.productNutrients.length > 0;
+  }
+
   handleClose = () => {
     this.close();
   };

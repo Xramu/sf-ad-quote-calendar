@@ -14,7 +14,7 @@
       </template>
 
       <!-- Product Data -->
-      <template if:true={productData}>
+      <template if:true={hasProductData}>
         <template for:each={productData} for:item="pData">
           <div key={pData.title} class="product-data__row">
             <p class="slds-text-title">{pData.title}:</p>
@@ -34,7 +34,7 @@
       </template>
 
       <!-- Product Nutrients -->
-      <template if:true={productNutrients}>
+      <template if:true={hasProductNutrients}>
         <p class="slds-text-title">Ravintosisältö:</p>
         <template for:each={productNutrients} for:item="pNutrient">
           <div key={pNutrient.title} class="product-data__row">
