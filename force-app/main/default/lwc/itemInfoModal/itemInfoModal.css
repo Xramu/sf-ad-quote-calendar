@@ -21,8 +21,10 @@
 /* Right column: image area */
 .product-image {
   display: flex;
-  justify-content: flex-end; /* push image to the right edge */
-  align-items: flex-start;
+  flex-direction: column;    /* stack image and nutrients vertically */
+  justify-content: flex-start;
+  align-items: stretch;      /* allow inner content to align left by default */
+  gap: 0.75rem;              /* spacing between image and nutrients list */
 }
 
 /* Constrain image size and preserve aspect ratio */
@@ -38,6 +40,32 @@
   display: block;
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+/* Horizontal layout for each nutrient row (title left, value right) */
+.product-image .product-data__row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  column-gap: 0.5rem;
+  width: 100%;
+  max-width: 360px; /* align with image width */
+  text-align: left; /* ensure left alignment for nutrient rows */
+}
+
+/* Title styling in nutrient rows */
+.product-image .product-data__row > p.slds-text-title {
+  white-space: nowrap;
+}
+
+/* Value area wraps and takes remaining space */
+.product-image .product-data__row > p {
+  margin: 0;
+}
+
+/* Remove extra spacing if any br tags are present in nutrient rows */
+.product-image .product-data__row br {
+  display: none;
 }
 
 /* Responsive: stack columns on small viewports */
