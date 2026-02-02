@@ -24,7 +24,7 @@
   flex-direction: column;    /* stack image and nutrients vertically */
   justify-content: flex-start;
   align-items: stretch;      /* allow inner content to align left by default */
-  gap: 0.75rem;              /* spacing between image and nutrients list */
+  gap: 0.25rem;              /* spacing between image and nutrients list */
 }
 
 /* Constrain image size and preserve aspect ratio */
