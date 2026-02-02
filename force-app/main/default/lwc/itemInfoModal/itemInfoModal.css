@@ -52,7 +52,7 @@
   max-width: 360px; /* align with image width */
   text-align: left; /* ensure left alignment for nutrient row container */
   position: relative;
-  border-top: 1px solid var(--lwc-colorBorder, #dddbda); /* single continuous line across both columns */
+  border-bottom: 1px solid var(--lwc-colorBorder, #dddbda); /* single continuous line across both columns */
   padding-top: 0.25rem; /* spacing between line and row content */
 }
 
@@ -84,7 +84,6 @@
 /* Add a bottom border to the entire nutrients list so the last entry has an underline */
 .product-image [data-id="product-right-rail"],
 .product-image {
-  border-bottom: 1px solid var(--lwc-colorBorder, #dddbda);
   padding-bottom: 0.25rem;
 }
 
