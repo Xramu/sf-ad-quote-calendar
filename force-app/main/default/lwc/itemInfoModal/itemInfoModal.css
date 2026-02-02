@@ -50,22 +50,42 @@
   column-gap: 0.5rem;
   width: 100%;
   max-width: 360px; /* align with image width */
-  text-align: left; /* ensure left alignment for nutrient rows */
+  text-align: left; /* ensure left alignment for nutrient row container */
+  position: relative;
+  border-top: 1px solid var(--lwc-colorBorder, #dddbda); /* single continuous line across both columns */
+  padding-top: 0.25rem; /* spacing between line and row content */
 }
 
-/* Title styling in nutrient rows */
+/* Title styling in nutrient rows: keep left-aligned */
 .product-image .product-data__row > p.slds-text-title {
   white-space: nowrap;
+  text-align: left;
+  padding-top: 0.25rem;
 }
 
-/* Value area wraps and takes remaining space */
+/* Value area wraps and takes remaining space: right-align the nutrient value column */
 .product-image .product-data__row > p {
   margin: 0;
+  text-align: right;
+  padding-top: 0.25rem;
+}
+
+/* Ensure any lightning-formatted-rich-text inside the value cell is right-aligned */
+.product-image .product-data__row > p lightning-formatted-rich-text {
+  display: block;
+  text-align: right;
 }
 
 /* Remove extra spacing if any br tags are present in nutrient rows */
 .product-image .product-data__row br {
   display: none;
+}
+
+/* Add a bottom border to the entire nutrients list so the last entry has an underline */
+.product-image [data-id="product-right-rail"],
+.product-image {
+  border-bottom: 1px solid var(--lwc-colorBorder, #dddbda);
+  padding-bottom: 0.25rem;
 }
 
 /* Responsive: stack columns on small viewports */
