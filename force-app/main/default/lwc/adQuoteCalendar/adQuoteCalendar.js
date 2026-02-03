@@ -57,7 +57,8 @@ export default class AdQuoteCalendar extends LightningElement {
         const dto = this._weekSummariesByKey[w] || {
           weekNumber: w,
           hasAnyCampaign: false,
-          hasCurrentUserCampaign: false
+          hasCurrentUserCampaign: false,
+          hasOtherCampaign: false
         };
         arr.push(dto);
       }

@@ -17,6 +17,7 @@ public with sharing class AdCampaignCalendarService {
         @AuraEnabled public Integer weekNumber;
         @AuraEnabled public Boolean hasAnyCampaign;
         @AuraEnabled public Boolean hasCurrentUserCampaign;
+        @AuraEnabled public Boolean hasOtherCampaign; // true if there exists at least one non-current-user campaign in the week
     }
     public class CampaignDTO {
         @AuraEnabled public Id id;
@@ -98,6 +99,7 @@ public with sharing class AdCampaignCalendarService {
             dto.weekNumber = i;
             dto.hasAnyCampaign = false;
             dto.hasCurrentUserCampaign = false;
+            dto.hasOtherCampaign = false;
             result.put(i, dto);
         }
 
@@ -132,11 +134,14 @@ public with sharing class AdCampaignCalendarService {
                     dto.weekNumber = w;
                     dto.hasAnyCampaign = false;
                     dto.hasCurrentUserCampaign = false;
+                    dto.hasOtherCampaign = false;
                     result.put(w, dto);
                 }
                 dto.hasAnyCampaign = true;
                 if (isCurrentUserOwned) {
                     dto.hasCurrentUserCampaign = true;
+                } else {
+                    dto.hasOtherCampaign = true;
                 }
             }
         }

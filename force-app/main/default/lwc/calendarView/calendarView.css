@@ -39,6 +39,18 @@
   background: var(--week-own-bg, #c8f7c5);
 }
 
+/* Split state: top grey (other), bottom green (own) */
+.cell.both {
+  /* Use gradient to create a clean horizontal split */
+  background: linear-gradient(
+    to top left,
+    var(--week-other-bg, #e5e7eb) 0%,
+    var(--week-other-bg, #e5e7eb) 50%,
+    var(--week-own-bg, #c8f7c5) 50%,
+    var(--week-own-bg, #c8f7c5) 100%
+  );
+}
+
 .cell.clickable {
   cursor: pointer;
 }

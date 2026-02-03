@@ -50,7 +50,15 @@ export default class CalendarView extends LightningElement {
   getCellClass(dto) {
     const base = ['cell'];
     if (dto && dto.hasAnyCampaign) {
-      if (dto.hasCurrentUserCampaign) {
+      console.log(dto);
+      // Use explicit 'hasOtherCampaign' from DTO when available to decide split vs own-only.
+      // Priority:
+      // - both: user + other campaigns present
+      // - own: only current user campaigns present
+      // - other: campaigns present but none for current user
+      if (dto.hasCurrentUserCampaign && dto.hasOtherCampaign) {
+        base.push('both');
+      } else if (dto.hasCurrentUserCampaign) {
         base.push('own');
       } else {
         base.push('other');
@@ -94,7 +102,7 @@ export default class CalendarView extends LightningElement {
     if (!Array.isArray(this._weeks) || this._weeks.length === 0) {
       const arr = [];
       for (let i = 1; i <= 53; i += 1) {
-        arr.push({ weekNumber: i, hasAnyCampaign: false, hasCurrentUserCampaign: false });
+        arr.push({ weekNumber: i, hasAnyCampaign: false, hasCurrentUserCampaign: false, hasOtherCampaign: false });
       }
       this._weeks = arr;
     }
