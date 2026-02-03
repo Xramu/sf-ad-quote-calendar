@@ -187,6 +187,10 @@ export default class ItemInfoModal extends LightningModal {
     }
   }
 
+  get itemCachedName() {
+    return this.item.itemName ?? '';
+  }
+
   get modalTitle() {
     return this.item ? `${this.item.itemName} ` : "Lisätiedot";
   }

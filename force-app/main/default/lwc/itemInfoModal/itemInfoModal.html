@@ -6,7 +6,7 @@
     <!-- Left column: Product Data -->
     <div class="product-data" data-id="product-data">
       <template if:true={isLoading}>
-        <p>Haetaan tuotteen tietoja...</p>
+        <p>Haetaan tuotteen {itemCachedName} tietoja...</p>
       </template>
       <template if:true={hasError}>
         <p>Virhe ladattaessa tuotetta:</p>
