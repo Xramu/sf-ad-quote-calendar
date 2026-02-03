@@ -50,12 +50,6 @@ export default class CalendarView extends LightningElement {
   getCellClass(dto) {
     const base = ['cell'];
     if (dto && dto.hasAnyCampaign) {
-      console.log(dto);
-      // Use explicit 'hasOtherCampaign' from DTO when available to decide split vs own-only.
-      // Priority:
-      // - both: user + other campaigns present
-      // - own: only current user campaigns present
-      // - other: campaigns present but none for current user
       if (dto.hasCurrentUserCampaign && dto.hasOtherCampaign) {
         base.push('both');
       } else if (dto.hasCurrentUserCampaign) {
