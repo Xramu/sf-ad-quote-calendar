@@ -1,0 +1,97 @@
+/* Two-column layout for content */
+.body-scroll {
+  display: grid;
+  grid-template-columns: 1fr minmax(200px, 360px); /* data grows, image column constrained */
+  gap: 1rem;
+  align-items: start;
+  max-height: 70vh; /* keep content within viewport-friendly height */
+}
+
+/* Left column: data takes available width */
+.product-data {
+  min-width: 0; /* allow content to shrink within grid */
+  overflow: auto;            /* scroll only when needed */
+  -webkit-overflow-scrolling: touch; /* smooth on iOS */
+}
+
+/* Right column: image area */
+.product-image {
+  display: flex;
+  flex-direction: column;    /* stack image and nutrients vertically */
+  justify-content: flex-start;
+  align-items: stretch;      /* allow inner content to align left by default */
+  gap: 0.25rem;              /* spacing between image and nutrients list */
+}
+
+/* Constrain image size and preserve aspect ratio */
+.product-image__img {
+  max-width: 360px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Rich text content should wrap nicely */
+.product-data lightning-formatted-rich-text {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Horizontal layout for each nutrient row (title left, value right) */
+.product-image .product-data__row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  column-gap: 0.5rem;
+  width: 100%;
+  max-width: 360px; /* align with image width */
+  text-align: left; /* ensure left alignment for nutrient row container */
+  position: relative;
+  border-bottom: 1px solid var(--lwc-colorBorder, #dddbda); /* single continuous line across both columns */
+  padding-top: 0.25rem; /* spacing between line and row content */
+}
+
+/* Title styling in nutrient rows: keep left-aligned */
+.product-image .product-data__row > p.slds-text-title {
+  white-space: nowrap;
+  text-align: left;
+  padding-top: 0.25rem;
+}
+
+/* Value area wraps and takes remaining space: right-align the nutrient value column */
+.product-image .product-data__row > p {
+  margin: 0;
+  text-align: right;
+  padding-top: 0.25rem;
+}
+
+/* Ensure any lightning-formatted-rich-text inside the value cell is right-aligned */
+.product-image .product-data__row > p lightning-formatted-rich-text {
+  display: block;
+  text-align: right;
+}
+
+/* Remove extra spacing if any br tags are present in nutrient rows */
+.product-image .product-data__row br {
+  display: none;
+}
+
+/* Add a bottom border to the entire nutrients list so the last entry has an underline */
+.product-image [data-id="product-right-rail"],
+.product-image {
+  padding-bottom: 0.25rem;
+}
+
+/* Responsive: stack columns on small viewports */
+@media (max-width: 600px) {
+  .body-scroll {
+    grid-template-columns: 1fr;
+  }
+  .product-image {
+    justify-content: flex-start;
+  }
+  .product-image__img {
+    max-width: 100%;
+  }
+}
