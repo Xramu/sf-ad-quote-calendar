@@ -18,6 +18,12 @@
   background: var(--week-other-bg, #e5e7eb);
   color: #111827;
 }
+
+/* Make campaign item pills indicate clickability */
+.campaign-item-pill {
+  cursor: pointer;
+}
+
 .list-item:hover,
 .list-item:focus {
   outline: 2px solid var(--highlight-color-light);

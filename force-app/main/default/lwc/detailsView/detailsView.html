@@ -89,7 +89,7 @@
               <div class="slds-grid slds-wrap slds-gutters_xx-small">
                 <template for:each={selectedCampaignItems} for:item="it">
                   <div key={it.id} class="slds-m-right_xx-small slds-m-bottom_xx-small">
-                    <lightning-button variant="brand-outline" label={it.itemName} data-id={it.id} onclick={handleItemInfoClick}></lightning-button>
+                    <lightning-pill class="campaign-item-pill" label={it.itemName} data-id={it.id} onclick={handleItemInfoClick}></lightning-pill>
                   </div>
                 </template>
                 <template if:true={selectedCampaignItemsIsEmpty}>
