@@ -20,9 +20,10 @@
   /* Make cells square by using equal width and height */
   aspect-ratio: 1 / 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: start;
+  justify-content: start;
   user-select: none;
+  padding: 0.2rem;
   min-height: var(--cell-size);
   min-width: var(--cell-size);
 }
@@ -42,12 +43,12 @@
 /* Split state: top grey (other), bottom green (own) */
 .cell.both {
   /* Use gradient to create a clean horizontal split */
-  background: linear-gradient(
-    to top left,
-    var(--week-other-bg, #e5e7eb) 0%,
-    var(--week-other-bg, #e5e7eb) 50%,
-    var(--week-own-bg, #c8f7c5) 50%,
-    var(--week-own-bg, #c8f7c5) 100%
+  background: repeating-linear-gradient(
+    135deg,
+    var(--week-own-bg, #c8f7c5) 0%,
+    var(--week-own-bg, #c8f7c5) 3.7%,
+    var(--week-other-bg, #e5e7eb) 3.7%,
+    var(--week-other-bg, #e5e7eb) 7.4%
   );
 }
 
