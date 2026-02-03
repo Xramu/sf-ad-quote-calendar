@@ -43,12 +43,17 @@
 /* Split state: top grey (other), bottom green (own) */
 .cell.both {
   /* Use gradient to create a clean horizontal split */
-  background: repeating-linear-gradient(
+  background: linear-gradient(
     135deg,
-    var(--week-own-bg, #c8f7c5) 0%,
-    var(--week-own-bg, #c8f7c5) 3.7%,
-    var(--week-other-bg, #e5e7eb) 3.7%,
-    var(--week-other-bg, #e5e7eb) 7.4%
+    var(--week-own-bg, #c8f7c5) 33.33%,
+    transparent 30%
+  ),
+  repeating-linear-gradient(
+    135deg,
+    var(--week-own-bg, #c8f7c5),
+    var(--week-own-bg, #c8f7c5) 5%,
+    var(--week-other-bg, #e5e7eb) 5%,
+    var(--week-other-bg, #e5e7eb) 10%
   );
 }
 
