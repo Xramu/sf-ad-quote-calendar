@@ -38,7 +38,7 @@ export default class DetailsView extends LightningElement {
     'Negotiation': 'Neuvottelu',
     'Pre-Booked': 'Ennakkovarattu',
     'Confirmed': 'Varmistettu'
-  }
+  };
 
   // Derived display fields (status/time period) resolved from selected campaign
   get hasWeek() {
