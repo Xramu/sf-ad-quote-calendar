@@ -1,4 +1,7 @@
 public with sharing class EanScraperService {
+    // Beginning of the url before the EAN code
+    public static final String S_KAUPAT_PRODUCT_URL_PREFIX = 'https://www.s-kaupat.fi/tuote/';
+
     /**
      * Tries to get the html body of the given url.
      * Follows permanent redirect 308 with a relative path.
@@ -38,11 +41,19 @@ public with sharing class EanScraperService {
     }
 
     private static String createJsonErrorMessage(String errorMessage) {
-        return String.format('{ "error": "{0}" }', errorMessage);
+        return '{ "error": "' + errorMessage + '" }';
     }
 
-    public static String getProductDetailsJsonFromUrl(String url){
-        String htmlResult = getHtmlBodyFromUrl(url);
+    private static String getHtmlBodyFromEanCode(String eanCode) {
+        return getHtmlBodyFromUrl(S_KAUPAT_PRODUCT_URL_PREFIX + eanCode);
+    }
+
+    /**
+     * Fetches the whole html of the product with the EAN code, tries to parse the data section at the end of it and return the product's data.
+     */
+    @AuraEnabled
+    public static String getProductDetailsJsonFromEanCode(String eanCode){
+        String htmlResult = getHtmlBodyFromEanCode(eanCode);
 
         // Check for error
         if (htmlResultedInError(htmlResult)) {
@@ -64,11 +75,29 @@ public with sharing class EanScraperService {
         Integer jsonStartIndex = startIndex + startMarker.length();
         Integer jsonEndIndex = htmlResult.indexOf('</script>', jsonStartIndex);
 
+        if (jsonEndIndex <= -1) {
+            return createJsonErrorMessage('Could not find the end of the data script element from requested html.');
+        }
+
         // Try parsing the found JSON
         try {
-            
-        } catch (Exception e) {
+            Map<String, Object> fullMap = (Map<String, Object>) JSON.deserializeUntyped(htmlResult.substring(jsonStartIndex, jsonEndIndex));
+            Map<String, Object> props = (Map<String, Object>) fullMap.get('props');
+            Map<String, Object> pageProps = (Map<String, Object>) props.get('pageProps');
+            Map<String, Object> apolloState = (Map<String, Object>) pageProps.get('apolloState');
 
+            // Loop apolloState keys to find and serialize the product one to return it.
+            for (String key : apolloState.keySet()) {
+                if (key.startsWith('Product:')) {
+                    return JSON.serialize(apolloState.get(key));
+                }
+            }
+        } catch (Exception e) {
+            // Error parsing
+            return createJsonErrorMessage('Failed to parse the html result\'s JSON data.' + e.getMessage());
         }
+
+        // No parsing errors but the product data key was not found
+        return createJsonErrorMessage('Did not find product data within the JSON data.');
     }
 }
