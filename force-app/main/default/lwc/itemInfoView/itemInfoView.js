@@ -14,6 +14,8 @@ export default class ItemInfoView extends LightningElement {
   @track isLoading = false;
   @track hasError = false;
 
+  @track errorMessage = '';
+
   productUrlStart = 'https://www.s-kaupat.fi/tuote/';
   
   connectedCallback () {
@@ -30,7 +32,13 @@ export default class ItemInfoView extends LightningElement {
     // Get html body from url and scrape it
     await getHtmlBodyFromUrl({ url: (this.productUrlStart + this.eanCode) })
     .then((result) => {
-      this.scrapeProductDataFromHtml(result);
+      if (result.startsWith('Error'))
+      {
+        this.hasError = true;
+        this.errorMessage = result;
+      } else {
+        this.scrapeProductDataFromHtml(result);
+      }
     })
     .catch((e) => {
       console.log(e);
@@ -125,10 +133,13 @@ export default class ItemInfoView extends LightningElement {
     if (parsedData.error) {
       console.log(parsedData.error);
       this.hasError = true;
+      this.errorMessage = parsedData.error;
       return;
     }
 
+    // Successful http request and data parse.
     this.hasError = false;
+    this.errorMessage = '';
 
     // Sub data
     const productDetails = parsedData.productDetails;
