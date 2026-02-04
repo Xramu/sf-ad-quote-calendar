@@ -6,7 +6,6 @@ export default class ItemInfoModal extends LightningModal {
   @api item;
   
   get eanCode() {
-    console.log(this.item);
     return this.item.ean;
   }
 

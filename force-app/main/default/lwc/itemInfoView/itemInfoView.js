@@ -1,5 +1,6 @@
 import { api, track, LightningElement } from 'lwc';
 import getHtmlBodyFromUrl from '@salesforce/apex/EanScraperService.getHtmlBodyFromUrl';
+import getProductDetailsJsonFromEanCode from '@salesforce/apex/EanScraperService.getProductDetailsJsonFromEanCode';
 
 export default class ItemInfoView extends LightningElement {
   
@@ -22,61 +23,96 @@ export default class ItemInfoView extends LightningElement {
     this.loadProductData();
   }
 
+  flagError(message) {
+    this.hasError = true;
+    this.errorMessage = message;
+  }
+
+  removeError() {
+    this.hasError = false;
+    this.errorMessage = '';
+  }
+
   async loadProductData() {
+    // Clear product data in case some of the previously shown data was not found.
+    this.productData = [];
+    this.productImageUrl = '';
+    
+    // Validate EAN
     if (!this.eanCode) {
       return;
     }
 
+    // Indicate loading
     this.isLoading = true;
 
-    // Get html body from url and scrape it
-    await getHtmlBodyFromUrl({ url: (this.productUrlStart + this.eanCode) })
-    .then((result) => {
-      if (result.startsWith('Error'))
-      {
-        this.hasError = true;
-        this.errorMessage = result;
-      } else {
-        this.scrapeProductDataFromHtml(result);
-      }
-    })
-    .catch((e) => {
-      console.log(e);
-    })
+    try {
+      // Fetch and try to parse the received json
+      const rawJson = await getProductDetailsJsonFromEanCode({ eanCode: (this.eanCode)});
+      const parsedData = JSON.parse(rawJson);
 
+      if (parsedData.error) {
+        // parsing resulted in an error
+        this.flagError('Tuotteen tietoja ei voitu hakea: ' + parsedData.error);
+      } else {
+        // Pass the data and hope S-Kaupat has not changed the format
+        this.displayProductData(parsedData);
+      }
+    } catch(e) {
+      console.log(e);
+      this.flagError('Tuotteen tietoja ei voitu hakea.' + e);
+    }
+
+    // Stop loading when complete or ran into an issue
     this.isLoading = false;
   }
 
-  parseProductDataFromHtmlString(htmlString) {
-    const startMarker = '<script id="__NEXT_DATA__" type="application/json">';
-    const startIdx = htmlString.indexOf(startMarker);
-
-    if (startIdx === -1) return {error: 'Failed to find start marker in html string'};
-
-    try {
-      const jsonStart = startIdx + startMarker.length;
-      const jsonEnd = htmlString.indexOf('</script>', jsonStart);
-
-      const rawJson = htmlString.substring(jsonStart, jsonEnd);
-      const parsed = JSON.parse(rawJson);
-
-      // Find the root of the product and the product key
-      const apolloState = parsed.props.pageProps.apolloState;
-      const productKey = Object.keys(apolloState).find(key => key.startsWith('Product:'));
-
-      // No product key found
-      if (!productKey) {
-        return {error: 'Failed to find product key in apollo state'};
-      }
-
-      // Product key found, return data behind it
-      const productData = apolloState[productKey];
-      return productData;
-    } catch (e) {
-      console.log(e);
+  displayProductData(data) {
+    if (!data) {
+      return;
     }
 
-    return {error: 'Failed to parse product data from html string'};
+    // Successful http request and data parse.
+    this.removeError();
+    // Sub data
+    const productDetails = data.productDetails;
+    const productImages = productDetails.productImages;
+
+    // Info we are exposing in the modal
+    this.addProductDataEntry('Nimi', data.name);
+
+    // Price and price unit
+    if (data.price && data.priceUnit) {
+      this.addProductDataEntry('Hinta', `${data.price}€ ${data.priceUnit}`);
+    }
+
+    // Comparison price
+    if (data.comparisonPrice && data.comparisonUnit && !data.comparisonUnit.localeCompare('KGM')) {
+      this.addProductDataEntry('Kilohinta', `${data.comparisonPrice}€/kg`)
+    }
+
+    this.addProductDataEntry('Kuvaus', data.description);
+
+    this.addProductDataEntry('Ainesosat', data.ingredientStatement);
+    this.addProductDataEntry('Säilytysohje', productDetails.storageGuideForConsumer);
+    
+    this.addProductDataEntry('Valmistusmaa', data.countryName.fi);
+    this.addProductDataEntry('Valmistaja', data.brandName);
+
+    // Contact information cleanup
+    if (productDetails.contactInformation) {
+      this.addProductDataEntry('Yhteystiedot', productDetails.contactInformation.replaceAll('###', '').replace('Yhteystiedot', ''));
+    }
+
+    this.addProductDataEntry('EAN Koodi', data.ean);
+
+    // Nutrients
+    this.updateProductNutrients(productDetails);
+
+    // Image URL build
+    if (productImages.mainImage.urlTemplate) {
+      this.productImageUrl = productImages.mainImage.urlTemplate.replace('{MODIFIERS}', 'w360h360@_q75').replace('{EXTENSION}', 'webp')
+    }
   }
 
   addProductDataEntry(title, value) {
@@ -121,65 +157,6 @@ export default class ItemInfoView extends LightningElement {
         this.addProductNutrientsEntry(entry.name, entry.value);
       }
     });
-  }
-
-  scrapeProductDataFromHtml(htmlString) {
-    // Clear product data in case some of the previously shown data was not found.
-    this.productData = [];
-    this.productImageUrl = '';
-
-    const parsedData = this.parseProductDataFromHtmlString(htmlString);
-
-    if (parsedData.error) {
-      console.log(parsedData.error);
-      this.hasError = true;
-      this.errorMessage = parsedData.error;
-      return;
-    }
-
-    // Successful http request and data parse.
-    this.hasError = false;
-    this.errorMessage = '';
-
-    // Sub data
-    const productDetails = parsedData.productDetails;
-    const productImages = productDetails.productImages;
-
-    // Info we are exposing in the modal
-    this.addProductDataEntry('Nimi', parsedData.name);
-
-    // Price and price unit
-    if (parsedData.price && parsedData.priceUnit) {
-      this.addProductDataEntry('Hinta', `${parsedData.price}€ ${parsedData.priceUnit}`);
-    }
-
-    // Comparison price
-    if (parsedData.comparisonPrice && parsedData.comparisonUnit && !parsedData.comparisonUnit.localeCompare('KGM')) {
-      this.addProductDataEntry('Kilohinta', `${parsedData.comparisonPrice}€/kg`)
-    }
-
-    this.addProductDataEntry('Kuvaus', parsedData.description);
-
-    this.addProductDataEntry('Ainesosat', parsedData.ingredientStatement);
-    this.addProductDataEntry('Säilytysohje', productDetails.storageGuideForConsumer);
-    
-    this.addProductDataEntry('Valmistusmaa', parsedData.countryName.fi);
-    this.addProductDataEntry('Valmistaja', parsedData.brandName);
-
-    // Contact information cleanup
-    if (productDetails.contactInformation) {
-      this.addProductDataEntry('Yhteystiedot', productDetails.contactInformation.replaceAll('###', '').replace('Yhteystiedot', ''));
-    }
-
-    this.addProductDataEntry('EAN Koodi', parsedData.ean);
-
-    // Nutrients
-    this.updateProductNutrients(productDetails);
-
-    // Image URL build
-    if (productImages.mainImage.urlTemplate) {
-      this.productImageUrl = productImages.mainImage.urlTemplate.replace('{MODIFIERS}', 'w360h360@_q75').replace('{EXTENSION}', 'webp')
-    }
   }
 
   get hasProductData() {
