@@ -156,8 +156,9 @@
     <externalSharingModel>Private</externalSharingModel>
     <label>Ad Web Cart Item</label>
     <nameField>
+        <displayFormat>ACI-{0000}</displayFormat>
         <label>Ad Web Cart Item Name</label>
-        <type>Text</type>
+        <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Ad Web Cart Items</pluralLabel>
     <searchLayouts></searchLayouts>

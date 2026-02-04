@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ItemType__c</fullName>
+    <description>Type of ad item - EAN for products, BRAND for brand, OFFER for offers and INSPIRATION for inspirational other content</description>
+    <label>ItemType</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>EAN</fullName>
+                <default>true</default>
+                <label>EAN</label>
+            </value>
+            <value>
+                <fullName>BRAND</fullName>
+                <default>false</default>
+                <label>BRAND</label>
+            </value>
+            <value>
+                <fullName>OFFER</fullName>
+                <default>false</default>
+                <label>OFFER</label>
+            </value>
+            <value>
+                <fullName>INSPIRATION</fullName>
+                <default>false</default>
+                <label>INSPIRATION</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
