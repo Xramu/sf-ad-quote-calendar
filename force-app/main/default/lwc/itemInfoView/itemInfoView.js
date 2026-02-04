@@ -1,6 +1,5 @@
 import { api, track, LightningElement } from 'lwc';
-import getHtmlBodyFromUrl from '@salesforce/apex/EanScraperService.getHtmlBodyFromUrl';
-import getProductDetailsJsonFromEanCode from '@salesforce/apex/EanScraperService.getProductDetailsJsonFromEanCode';
+import fetchProductDetailsJsonFromEanCode from '@salesforce/apex/EanScraperService.fetchProductDetailsJsonFromEanCode';
 
 export default class ItemInfoView extends LightningElement {
   
@@ -48,7 +47,7 @@ export default class ItemInfoView extends LightningElement {
 
     try {
       // Fetch and try to parse the received json
-      const rawJson = await getProductDetailsJsonFromEanCode({ eanCode: (this.eanCode)});
+      const rawJson = await fetchProductDetailsJsonFromEanCode({ eanCode: (this.eanCode)});
       const parsedData = JSON.parse(rawJson);
 
       if (parsedData.error) {

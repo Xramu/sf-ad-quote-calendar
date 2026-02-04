@@ -2,12 +2,31 @@ public with sharing class EanScraperService {
     // Beginning of the url before the EAN code
     public static final String S_KAUPAT_PRODUCT_URL_PREFIX = 'https://www.s-kaupat.fi/tuote/';
 
+    //#region Helper methods
+
+    private static Boolean htmlResultedInError(string htmlResult) {
+        return htmlResult.startsWith('Error');
+    }
+
+    private static String createJsonErrorMessage(String errorMessage) {
+        return '{ "error": "' + errorMessage + '" }';
+    }
+
+    private static Map<String, Object> createMapErrorMessage(String errorMessage) {
+        Map<String, Object> errorMap = new Map<String, Object>();
+        errorMap.put('error', errorMessage);
+
+        return errorMap;
+    }
+
+    //#endregion
+
     /**
      * Tries to get the html body of the given url.
      * Follows permanent redirect 308 with a relative path.
      */
     @AuraEnabled
-    public static String getHtmlBodyFromUrl(String url) {
+    public static String fetchHtmlBodyFromUrl(String url) {
         Http http = new Http();
         HttpRequest request = new HttpRequest();
 
@@ -25,7 +44,7 @@ public with sharing class EanScraperService {
                 System.URL originalUrl = new System.URL(url);
                 String base = originalUrl.getProtocol() + '://' + originalUrl.getHost();
 
-                return getHtmlBodyFromUrl(base + response.getHeader('Location'));
+                return fetchHtmlBodyFromUrl(base + response.getHeader('Location'));
             } else {
                 // Request did not succeed
                 return 'Error: ' + response.getStatusCode() + ' ' + response.getStatus();
@@ -36,28 +55,19 @@ public with sharing class EanScraperService {
         }
     }
 
-    private static Boolean htmlResultedInError(string htmlResult) {
-        return htmlResult.startsWith('Error');
-    }
-
-    private static String createJsonErrorMessage(String errorMessage) {
-        return '{ "error": "' + errorMessage + '" }';
-    }
-
-    private static String getHtmlBodyFromEanCode(String eanCode) {
-        return getHtmlBodyFromUrl(S_KAUPAT_PRODUCT_URL_PREFIX + eanCode);
-    }
-
     /**
-     * Fetches the whole html of the product with the EAN code, tries to parse the data section at the end of it and return the product's data.
+     * Uses the predefined prefix for the product search url, adds the given EAN on it and calls the html body fetch function.
      */
-    @AuraEnabled
-    public static String getProductDetailsJsonFromEanCode(String eanCode){
-        String htmlResult = getHtmlBodyFromEanCode(eanCode);
+    private static String fetchHtmlBodyFromEanCode(String eanCode) {
+        return fetchHtmlBodyFromUrl(S_KAUPAT_PRODUCT_URL_PREFIX + eanCode);
+    }
+
+    private static Map<String, Object> fetchProductDetailsMapFromEanCode(String eanCode) {
+        String htmlResult = fetchHtmlBodyFromEanCode(eanCode);
 
         // Check for error
         if (htmlResultedInError(htmlResult)) {
-            return createJsonErrorMessage(htmlResult);
+            return createMapErrorMessage(htmlResult);
         }
 
         // Start of the script element that has the data json of the site inside it.
@@ -68,15 +78,16 @@ public with sharing class EanScraperService {
 
         // Checking if index was not found
         if (startIndex <= -1) {
-            return createJsonErrorMessage('Could not find the start of the data script element from requested html!');
+            return createMapErrorMessage('Could not find the start of the data script element from requested html!');
         }
 
         // Start and end of the actual JSON data section of the html string
         Integer jsonStartIndex = startIndex + startMarker.length();
         Integer jsonEndIndex = htmlResult.indexOf('</script>', jsonStartIndex);
 
+        // Validate end
         if (jsonEndIndex <= -1) {
-            return createJsonErrorMessage('Could not find the end of the data script element from requested html.');
+            return createMapErrorMessage('Could not find the end of the data script element from requested html.');
         }
 
         // Try parsing the found JSON
@@ -89,15 +100,44 @@ public with sharing class EanScraperService {
             // Loop apolloState keys to find and serialize the product one to return it.
             for (String key : apolloState.keySet()) {
                 if (key.startsWith('Product:')) {
-                    return JSON.serialize(apolloState.get(key));
+                    return (Map<String, Object>) apolloState.get(key);
                 }
             }
         } catch (Exception e) {
             // Error parsing
-            return createJsonErrorMessage('Failed to parse the html result\'s JSON data.' + e.getMessage());
+            return createMapErrorMessage('Failed to parse the html result\'s JSON data.' + e.getMessage());
         }
 
-        // No parsing errors but the product data key was not found
-        return createJsonErrorMessage('Did not find product data within the JSON data.');
+        return createMapErrorMessage('Failed to find Product data section from the received JSON data.');
+    }
+
+    /**
+     * Fetches the whole html of the product with the EAN code, tries to parse the data section at the end of it and return the product's data.
+     */
+    @AuraEnabled
+    public static String fetchProductDetailsJsonFromEanCode(String eanCode){
+        // Get map
+        Map<String, Object> productDetailsMap = fetchProductDetailsMapFromEanCode(eanCode);
+        String serializedJson;
+
+        // Safely try to serialize
+        try {
+            serializedJson = JSON.serialize(productDetailsMap);
+        } catch (Exception e) {
+            return createJsonErrorMessage('Failed to serialize the mapped product data to JSON: ' + e.getMessage());
+        }
+
+        // Parse success
+        return serializedJson;
+    }
+
+    private static String fetchProductNameFromEanCode(String eanCode) {
+        String name = (String) fetchProductDetailsMapFromEanCode(eanCode).get('name');
+
+        if (name != null) {
+            return name;
+        }
+
+        return 'Could not find name for EAN: ' + eanCode;
     }
 }
