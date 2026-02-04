@@ -179,9 +179,10 @@ export default class DetailsView extends LightningElement {
     const modalInput = item
       ? {
           itemName: item.itemName,
-          extraJsonData: item.extraJsonData // expected to be string JSON or array
+          extraJsonData: item.extraJsonData, // expected to be string JSON or array
+          ean: item.ean
         }
-      : { itemName: '', extraJsonData: null };
+      : { itemName: '', extraJsonData: null, ean: '' };
 
     await ItemInfoModal.open({
       size: 'medium',

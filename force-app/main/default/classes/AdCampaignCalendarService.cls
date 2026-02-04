@@ -35,6 +35,7 @@ public with sharing class AdCampaignCalendarService {
         @AuraEnabled public Id cartId;
         @AuraEnabled public String itemName;
         @AuraEnabled public String extraJsonData;
+        @AuraEnabled public String ean;
     }
 
     /**
@@ -56,7 +57,7 @@ public with sharing class AdCampaignCalendarService {
         }
 
         List<AdWebCartItem__c> items = [
-            SELECT Id, Cart__c, ItemName__c, ExtraJsonData__c
+            SELECT Id, Cart__c, ItemName__c, ExtraJsonData__c, EAN__c
             FROM AdWebCartItem__c
             WHERE Cart__c IN :uniqueIds
             WITH SECURITY_ENFORCED
@@ -69,6 +70,7 @@ public with sharing class AdCampaignCalendarService {
             dto.cartId = it.Cart__c;
             dto.itemName = it.ItemName__c;
             dto.extraJsonData = it.ExtraJsonData__c;
+            dto.ean = it.EAN__c;
             out.add(dto);
         }
         return out;

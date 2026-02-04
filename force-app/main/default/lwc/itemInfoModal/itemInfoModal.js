@@ -4,31 +4,10 @@ import getHtmlBodyFromUrl from '@salesforce/apex/EanScraperService.getHtmlBodyFr
 
 export default class ItemInfoModal extends LightningModal {
   @api item;
-
-  @track eanCode;
-
-  connectedCallback() {
-    this.updateEanCode();
-  }
-
-  updateEanCode() {
-    // Check for extra data json string
-    const raw = this.item?.extraJsonData;
-    if (!raw) {
-      return;
-    }
-
-    // Parse the extra data
-    var parsed = {};
-    try {
-      parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
-    } catch (e) {
-      console.log(e);
-      return;
-    }
-
-    // Update child component by setting the ean code
-    this.eanCode = parsed.ean;
+  
+  get eanCode() {
+    console.log(this.item);
+    return this.item.ean;
   }
 
   get itemCachedName() {
