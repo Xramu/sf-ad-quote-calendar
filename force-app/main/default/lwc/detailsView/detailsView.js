@@ -31,6 +31,15 @@ export default class DetailsView extends LightningElement {
   @track descriptionValue = '';
   @track isSaving = false;
 
+  // Translations in finnish for the status values of a campaign
+  statusesTranslations = {
+    'Draft': 'Luonnos',
+    'Submitted For Quote': 'Lähetetty Tarjoukseen',
+    'Negotiation': 'Neuvottelu',
+    'Pre-Booked': 'Ennakkovarattu',
+    'Confirmed': 'Varmistettu'
+  }
+
   // Derived display fields (status/time period) resolved from selected campaign
   get hasWeek() {
     return !!this.weekNumber;
@@ -219,7 +228,7 @@ export default class DetailsView extends LightningElement {
   // Display helpers (read-only)
   get statusText() {
     const sel = this.campaigns.find((c) => c.id === this.selectedCampaignId);
-    return sel?.status || '—';
+    return this.statusesTranslations[sel?.status] ?? '—';
   }
 
   get timePeriodText() {
