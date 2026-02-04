@@ -111,11 +111,29 @@ public with sharing class EanScraperService {
         return createMapErrorMessage('Failed to find Product data section from the received JSON data.');
     }
 
+    // TODO: Move the invocable methofs to their own classes
+    /*
+    @InvocableMethod(label='Fetch Product Data JSON With EAN Code' description='Searches for the whole product data JSON from s-kaupat.fi using the given EAN code.')
+    public static List<String> fetchProductDetailsJsonFromEanCodeFlow(List<String> eanCode) {
+        List<String> results = new List<String>();
+
+        for (String input : eanCode) {
+            results.add(fetchProductDetailsJsonFromEanCode(input));
+        }
+
+        return results;
+    }
+    */
+
     /**
      * Fetches the whole html of the product with the EAN code, tries to parse the data section at the end of it and return the product's data.
      */
     @AuraEnabled
-    public static String fetchProductDetailsJsonFromEanCode(String eanCode){
+    public static String fetchProductDetailsJsonFromEanCode(String eanCode) {
+        if (eanCode == null) {
+            return createJsonErrorMessage('Given EAN code was invalid or null.');
+        }
+
         // Get map
         Map<String, Object> productDetailsMap = fetchProductDetailsMapFromEanCode(eanCode);
         String serializedJson;
@@ -131,7 +149,31 @@ public with sharing class EanScraperService {
         return serializedJson;
     }
 
+    @InvocableMethod(label='Fetch Product Name With EAN Code' description='Searches for a product name from s-kaupat.fi using the given EAN code.')
+    public static List<String> fetchProductNameFromEanCodeFlow(List<String> eanCode) {
+        List<String> results = new List<String>();
+
+        // Fetch name for each input
+        for (String input : eanCode) {
+            results.add(fetchProductNameFromEanCode(input));
+        }
+
+        return results;
+    }
+
+    @AuraEnabled
+    public static String fetchProductNameFromEanCodeAura(String eanCode){
+        return fetchProductNameFromEanCode(eanCode);
+    }
+
+    /**
+     * Fetches all the product data of the product and returns its name.
+     */
     private static String fetchProductNameFromEanCode(String eanCode) {
+        if (eanCode == null) {
+            return 'Invalid EAN code given.';
+        }
+
         String name = (String) fetchProductDetailsMapFromEanCode(eanCode).get('name');
 
         if (name != null) {
