@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OfferName__c</fullName>
+    <description>Name of the offer assigned to this product.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Name of the offer assigned to this product.</inlineHelpText>
+    <label>Offer Name</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
