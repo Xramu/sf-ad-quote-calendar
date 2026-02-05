@@ -1,94 +1,60 @@
-import { track, api, LightningElement } from 'lwc';
 import fetchProductDetailsJsonFromEanCode from '@salesforce/apex/EanScraperService.fetchProductDetailsJsonFromEanCode';
 
-export default class ItemInfoUtils extends LightningElement {
-  @api eanCode = '';
-  
-  @track isLoading = false;
-  @track hasError = false;
-  @track errorMessage = '';
-  
-  connectedCallback () {
-    this.loadProductData();
+const errorPrefix = 'Tuotteen tietoja ei voitu hakea: ';
+
+const createError = (errorMessage) => ({ error: errorMessage });
+
+export const fetchProductData = async (eanCode) => {
+  // Validate EAN
+  if (!eanCode) {
+    return createError(errorPrefix + 'EAN code was null');
   }
 
-  flagError(message) {
-    this.hasError = true;
-    this.errorMessage = message;
-    this.sendErrorFlagChangedEvent();
-  }
+  try {
+    // Fetch and try to parse the received json
+    const rawJson = await fetchProductDetailsJsonFromEanCode({ eanCode: (eanCode)});
+    const parsedData = JSON.parse(rawJson);
 
-  removeError() {
-    this.hasError = false;
-    this.errorMessage = '';
-    this.sendErrorFlagChangedEvent();
-  }
-
-  setLoadingState(state) {
-    this.isLoading = state;
-    this.sendErrorFlagChangedEvent();
-  }
-
-  async loadProductData() {
-    // Validate EAN
-    if (!this.eanCode) {
-      return;
+    if (parsedData.error) {
+      // parsing resulted in an error
+      return createError(errorPrefix + parsedData.error);
+    } else {
+      // Pass the data and hope S-Kaupat has not changed the format
+      return parsedData;
     }
+  } catch(e) {
+    console.log(e);
+    return createError(errorPrefix + e);
+  }
+}
 
-    // Indicate loading
-    this.setLoadingState(true);
+export class ProductDataReader {
+  getName = (data) => data?.name;
 
-    try {
-      // Fetch and try to parse the received json
-      const rawJson = await fetchProductDetailsJsonFromEanCode({ eanCode: (this.eanCode)});
-      const parsedData = JSON.parse(rawJson);
+  getDescription = (data) => data?.description;
 
-      if (parsedData.error) {
-        // parsing resulted in an error
-        this.flagError('Tuotteen tietoja ei voitu hakea: ' + parsedData.error);
-      } else {
-        // Pass the data and hope S-Kaupat has not changed the format
-        this.sendParsedDataEvent(parsedData);
-      }
+  getPrice = (data) => data?.price;
+  
+  getComparisonPrice = (data) => data?.comparisonPrice ? `${data.comparisonPrice}€/kg` : null;
+  
+  getIngredients = (data) => data?.ingredientStatement;
+  
+  getStorageGuideForConsumer = (data) => data?.productDetails?.storageGuideForConsumer;
+  
+  getCountryOfOrigin = (data) => data?.countryName?.fi;
 
-      // Did not catch exceptions
-      this.removeError();
-    } catch(e) {
-      console.log(e);
-      this.flagError('Tuotteen tietoja ei voitu hakea.' + e);
-    }
+  getBrandName = (data) => data?.brandName;
 
-    // Stop loading when complete or ran into an issue
-    this.setLoadingState(false);
+  getContactInformation = (data) => data?.productDetails?.contactInformation ? data?.productDetails?.contactInformation.replaceAll('###', '').replace('Yhteystiedot', '') : null;
+
+  getEanCode = (data) => data?.ean;
+
+  getImageUrl360 = (data) => {
+    const template = data?.productDetails.productImages?.mainImage?.urlTemplate;
+    return template ? template.replace('{MODIFIERS}', 'w360h360@_q75').replace('{EXTENSION}', 'webp') : null;
   }
 
-  sendParsedDataEvent(data) {
-    const event = new CustomEvent('dataparsed', {
-      detail: { data: data},
-      bubbles: true,
-      composed: true
-    })
+  getNutrientsEntry = (data, entryIndex) => data?.productDetails?.nutrients?.[entryIndex]?.nutrients;
 
-    this.dispatchEvent(event);
-  }
-
-  sendErrorFlagChangedEvent() {
-    const event = new CustomEvent('errorflagchanged', {
-      detail: { hasError: this.hasError, errorMessage: this.errorMessage },
-      bubbles: true,
-      composed: true
-    })
-
-    this.dispatchEvent(event);
-  }
-
-  sendLoadingStateChangedEvent() {
-    const event = new CustomEvent('loadingstatechanged', {
-      detail: { isLoading: this.isLoading },
-      bubbles: true,
-      composed: true
-    })
-
-    this.dispatchEvent(event);
-  }
+  getNutrientsReferenceQuantity = (data, entryIndex) => data?.productDetails?.nutrients?.[entryIndex]?.referenceQuantity;
 }

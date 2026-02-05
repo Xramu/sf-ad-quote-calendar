@@ -1,5 +1,5 @@
 import { api, track, LightningElement } from 'lwc';
-import fetchProductDetailsJsonFromEanCode from '@salesforce/apex/EanScraperService.fetchProductDetailsJsonFromEanCode';
+import { fetchProductData } from 'c/itemInfoUtils';
 
 export default class ItemInfoView extends LightningElement {
   
@@ -15,33 +15,30 @@ export default class ItemInfoView extends LightningElement {
   @track hasError = false;
   @track errorMessage = '';
 
-  handleDataParsedEvent = (evt) => {
-    if (!evt.details.data) {
-      console.log('ERROR: No data in the details from dataparsed event!');
-      return;
-    }
+  async connectedCallback() {
+    this.isLoading = true;
+    
+    await this.tryFetchAndDisplay();
 
-    // Pass the newly parsed data to the display function
-    this.displayProductData(evt.details.data);
+    this.isLoading = false;
   }
 
-  handleErrorFlagChangedEvent = (evt) => {
-    if (!evt.details.hasError) {
-      console.log('ERROR: errorflagchanged event from the item info utils did not have the hasError key.')
-      return;
+  async tryFetchAndDisplay() {
+    try {
+      const data = await fetchProductData(this.eanCode);
+
+      this.hasError = !!data.error;
+
+      if (this.hasError) {
+        this.errorMessage = data.error;
+        return;
+      }
+
+      // No errors found
+      this.displayProductData(data);
+    } catch (e) {
+      console.log(e);
     }
-
-    this.hasError = evt.details.hasError;
-    this.errorMessage = evt.details.errorMessage;
-  }
-
-  handleLoadingStateChangedEvent = (evt) => {
-    if (!evt.details.isLoading) {
-      console.log('ERROR: loadingstatechanged event from the item info utils did not have the isLoading key.');
-      return;
-    }
-
-    this.isLoading = evt.details.isLoading;
   }
 
   displayProductData(data) {
@@ -86,7 +83,7 @@ export default class ItemInfoView extends LightningElement {
 
     // Image URL build
     if (productImages.mainImage.urlTemplate) {
-      this.productImageUrl = productImages.mainImage.urlTemplate.replace('{MODIFIERS}', 'w360h360@_q75').replace('{EXTENSION}', 'webp')
+      this.productImageUrl = productImages.mainImage.urlTemplate.replace('{MODIFIERS}', 'w360h360@_q75').replace('{EXTENSION}', 'webp');
     }
   }
 
