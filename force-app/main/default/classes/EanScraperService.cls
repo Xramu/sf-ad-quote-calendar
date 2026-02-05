@@ -111,23 +111,6 @@ public with sharing class EanScraperService {
         return createMapErrorMessage('Failed to find Product data section from the received JSON data.');
     }
 
-    // TODO: Move the invocable methofs to their own classes
-    /*
-    @InvocableMethod(label='Fetch Product Data JSON With EAN Code' description='Searches for the whole product data JSON from s-kaupat.fi using the given EAN code.')
-    public static List<String> fetchProductDetailsJsonFromEanCodeFlow(List<String> eanCode) {
-        List<String> results = new List<String>();
-
-        for (String input : eanCode) {
-            results.add(fetchProductDetailsJsonFromEanCode(input));
-        }
-
-        return results;
-    }
-    */
-
-    /**
-     * Fetches the whole html of the product with the EAN code, tries to parse the data section at the end of it and return the product's data.
-     */
     @AuraEnabled
     public static String fetchProductDetailsJsonFromEanCode(String eanCode) {
         if (eanCode == null) {
@@ -182,4 +165,77 @@ public with sharing class EanScraperService {
 
         return 'Could not find name for EAN: ' + eanCode;
     }
+
+    private static String getValueFromProductDetails(Map<String, Object> details, Object key) {
+        if (details == null || key == null || !(key instanceof String)) {
+            return null;
+        }
+
+        return String.valueOf(details.get((String) key));
+    }
+    
+    private static String getValueFromProductDetails(Map<String, Object> details, List<String> location) {
+        if (details == null) {
+            return null;
+        }
+        
+        Map<String, Object> loopMap = details;
+        
+        // Loop until the last location is last
+        for (Integer i = 0; i < location.size() - 1; i++) {
+            Object nextElement = loopMap.get(location[i]);
+            
+            if (nextElement instanceof Map<String, Object>) {
+                loopMap = (Map<String, Object>) loopMap.get(location[i]);
+            } else {
+                return null;
+            }
+            
+            // Get was faulty
+            if (loopMap == null) {
+                return null;
+            }
+        }
+        
+        // Return the value of the last location
+        return getValueFromProductDetails(loopMap, location[location.size() - 1]);
+    }
+
+    //#region Product Details Reading Helpers
+    
+    /**
+     * Returns the found string in the details map with the given key OR the fallback string if value from map was not found.
+     */
+    private static String getDetailWithFallback(Map<String, Object> details, String key, String fallback) {
+        return getValueFromProductDetails(details, key) ?? fallback;
+    }
+
+    /**
+     * Returns the found string in the details map with the location as a list of keys OR the fallback string if value from map was not found.
+     */
+    private static String getDetailWithFallback(Map<String, Object> details, List<String> location, String fallback) {
+        return getValueFromProductDetails(details, location) ?? fallback;
+    }
+
+    public static String getProductNameFromDetailsMap(Map<String, Object> details) {
+        return getDetailWithFallback(details, 'name', 'Name Not Found');
+    }
+
+    public static String getProductDescriptionFromDetailsMap(Map<String, Object> details) {
+        return getDetailWithFallback(details, 'description', 'Description Not Found');
+    }
+
+    public static String getProductPriceFromDetailsMap(Map<String, Object> details) {
+        return getDetailWithFallback(details, 'price', 'Price Not Found');
+    }
+
+    public static String getProductBrandNameFromDetailsMap(Map<String, Object> details) {
+        return getDetailWithFallback(details, 'brandName', 'Brand Name Not Found');
+    }
+
+    public static String getProductCountryOfOriginFromDetailsMap(Map<String, Object> details) {
+        return getDetailWithFallback(details, new List<String>{'countryName', 'fi'}, 'Country of Origin Not Found');
+    }
+
+    //#endregion
 }
