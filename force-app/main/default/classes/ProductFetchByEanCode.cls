@@ -15,6 +15,9 @@ public with sharing class ProductFetchByEanCode {
         
         @InvocableVariable(label='Product Country Of Origin' description='Country that the product originates from.')
         public String countryOfOrigin;
+
+        @InvocableVariable(label='Product Image URL' description='URL to the product image.')
+        public String imageUrl;
     }
 
     @InvocableMethod(label='Fetch SOK Product Details By EAN' description='Scrapes the s-kaupat.fi website for the data of the given product with a matching EAN code.')
@@ -39,6 +42,7 @@ public with sharing class ProductFetchByEanCode {
         dto.price = EanScraperService.getProductPriceFromDetailsMap(details);
         dto.brandName = EanScraperService.getProductBrandNameFromDetailsMap(details);
         dto.countryOfOrigin = EanScraperService.getProductCountryOfOriginFromDetailsMap(details);
+        dto.imageUrl = EanScraperService.getProductImageUrlFromDetailsMap(details);
 
         return dto;
     }

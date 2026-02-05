@@ -237,5 +237,11 @@ public with sharing class EanScraperService {
         return getDetailWithFallback(details, new List<String>{'countryName', 'fi'}, 'Country of Origin Not Found');
     }
 
+    public static String getProductImageUrlFromDetailsMap(Map<String, Object> details) {
+        // Get url template and replace modifiers and extension
+        String url = getDetailWithFallback(details, new List<String>{'productDetails', 'productImages', 'mainImage', 'urlTemplate'}, 'Image URL Not Found');
+        return url.replace('{MODIFIERS}', 'w360h360@_q75').replace('{EXTENSION}', 'webp');
+    }
+
     //#endregion
 }
