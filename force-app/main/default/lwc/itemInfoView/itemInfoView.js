@@ -13,57 +13,35 @@ export default class ItemInfoView extends LightningElement {
 
   @track isLoading = false;
   @track hasError = false;
-
   @track errorMessage = '';
 
-  productUrlStart = 'https://www.s-kaupat.fi/tuote/';
-  
-  connectedCallback () {
-    this.loadProductData();
-  }
-
-  flagError(message) {
-    this.hasError = true;
-    this.errorMessage = message;
-  }
-
-  removeError() {
-    this.hasError = false;
-    this.errorMessage = '';
-  }
-
-  async loadProductData() {
-    // Clear product data in case some of the previously shown data was not found.
-    this.productData = [];
-    this.productImageUrl = '';
-    
-    // Validate EAN
-    if (!this.eanCode) {
+  handleDataParsedEvent = (evt) => {
+    if (!evt.details.data) {
+      console.log('ERROR: No data in the details from dataparsed event!');
       return;
     }
 
-    // Indicate loading
-    this.isLoading = true;
+    // Pass the newly parsed data to the display function
+    this.displayProductData(evt.details.data);
+  }
 
-    try {
-      // Fetch and try to parse the received json
-      const rawJson = await fetchProductDetailsJsonFromEanCode({ eanCode: (this.eanCode)});
-      const parsedData = JSON.parse(rawJson);
-
-      if (parsedData.error) {
-        // parsing resulted in an error
-        this.flagError('Tuotteen tietoja ei voitu hakea: ' + parsedData.error);
-      } else {
-        // Pass the data and hope S-Kaupat has not changed the format
-        this.displayProductData(parsedData);
-      }
-    } catch(e) {
-      console.log(e);
-      this.flagError('Tuotteen tietoja ei voitu hakea.' + e);
+  handleErrorFlagChangedEvent = (evt) => {
+    if (!evt.details.hasError) {
+      console.log('ERROR: errorflagchanged event from the item info utils did not have the hasError key.')
+      return;
     }
 
-    // Stop loading when complete or ran into an issue
-    this.isLoading = false;
+    this.hasError = evt.details.hasError;
+    this.errorMessage = evt.details.errorMessage;
+  }
+
+  handleLoadingStateChangedEvent = (evt) => {
+    if (!evt.details.isLoading) {
+      console.log('ERROR: loadingstatechanged event from the item info utils did not have the isLoading key.');
+      return;
+    }
+
+    this.isLoading = evt.details.isLoading;
   }
 
   displayProductData(data) {
@@ -71,8 +49,6 @@ export default class ItemInfoView extends LightningElement {
       return;
     }
 
-    // Successful http request and data parse.
-    this.removeError();
     // Sub data
     const productDetails = data.productDetails;
     const productImages = productDetails.productImages;
