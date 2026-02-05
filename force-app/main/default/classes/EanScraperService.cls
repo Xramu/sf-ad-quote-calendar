@@ -62,7 +62,7 @@ public with sharing class EanScraperService {
         return fetchHtmlBodyFromUrl(S_KAUPAT_PRODUCT_URL_PREFIX + eanCode);
     }
 
-    private static Map<String, Object> fetchProductDetailsMapFromEanCode(String eanCode) {
+    public static Map<String, Object> fetchProductDetailsMapFromEanCode(String eanCode) {
         String htmlResult = fetchHtmlBodyFromEanCode(eanCode);
 
         // Check for error
