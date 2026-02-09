@@ -49,7 +49,7 @@ export default class ItemInfoView extends LightningElement {
       this.formatter.createBrandNameEntry(),
       this.formatter.createContactInformationEntry(),
       this.formatter.createEanCodeEntry()
-    ].filter((entry) => !!entry)
+    ].filter((entry) => !!entry);
 
     // Nutrients
     this.productNutrients = this.formatter.createNutrientEntries(0);
