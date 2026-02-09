@@ -11,7 +11,7 @@ export default class ItemInfoView extends LightningElement {
   @track productNutrientsReferenceQuantity = '';
   @track productNutrients = [];
 
-  // The data handler that includes the 
+  // The data handler that includes the formatter as well
   @track dataManager = new ProductDataManager();
 
   get formatter() {
@@ -19,18 +19,8 @@ export default class ItemInfoView extends LightningElement {
   }
 
   async connectedCallback() {
-    try {
-      await this.dataManager.fetchProductData(this.eanCode);
-
-      // Fail if error happened
-      if (this.dataManager.hasError) {
-        this.onFetchFail();
-      } else {
-        this.onFetchSuccess();
-      }
-    } catch(e) {
-      console.log(e);
-    }
+    const success = await this.dataManager.fetchProductData(this.eanCode);
+    success ? this.onFetchSuccess() : this.onFetchFail();
   }
 
   onFetchFail() {
@@ -46,7 +36,7 @@ export default class ItemInfoView extends LightningElement {
     if (!this.dataManager.hasData()) {
       return;
     }
-    
+
     // Add main data entries (Left Side) filter out possibly missing fields
     this.productData = [
       this.formatter.createNameEntry(),

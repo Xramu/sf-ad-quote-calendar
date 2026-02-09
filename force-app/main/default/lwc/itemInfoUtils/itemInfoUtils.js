@@ -30,7 +30,7 @@ export class ProductDataHandler {
     // Validate EAN
     if (!eanCode) {
       this.#flagError(this.#errorPrefix + 'EAN code was null');
-      return;
+      return false;
     }
 
     // Good to go for fetch, indicate loading
@@ -55,6 +55,9 @@ export class ProductDataHandler {
 
     // Always stop loading even of errors
     this.isLoadingData = false;
+
+    // Return true if fetch was success
+    return !this.hasError;
   }
 
   hasData = () => (!!this.data && Object.keys(this.data).length > 0);
