@@ -1,3 +1,34 @@
 <template>
-    
+  <div class="slds-modal__content slds-p-around_medium body-scroll">
+    <!-- Left column: Product Data -->
+    <div class="product-data" data-id="product-data">
+      <template if:true={dataManager.isLoadingData}>
+        <p>Haetaan tuotteen tietoja...</p>
+      </template>
+      <template if:true={dataManager.hasError}>
+        <p>Virhe ladattaessa tuotetta.</p>
+        <p>{dataManager.errorMessage}</p>
+      </template>
+
+      <!-- Product Data -->
+      <template if:true={hasProductData}>
+        <template for:each={productData} for:item="pData">
+          <div key={pData.title} class="product-data__row">
+            <p class="slds-text-title">{pData.title}:</p>
+            <p>
+              <lightning-formatted-rich-text value={pData.value}></lightning-formatted-rich-text>
+            </p>
+            <br>
+          </div>
+        </template>
+      </template>
+    </div>
+    <!-- Right column: Image + Nutrients -->
+    <div class="product-image" data-id="product-right-rail">
+      <!-- Product Image -->
+      <template lwc:if={productImageUrl}>
+        <img class="product-image__img" width="360" height="360" decoding="async" loading="eager" style="color:transparent" src={productImageUrl}>
+      </template>
+    </div>
+  </div>
 </template>
