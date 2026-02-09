@@ -1,5 +1,5 @@
 import { api, track, LightningElement } from 'lwc';
-import { fetchProductData } from 'c/itemInfoUtils';
+import { ProductDataManager } from 'c/itemInfoUtils';
 
 export default class ItemInfoView extends LightningElement {
   
@@ -11,124 +11,70 @@ export default class ItemInfoView extends LightningElement {
   @track productNutrientsReferenceQuantity = '';
   @track productNutrients = [];
 
-  @track isLoading = false;
-  @track hasError = false;
-  @track errorMessage = '';
+  // The data handler that includes the 
+  @track dataManager = new ProductDataManager();
 
-  async connectedCallback() {
-    this.isLoading = true;
-    
-    await this.tryFetchAndDisplay();
-
-    this.isLoading = false;
+  get formatter() {
+    return this.dataManager.formatter;
   }
 
-  async tryFetchAndDisplay() {
+  async connectedCallback() {
     try {
-      const data = await fetchProductData(this.eanCode);
+      console.log('Ping 1');
+      await this.dataManager.fetchProductData(this.eanCode);
+      console.log('Ping 2');
 
-      this.hasError = !!data.error;
-
-      if (this.hasError) {
-        this.errorMessage = data.error;
-        return;
+      // Fail if error happened
+      if (this.dataManager.hasError) {
+        this.onFetchFail();
+      } else {
+        this.onFetchSuccess();
       }
-
-      // No errors found
-      this.displayProductData(data);
-    } catch (e) {
+    } catch(e) {
       console.log(e);
     }
   }
 
-  displayProductData(data) {
-    if (!data) {
+  onFetchFail() {
+    console.log('Failed fetch');
+  }
+
+  onFetchSuccess() {
+    this.displayProductData();
+  }
+
+  displayProductData() {
+    // Confirm data exists
+    if (!this.dataManager.hasData()) {
       return;
     }
 
-    // Sub data
-    const productDetails = data.productDetails;
-    const productImages = productDetails.productImages;
+    console.log("Display Start Ping");
 
-    // Info we are exposing in the modal
-    this.addProductDataEntry('Nimi', data.name);
+    console.log(this.formatter);
 
-    // Price and price unit
-    if (data.price && data.priceUnit) {
-      this.addProductDataEntry('Hinta', `${data.price}€ ${data.priceUnit}`);
-    }
-
-    // Comparison price
-    if (data.comparisonPrice && data.comparisonUnit && !data.comparisonUnit.localeCompare('KGM')) {
-      this.addProductDataEntry('Kilohinta', `${data.comparisonPrice}€/kg`)
-    }
-
-    this.addProductDataEntry('Kuvaus', data.description);
-
-    this.addProductDataEntry('Ainesosat', data.ingredientStatement);
-    this.addProductDataEntry('Säilytysohje', productDetails.storageGuideForConsumer);
-    
-    this.addProductDataEntry('Valmistusmaa', data.countryName.fi);
-    this.addProductDataEntry('Valmistaja', data.brandName);
-
-    // Contact information cleanup
-    if (productDetails.contactInformation) {
-      this.addProductDataEntry('Yhteystiedot', productDetails.contactInformation.replaceAll('###', '').replace('Yhteystiedot', ''));
-    }
-
-    this.addProductDataEntry('EAN Koodi', data.ean);
+    // Add main data entries (Left Side) filter out possibly missing fields
+    this.productData = [
+      this.formatter.createNameEntry(),
+      this.formatter.createDescriptionEntry(),
+      this.formatter.createPriceEntry(),
+      this.formatter.createComparisonPriceEntry(),
+      this.formatter.createIngredientsEntry(),
+      this.formatter.createStorageGuideForConsumerEntry(),
+      this.formatter.createCountryOfOriginEntry(),
+      this.formatter.createBrandNameEntry(),
+      this.formatter.createContactInformationEntry(),
+      this.formatter.createEanCodeEntry()
+    ].filter((entry) => !!entry)
 
     // Nutrients
-    this.updateProductNutrients(productDetails);
+    this.productNutrients = this.formatter.createNutrientEntries(0);
 
-    // Image URL build
-    if (productImages.mainImage.urlTemplate) {
-      this.productImageUrl = productImages.mainImage.urlTemplate.replace('{MODIFIERS}', 'w360h360@_q75').replace('{EXTENSION}', 'webp');
-    }
-  }
+    // Nutrients reference quantity
+    this.productNutrientsReferenceQuantity = this.dataManager.getNutrientsReferenceQuantity(0);
 
-  addProductDataEntry(title, value) {
-    if (!value) {
-      console.log(`Value of ${title} data entry is null or undefined`);
-      return;
-    }
-
-    this.productData.push({
-      title: title,
-      value: value
-    });
-  }
-
-  addProductNutrientsEntry(title, value) {
-    if (!title || !value) {
-      console.log(`Invalid nutrient entry with the title: ${title} and value: ${value}`);
-      return;
-    }
-
-    this.productNutrients.push({
-      title: title,
-      value: value
-    });
-  }
-
-  updateProductNutrients(productDetails) {
-    if (!productDetails || !productDetails.nutrients || !productDetails.nutrients[0]) {
-      this.productNutrients = [];
-      return;
-    }
-
-    // Goofy structure but it is what it is
-    const nutrients = productDetails.nutrients[0].nutrients;
-
-    // Set the quantity reference
-    this.productNutrientsReferenceQuantity = productDetails.nutrients[0].referenceQuantity;
-
-    // Push each entry to the nutrients array
-    nutrients.map((entry) => {
-      if (entry.name !== undefined && entry.value !== undefined) {
-        this.addProductNutrientsEntry(entry.name, entry.value);
-      }
-    });
+    // Image
+    this.productImageUrl = this.dataManager.getImageUrl360();
   }
 
   get hasProductData() {

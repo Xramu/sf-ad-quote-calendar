@@ -2,12 +2,12 @@
   <div class="slds-modal__content slds-p-around_medium body-scroll">
     <!-- Left column: Product Data -->
     <div class="product-data" data-id="product-data">
-      <template if:true={isLoading}>
+      <template if:true={dataManager.isLoadingData}>
         <p>Haetaan tuotteen tietoja...</p>
       </template>
-      <template if:true={hasError}>
+      <template if:true={dataManager.hasError}>
         <p>Virhe ladattaessa tuotetta.</p>
-        <p>{errorMessage}</p>
+        <p>{dataManager.errorMessage}</p>
       </template>
 
       <!-- Product Data -->
