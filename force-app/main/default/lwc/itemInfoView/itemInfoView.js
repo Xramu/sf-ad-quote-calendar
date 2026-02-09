@@ -20,9 +20,7 @@ export default class ItemInfoView extends LightningElement {
 
   async connectedCallback() {
     try {
-      console.log('Ping 1');
       await this.dataManager.fetchProductData(this.eanCode);
-      console.log('Ping 2');
 
       // Fail if error happened
       if (this.dataManager.hasError) {
@@ -48,11 +46,7 @@ export default class ItemInfoView extends LightningElement {
     if (!this.dataManager.hasData()) {
       return;
     }
-
-    console.log("Display Start Ping");
-
-    console.log(this.formatter);
-
+    
     // Add main data entries (Left Side) filter out possibly missing fields
     this.productData = [
       this.formatter.createNameEntry(),
