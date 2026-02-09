@@ -1,0 +1,8 @@
+<template>
+    <template for:each={eanCodes} for:item="eanCode">
+        <c-simple-item-info-view
+            key={eanCode}
+            ean-code={eanCode}
+        ></c-simple-item-info-view>
+    </template>
+</template>
