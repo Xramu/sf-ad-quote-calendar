@@ -56,10 +56,13 @@ public with sharing class AdCampaignCalendarService {
             return new List<ItemDTO>();
         }
 
+        String eanItemType = 'EAN';
+
         List<AdWebCartItem__c> items = [
-            SELECT Id, Cart__c, ItemName__c, ExtraJsonData__c, EAN__c
+            SELECT Id, Cart__c, ItemName__c, ExtraJsonData__c, EAN__c, ItemType__c
             FROM AdWebCartItem__c
             WHERE Cart__c IN :uniqueIds
+            AND ItemType__c = :eanItemType
             WITH SECURITY_ENFORCED
         ];
 
