@@ -6,10 +6,22 @@
     <description>LWC view for showing information about s-kaupat.fi products by calling an Apex class for the product html and then scraping it.</description>
     <targets>
         <target>lightning__FlowScreen</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
             <property name="eanCode" label="Product EAN Code" type="String" role="inputOnly" />
+            <property name="imageWidth" label="Image Width" type="Integer" min="32" max="2160" default="360" role="inputOnly" />
+            <property name="imageHeight" label="Image Height" type="Integer" min="32" max="2160" default="360" role="inputOnly" />
+        </targetConfig>
+        <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage,lightningCommunity__Default">
+            <property name="eanCode" label="Product EAN Code" type="String" />
+            <property name="imageWidth" label="Image Width" type="Integer" min="32" max="2160" default="360" />
+            <property name="imageHeight" label="Image Height" type="Integer" min="32" max="2160" default="360" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

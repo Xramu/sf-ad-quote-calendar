@@ -10,6 +10,8 @@
     <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
             <property name="eanCodes" label="Product EAN Codes" type="String[]" role="inputOnly" />
+            <property name="imageWidth" label="Image Width" type="Integer" min="32" max="2160" default="360" role="inputOnly" />
+            <property name="imageHeight" label="Image Height" type="Integer" min="32" max="2160" default="360" role="inputOnly" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

@@ -2,7 +2,9 @@ import { track, api, LightningElement } from 'lwc';
 import { ProductDataManager } from 'c/itemInfoUtils';
 
 export default class SimpleItemInfoVIew extends LightningElement {
-  @api eanCode = '';
+  @api eanCode;
+  @api imageWidth;
+  @api imageHeight;
 
   @track productImageUrl = '';
   @track productData = [];
@@ -40,7 +42,7 @@ export default class SimpleItemInfoVIew extends LightningElement {
     ].filter((entry) => !!entry);
 
     // Image
-    this.productImageUrl = this.dataManager.getImageUrl360();
+    this.productImageUrl = this.dataManager.getImageUrl(this.imageWidth, this.imageHeight);
   }
 
   hasProductData() {

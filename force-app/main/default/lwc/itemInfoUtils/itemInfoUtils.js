@@ -91,7 +91,7 @@ export class ProductDataHandler {
 
   getEanCode = () => this.data?.ean;
 
-  getImageUrl360 = () => this.data?.productDetails?.productImages?.mainImage?.urlTemplate?.replace('{MODIFIERS}', 'w360h360@_q75').replace('{EXTENSION}', 'webp');
+  getImageUrl = (width = 360, height = 360) => this.data?.productDetails?.productImages?.mainImage?.urlTemplate?.replace('{MODIFIERS}', `w${width}h${height}@_q75`).replace('{EXTENSION}', 'webp');
 
   getNutrientsEntry = (entryIndex) => this.data?.productDetails?.nutrients?.[entryIndex]?.nutrients;
 
