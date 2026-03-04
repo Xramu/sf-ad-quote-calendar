@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>mocAllMediaBundles</fullName>
+    <columns>PRODUCT2.NAME</columns>
+    <columns>PRODUCT2.CUSTOMER_PRODUCT_ID</columns>
+    <columns>PRODUCT2.FAMILY</columns>
+    <columns>PRODUCT2.PRODUCT_CLASS</columns>
+    <columns>PRODUCT2.PRODUCT_TYPE</columns>
+    <columns>PRODUCT2.DESCRIPTION</columns>
+    <columns>External_ID__c</columns>
+    <columns>PRODUCT2.RECORD_TYPE</columns>
+    <columns>PRODUCT2.REV_SCHEDULE_ENABLED</columns>
+    <columns>Model__c</columns>
+    <columns>Product_Catalog__c</columns>
+    <columns>PRODUCT2.LAST_UPDATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>PRODUCT2.FAMILY</field>
+        <operation>equals</operation>
+        <value>Digital,None</value>
+    </filters>
+    <filters>
+        <field>PRODUCT2.RECORD_TYPE</field>
+        <operation>equals</operation>
+    </filters>
+    <filters>
+        <field>PRODUCT2.PRODUCT_CLASS</field>
+        <operation>equals</operation>
+        <value>B</value>
+    </filters>
+    <label>*2. MoC - All Media Bundles</label>
+</ListView>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tech_Sales_SPIFF_Enhancement__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Field used to drive a conditional component on the page for SPIFF user story</description>
+    <label>SPIFF Enhancement</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

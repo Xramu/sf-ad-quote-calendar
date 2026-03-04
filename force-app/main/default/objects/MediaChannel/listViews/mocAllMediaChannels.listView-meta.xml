@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>mocAllMediaChannels</fullName>
+    <columns>LastModifiedDate</columns>
+    <columns>Name</columns>
+    <columns>MediaType</columns>
+    <columns>StartDate</columns>
+    <columns>EndDate</columns>
+    <columns>Circulation</columns>
+    <columns>CoreAudience</columns>
+    <columns>GeographicalCoverage</columns>
+    <columns>IsActive</columns>
+    <columns>PeriodicalType</columns>
+    <columns>PricingCategory</columns>
+    <columns>PublicationFrequency</columns>
+    <columns>Reach</columns>
+    <filterScope>Mine</filterScope>
+    <label>MoC - All Media Channels</label>
+</ListView>
