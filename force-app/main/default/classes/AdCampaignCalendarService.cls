@@ -36,6 +36,35 @@ public with sharing class AdCampaignCalendarService {
         @AuraEnabled public String itemName;
         @AuraEnabled public String extraJsonData;
         @AuraEnabled public String ean;
+        @AuraEnabled public ItemAdSpaceSpecificationDTO itemAdSpaceSpecification;
+    }
+
+    public class ItemAdSpaceSpecificationDTO {
+        @AuraEnabled public Boolean isActive;
+        @AuraEnabled public Decimal audienceSizeRating;
+        @AuraEnabled public String name;
+        @AuraEnabled public String type;
+        @AuraEnabled public String adSpaceType;
+        @AuraEnabled public String position;
+        @AuraEnabled public String programRunType;
+        @AuraEnabled public String startDateTime;
+        @AuraEnabled public String endDateTime;
+        @AuraEnabled public String startWeekDay;
+        @AuraEnabled public String endWeekDay;
+        @AuraEnabled public List<String> section;
+        @AuraEnabled public List<String> subSection;
+        @AuraEnabled public List<String> broadcastDays;
+    }
+
+    public class Product2DTO {
+        @AuraEnabled public String name;
+        @AuraEnabled public String productCode;
+        @AuraEnabled public String description;
+    }
+
+    public class MediaChannelDTO {
+        @AuraEnabled public String name;
+        @AuraEnabled public String mediaType;
     }
 
     /**
@@ -58,14 +87,39 @@ public with sharing class AdCampaignCalendarService {
 
         String eanItemType = 'EAN';
 
+        // Query
         List<AdWebCartItem__c> items = [
-            SELECT Id, Cart__c, ItemName__c, ExtraJsonData__c, EAN__c, ItemType__c
+            SELECT
+                Id,
+                Cart__c,
+                ItemName__c,
+                ExtraJsonData__c,
+                EAN__c,
+                ItemType__c,
+                Specification__r.IsActive,
+                Specification__r.AudienceSizeRating,
+                Specification__r.Name,
+                Specification__r.Type,
+                Specification__r.AdSpaceType,
+                Specification__r.Position,
+                Specification__r.ProgramRunType,
+                Specification__r.StartDateTime,
+                Specification__r.EndDateTime,
+                Specification__r.StartWeekDay,
+                Specification__r.EndWeekDay,
+                Specification__r.Section,
+                Specification__r.SubSection,
+                Specification__r.BroadcastDays,
+                Specification__r.Product2.Name,
+                Specification__r.Product2.ProductCode,
+                Specification__r.Product2.Description
             FROM AdWebCartItem__c
             WHERE Cart__c IN :uniqueIds
             AND ItemType__c = :eanItemType
             WITH SECURITY_ENFORCED
         ];
 
+        // Set up DTOs
         List<ItemDTO> out = new List<ItemDTO>();
         for (AdWebCartItem__c it : items) {
             ItemDTO dto = new ItemDTO();
