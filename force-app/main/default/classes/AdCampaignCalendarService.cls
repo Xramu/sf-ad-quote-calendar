@@ -47,6 +47,7 @@ public with sharing class AdCampaignCalendarService {
         @AuraEnabled public String adSpaceType;
         @AuraEnabled public String position;
         @AuraEnabled public String programRunType;
+        @AuraEnabled public String creativeFormatType;
         @AuraEnabled public String startDateTime;
         @AuraEnabled public String endDateTime;
         @AuraEnabled public String startWeekDay;
@@ -54,6 +55,8 @@ public with sharing class AdCampaignCalendarService {
         @AuraEnabled public List<String> section;
         @AuraEnabled public List<String> subSection;
         @AuraEnabled public List<String> broadcastDays;
+        @AuraEnabled public Product2DTO adSpaceProduct;
+        @AuraEnabled public MediaChannelDTO mediaChannel;
     }
 
     public class Product2DTO {
@@ -65,6 +68,7 @@ public with sharing class AdCampaignCalendarService {
     public class MediaChannelDTO {
         @AuraEnabled public String name;
         @AuraEnabled public String mediaType;
+        @AuraEnabled public String pricingCategory;
     }
 
     /**
@@ -103,6 +107,7 @@ public with sharing class AdCampaignCalendarService {
                 Specification__r.AdSpaceType,
                 Specification__r.Position,
                 Specification__r.ProgramRunType,
+                Specification__r.CreativeFormatType,
                 Specification__r.StartDateTime,
                 Specification__r.EndDateTime,
                 Specification__r.StartWeekDay,
@@ -112,7 +117,10 @@ public with sharing class AdCampaignCalendarService {
                 Specification__r.BroadcastDays,
                 Specification__r.Product2.Name,
                 Specification__r.Product2.ProductCode,
-                Specification__r.Product2.Description
+                Specification__r.Product2.Description,
+                Specification__r.MediaChannel.Name,
+                Specification__r.MediaChannel.MediaType,
+                Specification__r.MediaChannel.PricingCategory
             FROM AdWebCartItem__c
             WHERE Cart__c IN :uniqueIds
             AND ItemType__c = :eanItemType
