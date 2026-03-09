@@ -2,7 +2,11 @@
   <header class="slds-modal__header">
     <h2 class="slds-text-heading_medium">{modalTitle}</h2>
   </header>
-  <c-item-info-view ean-code={eanCode}> </c-item-info-view>
+  <div class="modal-content slds-p-around_medium slds-modal__content">
+    <c-ad-space-specification-info-view ad-space-specification={adSpaceSpecification}></c-ad-space-specification-info-view>
+    <div class="slds-p-bottom_medium"></div>
+    <c-item-info-view ean-code={eanCode}> </c-item-info-view>
+  </div>
   <footer class="slds-modal__footer">
     <lightning-button variant="neutral" label="Sulje" onclick={handleClose}></lightning-button>
   </footer>

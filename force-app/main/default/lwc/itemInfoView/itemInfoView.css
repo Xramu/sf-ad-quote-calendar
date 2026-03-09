@@ -1,10 +1,9 @@
 /* Two-column layout for content */
-.body-scroll {
+.item-info-container {
   display: grid;
   grid-template-columns: 1fr minmax(200px, 360px); /* data grows, image column constrained */
   gap: 1rem;
   align-items: start;
-  max-height: 70vh; /* keep content within viewport-friendly height */
 }
 
 /* Left column: data takes available width */
