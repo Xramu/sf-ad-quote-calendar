@@ -1,3 +1,4 @@
 .modal-content {
   max-height: 70vh; /* keep content within viewport-friendly height */
+  overscroll-behavior: contain;
 }

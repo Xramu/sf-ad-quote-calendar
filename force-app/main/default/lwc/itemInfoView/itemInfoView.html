@@ -1,7 +1,7 @@
 <template>
   <div class="item-info-container">
     <!-- Left column: Product Data -->
-    <div class="product-data" data-id="product-data">
+    <div class="product-data slds-grid slds-grid_vertical" data-id="product-data">
       <template if:true={dataManager.isLoadingData}>
         <p>Haetaan tuotteen tietoja...</p>
       </template>
@@ -13,12 +13,9 @@
       <!-- Product Data -->
       <template if:true={hasProductData}>
         <template for:each={productData} for:item="pData">
-          <div key={pData.title} class="product-data__row">
+          <div key={pData.title} class="product-data-entry">
             <p class="slds-text-title">{pData.title}:</p>
-            <p>
-              <lightning-formatted-rich-text value={pData.value}></lightning-formatted-rich-text>
-            </p>
-            <br>
+            <lightning-formatted-rich-text value={pData.value}></lightning-formatted-rich-text>
           </div>
         </template>
       </template>
