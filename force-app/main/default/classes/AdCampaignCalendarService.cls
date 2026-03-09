@@ -36,10 +36,22 @@ public with sharing class AdCampaignCalendarService {
         @AuraEnabled public String itemName;
         @AuraEnabled public String extraJsonData;
         @AuraEnabled public String ean;
-        @AuraEnabled public ItemAdSpaceSpecificationDTO itemAdSpaceSpecification;
+        @AuraEnabled public AdSpaceSpecificationDTO adSpaceSpecification;
+
+        public ItemDTO(AdWebCartItem__c record) {
+            this.id = record.Id;
+            this.cartId = record.Cart__c;
+            this.itemName = record.ItemName__c;
+            this.extraJsonData = record.ExtraJsonData__c;
+            this.ean = record.EAN__c;
+
+            if (record.Specification__r != null) {
+                this.adSpaceSpecification = new AdSpaceSpecificationDTO(record.Specification__r);
+            }
+        }
     }
 
-    public class ItemAdSpaceSpecificationDTO {
+    public class AdSpaceSpecificationDTO {
         @AuraEnabled public Boolean isActive;
         @AuraEnabled public Decimal audienceSizeRating;
         @AuraEnabled public String name;
@@ -48,8 +60,8 @@ public with sharing class AdCampaignCalendarService {
         @AuraEnabled public String position;
         @AuraEnabled public String programRunType;
         @AuraEnabled public String creativeFormatType;
-        @AuraEnabled public String startDateTime;
-        @AuraEnabled public String endDateTime;
+        @AuraEnabled public Datetime startDateTime;
+        @AuraEnabled public Datetime endDateTime;
         @AuraEnabled public String startWeekDay;
         @AuraEnabled public String endWeekDay;
         @AuraEnabled public List<String> section;
@@ -57,18 +69,60 @@ public with sharing class AdCampaignCalendarService {
         @AuraEnabled public List<String> broadcastDays;
         @AuraEnabled public Product2DTO adSpaceProduct;
         @AuraEnabled public MediaChannelDTO mediaChannel;
+
+        public AdSpaceSpecificationDTO(AdSpaceSpecification record) {
+            this.isActive = record.IsActive;
+            this.audienceSizeRating = record.AudienceSizeRating;
+            this.name = record.Name;
+            this.type = record.Type;
+            this.adSpaceType = record.AdSpaceType;
+            this.position = record.Position;
+            this.programRunType = record.ProgramRunType;
+            this.creativeFormatType = record.CreativeFormatType;
+            this.startDateTime = record.StartDateTime;
+            this.endDateTime = record.EndDateTime;
+            this.startWeekDay = record.StartWeekDay;
+            this.endWeekDay = record.EndWeekDay;
+            this.section = AdCampaignCalendarService.SplitMultiSelectToList(record.Section);
+            this.subSection = AdCampaignCalendarService.SplitMultiSelectToList(record.SubSection);
+            this.broadcastDays = AdCampaignCalendarService.SplitMultiSelectToList(record.BroadcastDays);
+
+            if (record.Product2 != null) {
+                this.adSpaceProduct = new Product2DTO(record.Product2);
+            }
+
+            if (record.MediaChannel != null) {
+                this.mediaChannel = new MediaChannelDTO(record.MediaChannel);
+            }
+        }
     }
 
     public class Product2DTO {
         @AuraEnabled public String name;
         @AuraEnabled public String productCode;
         @AuraEnabled public String description;
+
+        public Product2DTO(Product2 record) {
+            this.name = record.Name;
+            this.productCode = record.ProductCode;
+            this.description = record.Description;
+        }
     }
 
     public class MediaChannelDTO {
         @AuraEnabled public String name;
         @AuraEnabled public String mediaType;
         @AuraEnabled public String pricingCategory;
+
+        public MediaChannelDTO(MediaChannel record) {
+            this.name = record.Name;
+            this.mediaType = record.MediaType;
+            this.pricingCategory = record.PricingCategory;
+        }
+    }
+
+    public static List<String> SplitMultiSelectToList(String multiSelectString) {
+        return multiSelectString != null ? multiSelectString.split(';') : new List<String>();
     }
 
     /**
@@ -100,6 +154,7 @@ public with sharing class AdCampaignCalendarService {
                 ExtraJsonData__c,
                 EAN__c,
                 ItemType__c,
+
                 Specification__r.IsActive,
                 Specification__r.AudienceSizeRating,
                 Specification__r.Name,
@@ -115,9 +170,11 @@ public with sharing class AdCampaignCalendarService {
                 Specification__r.Section,
                 Specification__r.SubSection,
                 Specification__r.BroadcastDays,
+
                 Specification__r.Product2.Name,
                 Specification__r.Product2.ProductCode,
                 Specification__r.Product2.Description,
+
                 Specification__r.MediaChannel.Name,
                 Specification__r.MediaChannel.MediaType,
                 Specification__r.MediaChannel.PricingCategory
@@ -130,14 +187,10 @@ public with sharing class AdCampaignCalendarService {
         // Set up DTOs
         List<ItemDTO> out = new List<ItemDTO>();
         for (AdWebCartItem__c it : items) {
-            ItemDTO dto = new ItemDTO();
-            dto.id = it.Id;
-            dto.cartId = it.Cart__c;
-            dto.itemName = it.ItemName__c;
-            dto.extraJsonData = it.ExtraJsonData__c;
-            dto.ean = it.EAN__c;
-            out.add(dto);
+            // Field assignments handled in constructors
+            out.add(new ItemDTO(it));
         }
+
         return out;
     }
 
