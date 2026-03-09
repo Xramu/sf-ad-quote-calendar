@@ -176,13 +176,7 @@ export default class DetailsView extends LightningElement {
     // Find item from already-loaded client data
     const item = (this.campaignItems || []).find((it) => it.id === id);
     // Defensive copy with only the fields the modal needs
-    const modalInput = item
-      ? {
-          itemName: item.itemName,
-          extraJsonData: item.extraJsonData, // expected to be string JSON or array
-          ean: item.ean
-        }
-      : { itemName: '', extraJsonData: null, ean: '' };
+    const modalInput = item ? item : { itemName: '', extraJsonData: null, ean: '' };
 
     await ItemInfoModal.open({
       size: 'medium',
