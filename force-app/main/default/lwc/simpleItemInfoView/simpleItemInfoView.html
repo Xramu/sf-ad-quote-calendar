@@ -1,7 +1,7 @@
 <template>
-  <div class="item-info-container">
+  <div class="item-info-main-container">
     <!-- Left column: Product Data -->
-    <div class="product-data" data-id="product-data">
+    <div class="item-info-first-panel slds-grid slds-grid_vertical" data-id="product-data">
       <template if:true={dataManager.isLoadingData}>
         <p>Haetaan tuotteen tietoja...</p>
       </template>
@@ -13,21 +13,18 @@
       <!-- Product Data -->
       <template if:true={hasProductData}>
         <template for:each={productData} for:item="pData">
-          <div key={pData.title} class="product-data__row">
+          <div key={pData.title} class="item-info-box">
             <p class="slds-text-title">{pData.title}:</p>
-            <p>
-              <lightning-formatted-rich-text value={pData.value}></lightning-formatted-rich-text>
-            </p>
-            <br>
+            <lightning-formatted-rich-text value={pData.value}></lightning-formatted-rich-text>
           </div>
         </template>
       </template>
     </div>
     <!-- Right column: Image + Nutrients -->
-    <div class="product-image" data-id="product-right-rail">
+    <div class="item-info-second-panel" data-id="product-right-rail">
       <!-- Product Image -->
       <template lwc:if={productImageUrl}>
-        <img class="product-image__img" width={imageWidth} height={imageHeight} decoding="async" loading="eager" style="color:transparent" src={productImageUrl}>
+        <img class="item-info-image" width={imageWidth} height={imageHeight} decoding="async" loading="eager" style="color:transparent" src={productImageUrl}>
       </template>
     </div>
   </div>
