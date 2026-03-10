@@ -14,14 +14,66 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
-            <property name="eanCode" label="Product EAN Code" type="String" role="inputOnly" />
-            <property name="imageWidth" label="Image Width" type="Integer" min="32" max="2160" default="360" role="inputOnly" />
-            <property name="imageHeight" label="Image Height" type="Integer" min="32" max="2160" default="360" role="inputOnly" />
+            <property
+                name="eanCode"
+                label="Product EAN Code"
+                description="EAN code of the product. This will be used to fetch the product data from s-kaupat.fi."
+                type="String"
+                role="inputOnly" />
+            <property
+                name="imageWidth"
+                label="Image Width"
+                description="Maximum width in pixels that the image can take on the screen. This will also affect the size of the image fetched from the server."
+                type="Integer"
+                min="32"
+                max="2160"
+                default="360"
+                role="inputOnly" />
+            <property
+                name="imageHeight"
+                label="Image Height"
+                description="Maximum height in pixels that the image can take on the screen. This will also affect the size of the image fetched from the server."
+                type="Integer"
+                min="32"
+                max="2160"
+                default="360"
+                role="inputOnly" />
+            <property
+                name="detailsToShow"
+                type="String"
+                label="Details to Show"
+                description="Comma separated tags of each type of item info to be shown. Dictates the order of the info except for the image and nutrients. Default value includes all possible tags."
+                default="Image, Nutrients, Name, Description, Price, Comparison Price, Ingredients, Storage Guide, Country of Origin, Brand Name, Contact Information, EAN Code"
+                role="inputOnly" />
         </targetConfig>
         <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage,lightningCommunity__Default">
-            <property name="eanCode" label="Product EAN Code" type="String" />
-            <property name="imageWidth" label="Image Width" type="Integer" min="32" max="2160" default="360" />
-            <property name="imageHeight" label="Image Height" type="Integer" min="32" max="2160" default="360" />
+            <property
+                name="eanCode"
+                label="Product EAN Code"
+                description="EAN code of the product. This will be used to fetch the product data from s-kaupat.fi."
+                type="String" />
+            <property
+                name="imageWidth"
+                label="Image Width"
+                description="Maximum width in pixels that the image can take on the screen. This will also affect the size of the image fetched from the server."
+                type="Integer"
+                min="32"
+                max="2160"
+                default="360" />
+            <property
+                name="imageHeight"
+                label="Image Height"
+                description="Maximum height in pixels that the image can take on the screen. This will also affect the size of the image fetched from the server."
+                type="Integer"
+                min="32"
+                max="2160"
+                default="360" />
+            <property
+                name="detailsToShow"
+                type="String"
+                label="Details to Show"
+                description="Comma separated tags of each type of item info to be shown. Dictates the order of the info except for the image and nutrients. Default value includes all possible tags."
+                default="Image, Nutrients, Name, Description, Price, Comparison Price, Ingredients, Storage Guide, Country of Origin, Brand Name, Contact Information, EAN Code" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

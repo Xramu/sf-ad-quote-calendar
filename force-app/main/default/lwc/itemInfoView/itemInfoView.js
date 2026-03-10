@@ -5,6 +5,7 @@ export default class ItemInfoView extends LightningElement {
   @api eanCode;
   @api imageWidth;
   @api imageHeight;
+  @api detailsToShow;
 
   @track productImageUrl= '';
   @track productData = [];
@@ -17,6 +18,26 @@ export default class ItemInfoView extends LightningElement {
 
   get formatter() {
     return this.dataManager.formatter;
+  }
+
+  get allDetailTags() {
+    return 'Image, Nutrients, Name, Description, Price, Comparison Price, Ingredients, Storage Guide, Country of Origin, Brand Name, Contact Information, EAN Code';
+  }
+
+  // String to action references, lower case since the input strings are not case sensitive
+  get detailEntryActionMap() {
+    return {
+      'name': () => this.formatter.createNameEntry(),
+      'description': () => this.formatter.createDescriptionEntry(),
+      'price': () => this.formatter.createPriceEntry(),
+      'comparison price': () => this.formatter.createComparisonPriceEntry(),
+      'ingredients': () => this.formatter.createIngredientsEntry(),
+      'storage guide': () => this.formatter.createStorageGuideForConsumerEntry(),
+      'country of origin': () => this.formatter.createCountryOfOriginEntry(),
+      'brand name': () => this.formatter.createBrandNameEntry(),
+      'contact information': () => this.formatter.createContactInformationEntry(),
+      'ean code': () => this.formatter.createEanCodeEntry(),
+    }
   }
 
   async connectedCallback() {
@@ -38,28 +59,30 @@ export default class ItemInfoView extends LightningElement {
       return;
     }
 
-    // Add main data entries (Left Side) filter out possibly missing fields
-    this.productData = [
-      this.formatter.createNameEntry(),
-      this.formatter.createDescriptionEntry(),
-      this.formatter.createPriceEntry(),
-      this.formatter.createComparisonPriceEntry(),
-      this.formatter.createIngredientsEntry(),
-      this.formatter.createStorageGuideForConsumerEntry(),
-      this.formatter.createCountryOfOriginEntry(),
-      this.formatter.createBrandNameEntry(),
-      this.formatter.createContactInformationEntry(),
-      this.formatter.createEanCodeEntry()
-    ].filter((entry) => !!entry);
+    // Split into entries, trim, set to lower case and remove empty. Use all tags as fallback
+    const details = (this.detailsToShow || this.allDetailTags)
+      .split(',')
+      .map(str => str.trim().toLowerCase())
+      .filter(Boolean);
+    
+    // Detail String => Entry Creation Function Map
+    const actionMap = this.detailEntryActionMap;
+    
+    // Call create action for each
+    this.productData = details
+      .map(key => actionMap[key]?.())
+      .filter(Boolean);
 
     // Nutrients
-    this.productNutrients = this.formatter.createNutrientEntries(0);
-
-    // Nutrients reference quantity
-    this.productNutrientsReferenceQuantity = this.dataManager.getNutrientsReferenceQuantity(0);
+    if (details.includes('nutrients')) {
+      this.productNutrients = this.formatter.createNutrientEntries(0);
+      this.productNutrientsReferenceQuantity = this.dataManager.getNutrientsReferenceQuantity(0);
+    }
 
     // Image
-    this.productImageUrl = this.dataManager.getImageUrl(this.imageWidth, this.imageHeight);
+    if (details.includes('image')) {
+      this.productImageUrl = this.dataManager.getImageUrl(this.imageWidth, this.imageHeight);
+    }
   }
 
   get productImageStyle() {
