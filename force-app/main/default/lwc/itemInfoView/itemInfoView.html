@@ -1,7 +1,7 @@
 <template>
   <div class="item-info-main-container">
     <!-- Left column: Product Data -->
-    <div class="item-info-first-panel slds-grid slds-grid_vertical" data-id="product-data">
+    <div class="item-info-first-panel item-info-section slds-grid slds-grid_vertical" data-id="product-data">
       <template if:true={dataManager.isLoadingData}>
         <p>Haetaan tuotteen tietoja...</p>
       </template>
@@ -23,22 +23,24 @@
     <!-- Right column: Image + Nutrients -->
     <div class="item-info-second-panel" data-id="product-right-rail">
       <!-- Product Image -->
-      <template lwc:if={productImageUrl}>
-        <img class="item-info-image" width={imageWidth} height={imageHeight} decoding="async" loading="eager" style="color:transparent" src={productImageUrl}>
+      <template if:true={productImageUrl}>
+        <img style={productImageStyle} class="item-info-image item-info-section" width={imageWidth} height={imageHeight} decoding="async" loading="eager" src={productImageUrl}>
       </template>
 
       <!-- Product Nutrients -->
       <template if:true={hasProductNutrients}>
-        <div class="item-info-nutrient-box">
-          <p class="slds-text-title item-info-nutrient-title">Ravintosisältö:</p>
-          <lightning-formatted-rich-text class="item-info-nutrient-value" value={productNutrientsReferenceQuantity}></lightning-formatted-rich-text>
-        </div>
-        <template for:each={productNutrients} for:item="pNutrient">
-          <div key={pNutrient.title} class="item-info-nutrient-box">
-            <p class="slds-text-title item-info-nutrient-title">{pNutrient.title}:</p>
-            <lightning-formatted-rich-text class="item-info-nutrient-value" value={pNutrient.value}></lightning-formatted-rich-text>
+        <div class="item-info-nutrient-container item-info-section">
+          <div class="item-info-nutrient-box">
+            <p class="slds-text-title item-info-nutrient-title">Ravintosisältö:</p>
+            <lightning-formatted-rich-text class="item-info-nutrient-value" value={productNutrientsReferenceQuantity}></lightning-formatted-rich-text>
           </div>
-        </template>
+          <template for:each={productNutrients} for:item="pNutrient">
+            <div key={pNutrient.title} class="item-info-nutrient-box">
+              <p class="slds-text-title item-info-nutrient-title">{pNutrient.title}:</p>
+              <lightning-formatted-rich-text class="item-info-nutrient-value" value={pNutrient.value}></lightning-formatted-rich-text>
+            </div>
+          </template>
+        </div>
       </template>
     </div>
   </div>

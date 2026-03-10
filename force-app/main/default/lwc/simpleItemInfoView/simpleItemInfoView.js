@@ -45,6 +45,10 @@ export default class SimpleItemInfoVIew extends LightningElement {
     this.productImageUrl = this.dataManager.getImageUrl(this.imageWidth, this.imageHeight);
   }
 
+  get productImageStyle() {
+    return `--max-image-width: ${this.imageWidth}px; --max-image-height: ${this.imageHeight}px; color: transparent;`;
+  }
+
   hasProductData() {
     return this.productData.length > 0;
   }
