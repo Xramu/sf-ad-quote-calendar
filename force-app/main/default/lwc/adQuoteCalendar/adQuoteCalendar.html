@@ -8,7 +8,7 @@
 -->
 <template>
   <section class="slds-grid slds-wrap">
-    <div class="slds-col slds-size_1-of-1 header">
+    <div class="slds-col slds-size_1-of-1 custom-card">
       <div class="slds-grid slds-grid_align-spread slds-p-around_small">
         <div class="slds-text-heading_medium">Kampanja Kalenteri</div>
         <div class="slds-grid slds-grid_vertical-align-center yearControls">
@@ -30,7 +30,7 @@
       ></c-calendar-view>
     </div>
 
-    <div class="slds-col slds-size_2-of-5 detailsPane">
+    <div class="slds-col slds-size_2-of-5 detailsPane custom-card">
       <c-details-view
         year={currentYear}
         week-number={selectedWeek}

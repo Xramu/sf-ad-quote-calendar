@@ -1,7 +1,7 @@
 <template>
-  <div class="item-info-main-container">
+  <div class="item-info-main-container custom-card">
     <!-- Left column: Product Data -->
-    <div class="item-info-first-panel slds-grid slds-grid_vertical slds-card slds-p-around_small" data-id="product-data">
+    <div class="item-info-first-panel slds-grid slds-grid_vertical" data-id="product-data">
       <template if:true={dataManager.isLoadingData}>
         <p>Haetaan tuotteen tietoja...</p>
       </template>
@@ -14,7 +14,9 @@
       <template if:true={hasProductData}>
         <template for:each={productData} for:item="pData">
           <div key={pData.title} class="item-info-box">
-            <p class="slds-text-title">{pData.title}:</p>
+            <div>
+              <p class="slds-text-title item-info-title">{pData.title}:</p>
+            </div>
             <lightning-formatted-rich-text value={pData.value}></lightning-formatted-rich-text>
           </div>
         </template>
@@ -24,12 +26,12 @@
     <div class="item-info-second-panel" data-id="product-right-rail">
       <!-- Product Image -->
       <template if:true={productImageUrl}>
-        <img style={productImageStyle} class="item-info-image slds-card slds-p-around_small" width={imageWidth} height={imageHeight} decoding="async" loading="eager" src={productImageUrl}>
+        <img style={productImageStyle} class="item-info-image" width={imageWidth} height={imageHeight} decoding="async" loading="eager" src={productImageUrl}>
       </template>
 
       <!-- Product Nutrients -->
       <template if:true={hasProductNutrients}>
-        <div class="item-info-nutrient-container slds-card slds-p-around_small">
+        <div class="item-info-nutrient-container">
           <div class="item-info-nutrient-box">
             <p class="slds-text-title item-info-nutrient-title">Ravintosisältö:</p>
             <lightning-formatted-rich-text class="item-info-nutrient-value" value={productNutrientsReferenceQuantity}></lightning-formatted-rich-text>

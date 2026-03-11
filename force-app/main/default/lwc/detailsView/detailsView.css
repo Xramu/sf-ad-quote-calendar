@@ -1,3 +1,5 @@
+@import 'c/sharedStyles';
+
 /* Details View layout and list/edit visuals */
 .list-pane {
   border-bottom: 1px solid #e5e7eb;

@@ -1,0 +1,24 @@
+:host {
+  --brand-color: var(--ief-brandPrimary, rgb(51, 117, 70));
+
+  --info-border: 1px solid var(--brand-color);
+  
+  --info-spacing: var(--slds-g-spacing-4);
+  --nutrient-spacing: 0.25rem;
+
+  /* Overridden by the style based on the component's input */
+  --max-image-width: 360px;
+  --max-image-height: 360px;
+
+  --pane-spacing: 0.5rem;
+
+  --custom-card-border-style : 1px solid #e5e7eb;
+  --custom-card-border-radius : 1rem;
+  --custom-card-background: white;
+}
+
+.custom-card {
+  border: var(--custom-card-border-style);
+  background: var(--custom-card-background);
+  border-radius: var(--custom-card-border-radius);
+}
