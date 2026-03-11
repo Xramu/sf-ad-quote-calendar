@@ -22,8 +22,8 @@ export class ProductDataHandler {
     'KGM': 'kg'
   }
 
-  fetchProductData = async (eanCode) => {
-    // Reset data and 
+  async fetchProductData(eanCode) {
+    // Reset data and
     this.data = {};
     this.#clearError();
 
@@ -60,42 +60,78 @@ export class ProductDataHandler {
     return !this.hasError;
   }
 
-  hasData = () => (!!this.data && Object.keys(this.data).length > 0);
+  hasData() {
+    return !!this.data && Object.keys(this.data).length > 0;
+  }
 
   // Data Reading Methods
-  getName = () => this.data?.name;
+  getName() {
+    return this.data?.name;
+  }
 
-  getDescription = () => this.data?.description;
+  getDescription() {
+    return this.data?.description;
+  }
 
-  getPrice = () => this.data?.price;
+  getPrice() {
+    return this.data?.price;
+  }
 
-  getPriceUnit = () => this.data?.priceUnit;
+  getPriceUnit() {
+    return this.data?.priceUnit;
+  }
 
-  getPriceWithUnit = () => (this.getPrice() && this.getPriceUnit()) ? `${this.getPrice()}€ ${this.getPriceUnit()}` : null;
-  
-  getComparisonUnit = () => this.data?.comparisonUnit ? this.#comparisonUnitTable[this.data.comparisonUnit] : null;
+  getPriceWithUnit() {
+    return (this.getPrice() && this.getPriceUnit()) ? `${this.getPrice()}€ ${this.getPriceUnit()}` : null;
+  }
 
-  getComparisonPrice = () => this.data?.comparisonPrice;
-  
-  getComparisonPriceWithUnit = () => (this.getComparisonPrice() && this.getComparisonUnit()) ? `${this.getComparisonPrice()}€/${this.getComparisonUnit()}` : null;
+  getComparisonUnit() {
+    return this.data?.comparisonUnit ? this.#comparisonUnitTable[this.data.comparisonUnit] : null;
+  }
 
-  getIngredients = () => this.data?.ingredientStatement;
-  
-  getStorageGuideForConsumer = () => this.data?.productDetails?.storageGuideForConsumer;
-  
-  getCountryOfOrigin = () => this.data?.countryName?.fi;
+  getComparisonPrice() {
+    return this.data?.comparisonPrice;
+  }
 
-  getBrandName = () => this.data?.brandName;
+  getComparisonPriceWithUnit() {
+    return (this.getComparisonPrice() && this.getComparisonUnit()) ? `${this.getComparisonPrice()}€/${this.getComparisonUnit()}` : null;
+  }
 
-  getContactInformation = () => this.data?.productDetails?.contactInformation?.replaceAll('###', '').replace('Yhteystiedot', '');
+  getIngredients() {
+    return this.data?.ingredientStatement;
+  }
 
-  getEanCode = () => this.data?.ean;
+  getStorageGuideForConsumer() {
+    return this.data?.productDetails?.storageGuideForConsumer;
+  }
 
-  getImageUrl = (width = 360, height = 360) => this.data?.productDetails?.productImages?.mainImage?.urlTemplate?.replace('{MODIFIERS}', `w${width}h${height}@_q75`).replace('{EXTENSION}', 'webp');
+  getCountryOfOrigin() {
+    return this.data?.countryName?.fi;
+  }
 
-  getNutrientsEntry = (entryIndex) => this.data?.productDetails?.nutrients?.[entryIndex]?.nutrients;
+  getBrandName() {
+    return this.data?.brandName;
+  }
 
-  getNutrientsReferenceQuantity = (entryIndex) => this.data?.productDetails?.nutrients?.[entryIndex]?.referenceQuantity;
+  getContactInformation() {
+    return this.data?.productDetails?.contactInformation?.replaceAll('###', '').replace('Yhteystiedot', '');
+  }
+
+  getEanCode() {
+    return this.data?.ean;
+  }
+
+  getImageUrl(width = 360, height = 360) {
+    return this.data?.productDetails?.productImages?.mainImage?.urlTemplate?.replace('{MODIFIERS}', `w${width}h${height}@_q75`).replace('{EXTENSION}', 'webp');
+  }
+
+  getNutrientsEntry(entryIndex) {
+    return this.data?.productDetails?.nutrients?.[entryIndex]?.nutrients;
+  }
+
+  getNutrientsReferenceQuantity(entryIndex) {
+    return this.data?.productDetails?.nutrients?.[entryIndex]?.referenceQuantity;
+  }
 }
 
 // Helper method to create title value pairs
@@ -117,36 +153,56 @@ export class ProductDataFormatter {
   }
 
   // Creating title : value pairs with finnish titles
-  createNameEntry = () => createDataEntry('Nimi', this.dataHandler.getName());
+  createNameEntry() {
+    return createDataEntry('Nimi', this.dataHandler.getName());
+  }
 
-  createDescriptionEntry = () => createDataEntry('Kuvaus', this.dataHandler.getDescription());
+  createDescriptionEntry() {
+    return createDataEntry('Kuvaus', this.dataHandler.getDescription());
+  }
 
-  createPriceEntry = () => createDataEntry('Hinta', this.dataHandler.getPriceWithUnit());
+  createPriceEntry() {
+    return createDataEntry('Hinta', this.dataHandler.getPriceWithUnit());
+  }
 
-  createComparisonPriceEntry = () => createDataEntry(this.#comparisonUnitTitleTable[this.dataHandler.getComparisonUnit()], this.dataHandler.getComparisonPriceWithUnit());
+  createComparisonPriceEntry() {
+    return createDataEntry(this.#comparisonUnitTitleTable[this.dataHandler.getComparisonUnit()], this.dataHandler.getComparisonPriceWithUnit());
+  }
 
-  createIngredientsEntry = () => createDataEntry('Ainesosat', this.dataHandler.getIngredients());
+  createIngredientsEntry() {
+    return createDataEntry('Ainesosat', this.dataHandler.getIngredients());
+  }
 
-  createStorageGuideForConsumerEntry = () => createDataEntry('Säilytysohje', this.dataHandler.getStorageGuideForConsumer());
+  createStorageGuideForConsumerEntry() {
+    return createDataEntry('Säilytysohje', this.dataHandler.getStorageGuideForConsumer());
+  }
 
-  createCountryOfOriginEntry = () => createDataEntry('Valmistusmaa', this.dataHandler.getCountryOfOrigin());
+  createCountryOfOriginEntry() {
+    return createDataEntry('Valmistusmaa', this.dataHandler.getCountryOfOrigin());
+  }
 
-  createBrandNameEntry = () => createDataEntry('Valmistaja', this.dataHandler.getBrandName());
+  createBrandNameEntry() {
+    return createDataEntry('Valmistaja', this.dataHandler.getBrandName());
+  }
 
-  createContactInformationEntry = () => createDataEntry('Yhteystiedot', this.dataHandler.getContactInformation());
+  createContactInformationEntry() {
+    return createDataEntry('Yhteystiedot', this.dataHandler.getContactInformation());
+  }
 
-  createEanCodeEntry = () => createDataEntry('EAN Koodi', this.dataHandler.getEanCode());
+  createEanCodeEntry() {
+    return createDataEntry('EAN Koodi', this.dataHandler.getEanCode());
+  }
 
-  createNutrientEntries = (entryIndex) => {
+  createNutrientEntries(entryIndex) {
     const nutrients = this.dataHandler.getNutrientsEntry(entryIndex);
 
     if (!nutrients) {
       return null;
     }
-    
+
     // Create entries of each nutrient entry. Filter out any possible empty entries
     return nutrients.map((entry) => createDataEntry(entry.name, entry.value)).filter((entry) => !!entry);
-  };
+  }
 }
 
 /**
