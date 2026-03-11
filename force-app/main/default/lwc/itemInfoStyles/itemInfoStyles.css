@@ -2,7 +2,7 @@
   --info-border-color: #dddbda;
   --info-border: 1px solid var(--info-border-color);
   
-  --info-spacing: var(--slds-g-spacing-4);
+  --info-spacing: var(--slds-g-spacing-3);
   --nutrient-spacing: 0.25rem;
 
   /* Overridden by the style based on the component's input */
@@ -15,9 +15,6 @@
   display: grid;
   grid-template-columns: 1fr minmax(200px, 360px);
   gap: var(--info-spacing);
-}
-
-.item-info-section {
 }
 
 /* First Panel (Details) */
