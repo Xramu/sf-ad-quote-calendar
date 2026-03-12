@@ -1,5 +1,4 @@
-import { track, api, LightningElement } from 'lwc';
-import { ProductDataManager } from 'c/itemInfoUtils';
+import { api, LightningElement } from 'lwc';
 
 export default class SimpleItemInfoVIew extends LightningElement {
   @api eanCode;
