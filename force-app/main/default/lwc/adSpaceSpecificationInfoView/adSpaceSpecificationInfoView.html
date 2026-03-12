@@ -1,5 +1,10 @@
 <template>
   <div class="custom-card main-container">
-    <p>{adSpaceSpecificationName}</p>
+    <template if:false={hasInfoSets}>
+      <p>Mainostilalla ei ole näytettäviä tietoja.</p>
+    </template>
+    <template for:each={infoSets} for:item="infoSet">
+      <c-item-info-field key={infoSet.label} label={infoSet.label} value={infoSet.value}></c-item-info-field>
+    </template>
   </div>
 </template>
