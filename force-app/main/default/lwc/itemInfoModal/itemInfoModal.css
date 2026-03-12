@@ -1,4 +1,18 @@
+@import 'c/sharedStyles';
+
+:host {
+  --info-spacing: var(--slds-g-spacing-4);
+}
+
 .modal-content {
-  max-height: 70vh; /* keep content within viewport-friendly height */
+  max-height: 70vh;
+  overflow: hidden; /* hide any overflowing content */
+}
+
+.modal-scrollable {
+  max-height: 70vh;
+  overflow-y: auto;
   overscroll-behavior: contain;
+  display: grid;
+  gap: var(--info-spacing);
 }

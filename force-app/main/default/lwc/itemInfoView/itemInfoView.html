@@ -13,12 +13,7 @@
       <!-- Product Data -->
       <template if:true={hasProductData}>
         <template for:each={productData} for:item="pData">
-          <div key={pData.title} class="item-info-box">
-            <div>
-              <p class="slds-text-title item-info-title">{pData.title}:</p>
-            </div>
-            <lightning-formatted-rich-text value={pData.value}></lightning-formatted-rich-text>
-          </div>
+          <c-item-info-field key={pData.title} label={pData.title} value={pData.value}></c-item-info-field>
         </template>
       </template>
     </div>
