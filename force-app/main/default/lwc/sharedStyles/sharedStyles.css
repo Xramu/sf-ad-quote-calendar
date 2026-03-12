@@ -2,8 +2,8 @@
   --brand-color: var(--ief-brandPrimary, rgb(51, 117, 70));
 
   --info-border: 1px solid var(--brand-color);
-  
   --info-spacing: var(--slds-g-spacing-4);
+  --info-label-weight: 600;
   --nutrient-spacing: 0.25rem;
 
   /* Overridden by the style based on the component's input */

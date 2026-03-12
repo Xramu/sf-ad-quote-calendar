@@ -1,1 +1,5 @@
 @import 'c/sharedStyles';
+
+.main-container {
+  padding: var(--info-spacing);
+}
