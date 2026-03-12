@@ -19,10 +19,6 @@ export default class ItemInfoModal extends LightningModal {
     return this.item?.itemName || "Lisätiedot";
   }
 
-  get adSpaceSpecification() {
-    this.item?.adSpaceSpecification;
-  }
-
   handleClose = () => {
     this.close();
   };

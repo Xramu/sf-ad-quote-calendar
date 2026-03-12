@@ -4,8 +4,10 @@
   </header>
   <div class="slds-p-around_medium slds-modal__content modal-content">
     <div class="">
-      <c-ad-space-specification-info-view ad-space-specification={adSpaceSpecification}></c-ad-space-specification-info-view>
-      <div class="slds-p-bottom_medium"></div>
+      <template if:true={item.adSpaceSpecification}>
+        <c-ad-space-specification-info-view ad-space-specification={item.adSpaceSpecification}></c-ad-space-specification-info-view>
+        <div class="slds-p-bottom_medium"></div>
+      </template>
       <c-item-info-view ean-code={eanCode} details-to-show={detailsToShow}> </c-item-info-view>
     </div>
   </div>
