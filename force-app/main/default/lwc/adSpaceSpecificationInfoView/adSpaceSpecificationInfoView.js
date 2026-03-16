@@ -4,6 +4,7 @@ export default class AdSpaceSpecificationInfoView extends LightningElement {
   _adSpaceSpecification;
 
   @track infoSetGroups = [];
+  @api recordId; // AdSpaceSpecification Id for updates
 
   @api
   get adSpaceSpecification() {
@@ -31,23 +32,40 @@ export default class AdSpaceSpecificationInfoView extends LightningElement {
 
     // First section
     sets.push(this.createInfoSet({
-      'Nimi': this.adSpaceSpecification?.name,
-      'Tila': this.getIsActiveValue(this.adSpaceSpecification?.isActive),
-      'Näyttökertojen Arvio': this.adSpaceSpecification?.audienceSizeRating,
-      'Tyyppi': this.adSpaceSpecification?.adSpaceType,
-      'Paikka': this.adSpaceSpecification?.position,
-      'Ohjelma': this.adSpaceSpecification?.programRunType,
-      'Tiedotusvälineen Tyyppi': this.adSpaceSpecification?.creativeFormatType,
+      'Nimi': { value: this.adSpaceSpecification?.name },
+      'Tila': { value: this.getIsActiveValue(this.adSpaceSpecification?.isActive) },
+      'Näyttökertojen Arvio': {
+        value: this.adSpaceSpecification?.audienceSizeRating,
+        editable: true,
+        fieldName: 'AudienceSizeRating',
+        type: 'number'
+      },
+      'Tyyppi': { value: this.adSpaceSpecification?.adSpaceType },
+      'Paikka': { value: this.adSpaceSpecification?.position },
+      'Ohjelma': { value: this.adSpaceSpecification?.programRunType },
+      'Tiedotusvälineen Tyyppi': { value: this.adSpaceSpecification?.creativeFormatType },
     }));
 
     // Second section
     sets.push(this.createInfoSet({
-      'Aloituksen Viikonpäivä': this.weekdayTranslations[this.adSpaceSpecification?.startWeekDay?.toLowerCase()],
-      'Näyttöpäivät': this.combineStringList(this.adSpaceSpecification?.broadcastDays?.map(day => this.weekdayTranslations[day.toLowerCase()])),
-      'Aloituspäivämäärä': this.formatDate(this.adSpaceSpecification?.startDateTime),
-      'Lopetuspäivämäärä': this.formatDate(this.adSpaceSpecification?.endDateTime),
-      'Osio': this.combineStringList(this.adSpaceSpecification?.section),
-      'Alaosio': this.combineStringList(this.adSpaceSpecification?.subSection),
+      'Aloituksen Viikonpäivä': { value: this.weekdayTranslations[this.adSpaceSpecification?.startWeekDay?.toLowerCase()] },
+      'Näyttöpäivät': { value: this.combineStringList(this.adSpaceSpecification?.broadcastDays?.map(day => this.weekdayTranslations[day.toLowerCase()])) },
+      'Aloituspäivämäärä': {
+        value: this.formatDate(this.adSpaceSpecification?.startDateTime),
+        rawValue: this.adSpaceSpecification?.startDateTime,
+        editable: true,
+        fieldName: 'StartDateTime',
+        type: 'date'
+      },
+      'Lopetuspäivämäärä': {
+        value: this.formatDate(this.adSpaceSpecification?.endDateTime),
+        rawValue: this.adSpaceSpecification?.endDateTime,
+        editable: true,
+        fieldName: 'EndDateTime',
+        type: 'date'
+      },
+      'Osio': { value: this.combineStringList(this.adSpaceSpecification?.section) },
+      'Alaosio': { value: this.combineStringList(this.adSpaceSpecification?.subSection) },
     }));
 
     // Third section
@@ -56,12 +74,12 @@ export default class AdSpaceSpecificationInfoView extends LightningElement {
 
     if (adSpaceProduct || mediaChannel) {
       sets.push(this.createInfoSet({
-        "Mainostuotteen Nimi": adSpaceProduct?.name,
-        "Mainostuotteen Tuotekoodi": adSpaceProduct?.productCode,
-        "Mainostuotteen Kuvaus": adSpaceProduct?.description,
-        "Mediakanavan Nimi": mediaChannel?.name,
-        "Mediakanavan Tyyppi": mediaChannel?.mediaType,
-        "Mediakanavan Hintaluokka": mediaChannel?.pricingCategory,
+        "Mainostuotteen Nimi": { value: adSpaceProduct?.name },
+        "Mainostuotteen Tuotekoodi": { value: adSpaceProduct?.productCode },
+        "Mainostuotteen Kuvaus": { value: adSpaceProduct?.description },
+        "Mediakanavan Nimi": { value: mediaChannel?.name },
+        "Mediakanavan Tyyppi": { value: mediaChannel?.mediaType },
+        "Mediakanavan Hintaluokka": { value: mediaChannel?.pricingCategory },
       }));
     }
 
@@ -69,7 +87,21 @@ export default class AdSpaceSpecificationInfoView extends LightningElement {
   }
 
   createInfoSet(set) {
-    return Object.entries(set).map(([label, value]) => ({label, value})).filter(entry => !!entry.value);
+    return Object.entries(set).map(([label, fieldInfo]) => {
+      // Support both old format (direct value) and new format (object with metadata)
+      const isObject = typeof fieldInfo === 'object' && fieldInfo !== null && !Array.isArray(fieldInfo);
+      const type = isObject ? fieldInfo.type : null;
+      return {
+        label,
+        value: isObject ? fieldInfo.value : fieldInfo,
+        rawValue: isObject ? fieldInfo.rawValue : null,
+        editable: isObject ? fieldInfo.editable : false,
+        fieldName: isObject ? fieldInfo.fieldName : null,
+        type: type,
+        isNumberType: type === 'number',
+        isDateType: type === 'date'
+      };
+    }).filter(entry => entry.value !== null && entry.value !== undefined);
   }
 
   combineStringList(stringList) {

@@ -11,6 +11,10 @@ export default class ItemInfoModal extends LightningModal {
     return this.item.ean;
   }
 
+  get adSpaceSpecificationRecordId() {
+    return this.item?.adSpaceSpecification?.id;
+  }
+
   get itemCachedName() {
     return this.item.itemName ?? '';
   }

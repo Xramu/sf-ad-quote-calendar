@@ -6,7 +6,37 @@
     <template for:each={infoSetGroups} for:item="infoSetGroup">
       <div class="info-section" key={infoSetGroup}>
         <template for:each={infoSetGroup} for:item="infoSet">
-          <c-item-info-field key={infoSet.label} label={infoSet.label} value={infoSet.value}></c-item-info-field>
+          <template if:true={infoSet.editable}>
+            <!-- Editable Number Field -->
+            <template if:true={infoSet.isNumberType}>
+              <c-item-info-field-editable-number
+                key={infoSet.label}
+                label={infoSet.label}
+                value={infoSet.value}
+                record-id={recordId}
+                field-name={infoSet.fieldName}
+              ></c-item-info-field-editable-number>
+            </template>
+            <!-- Editable Date Field -->
+            <template if:true={infoSet.isDateType}>
+              <c-item-info-field-editable-date
+                key={infoSet.label}
+                label={infoSet.label}
+                value={infoSet.value}
+                raw-value={infoSet.rawValue}
+                record-id={recordId}
+                field-name={infoSet.fieldName}
+              ></c-item-info-field-editable-date>
+            </template>
+          </template>
+          <!-- Read-only Field -->
+          <template if:false={infoSet.editable}>
+            <c-item-info-field
+              key={infoSet.label}
+              label={infoSet.label}
+              value={infoSet.value}
+            ></c-item-info-field>
+          </template>
         </template>
       </div>
     </template>

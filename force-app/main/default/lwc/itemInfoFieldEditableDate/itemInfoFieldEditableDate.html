@@ -1,0 +1,44 @@
+<template>
+    <div class="info-field-box">
+        <div>
+            <p class="slds-text-title info-field-label">{label}</p>
+        </div>
+        <template if:false={isEditing}>
+            <div class="display-value">
+                <span>{displayValue}</span>
+                <lightning-button-icon
+                    icon-name="utility:edit"
+                    alternative-text="Edit"
+                    title="Edit"
+                    variant="bare"
+                    onclick={handleEdit}
+                    class="edit-button"
+                ></lightning-button-icon>
+            </div>
+        </template>
+        <template if:true={isEditing}>
+            <div class="edit-mode">
+                <lightning-input
+                    type="datetime-local"
+                    value={editValue}
+                    onchange={handleChange}
+                    variant="label-hidden"
+                ></lightning-input>
+                <div class="button-group">
+                    <lightning-button
+                        label="Save"
+                        variant="brand"
+                        onclick={handleSave}
+                        disabled={isSaving}
+                    ></lightning-button>
+                    <lightning-button
+                        label="Cancel"
+                        variant="neutral"
+                        onclick={handleCancel}
+                        disabled={isSaving}
+                    ></lightning-button>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

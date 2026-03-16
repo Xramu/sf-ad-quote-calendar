@@ -22,3 +22,9 @@
   background: var(--custom-card-background);
   border-radius: var(--custom-card-border-radius);
 }
+
+.info-field-label {
+  display: inline-block;
+  border-bottom: var(--info-border);
+  font-weight: var(--info-label-weight);
+}

@@ -52,6 +52,7 @@ public with sharing class AdCampaignCalendarService {
     }
 
     public class AdSpaceSpecificationDTO {
+        @AuraEnabled public Id id;
         @AuraEnabled public Boolean isActive;
         @AuraEnabled public Decimal audienceSizeRating;
         @AuraEnabled public String name;
@@ -71,6 +72,7 @@ public with sharing class AdCampaignCalendarService {
         @AuraEnabled public MediaChannelDTO mediaChannel;
 
         public AdSpaceSpecificationDTO(AdSpaceSpecification record) {
+            this.id = record.Id;
             this.isActive = record.IsActive;
             this.audienceSizeRating = record.AudienceSizeRating;
             this.name = record.Name;
@@ -310,6 +312,74 @@ public with sharing class AdCampaignCalendarService {
     }
 
     /**
+     * @description Update an AdSpaceSpecification record with provided field values.
+     * @param recordId Id of AdSpaceSpecification to update (required)
+     * @param fieldName Field API name to update (e.g., 'AudienceSizeRating', 'StartDateTime', 'EndDateTime')
+     * @param fieldValue New value for the field (as String, will be converted appropriately)
+     * @return AdSpaceSpecificationDTO with updated info
+     */
+    @AuraEnabled
+    public static AdSpaceSpecificationDTO updateAdSpaceSpecification(Id recordId, String fieldName, String fieldValue) {
+        if (recordId == null || String.isBlank(fieldName)) {
+            throw new AuraHandledException('recordId and fieldName are required');
+        }
+
+        // Pre-query WITH SECURITY_ENFORCED to respect FLS and sharing
+        AdSpaceSpecification existing = [
+            SELECT Id, IsActive, AudienceSizeRating, Name, Type, AdSpaceType, Position,
+                   ProgramRunType, CreativeFormatType, StartDateTime, EndDateTime,
+                   StartWeekDay, EndWeekDay, Section, SubSection, BroadcastDays,
+                   Product2.Name, Product2.ProductCode, Product2.Description,
+                   MediaChannel.Name, MediaChannel.MediaType, MediaChannel.PricingCategory
+            FROM AdSpaceSpecification
+            WHERE Id = :recordId
+            WITH SECURITY_ENFORCED
+            LIMIT 1
+        ];
+
+        if (existing == null) {
+            throw new AuraHandledException('No record found for recordId ' + recordId);
+        }
+
+        // Prepare update
+        AdSpaceSpecification upd = new AdSpaceSpecification(Id = existing.Id);
+
+        // Set the field based on field name
+        if (fieldName == 'AudienceSizeRating') {
+            upd.AudienceSizeRating = String.isNotBlank(fieldValue) ? Decimal.valueOf(fieldValue) : null;
+        } else if (fieldName == 'StartDateTime') {
+            upd.StartDateTime = String.isNotBlank(fieldValue) ? parseIsoDatetime(fieldValue) : null;
+        } else if (fieldName == 'EndDateTime') {
+            upd.EndDateTime = String.isNotBlank(fieldValue) ? parseIsoDatetime(fieldValue) : null;
+        } else {
+            throw new AuraHandledException('Unsupported field: ' + fieldName);
+        }
+
+        // User mode DML
+        Database.SaveResult sr = Database.update(upd, false, AccessLevel.USER_MODE);
+        if (!sr.isSuccess()) {
+            Database.Error err = sr.getErrors().isEmpty() ? null : sr.getErrors()[0];
+            String msg = (err != null && String.isNotBlank(err.getMessage())) ? err.getMessage() : 'Unknown error during save';
+            throw new AuraHandledException(msg);
+        }
+
+        // Re-query the latest values
+        AdSpaceSpecification refreshed = [
+            SELECT Id, IsActive, AudienceSizeRating, Name, Type, AdSpaceType, Position,
+                   ProgramRunType, CreativeFormatType, StartDateTime, EndDateTime,
+                   StartWeekDay, EndWeekDay, Section, SubSection, BroadcastDays,
+                   Product2.Name, Product2.ProductCode, Product2.Description,
+                   MediaChannel.Name, MediaChannel.MediaType, MediaChannel.PricingCategory
+            FROM AdSpaceSpecification
+            WHERE Id = :recordId
+            WITH SECURITY_ENFORCED
+            LIMIT 1
+        ];
+
+        return new AdSpaceSpecificationDTO(refreshed);
+    }
+
+    /**
      * @description Save updates to an AdWebCart__c record. Updates allowed fields only.
      * @param recordId Id of AdWebCart__c to update (required)
      * @param campaignName Optional new value for CampaignName__c
@@ -408,8 +478,35 @@ public with sharing class AdCampaignCalendarService {
 
         Integer daysBetween = referenceDate.daysBetween(myDate);
         Integer dayOfWeekNum = Math.mod(Math.abs(daysBetween), 7);
-        
+
         Integer back = dayOfWeekNum; // 0 if Sunday, 1 if Monday, ..., 6 if Saturday
         return d.addDays(-back);
+    }
+
+    /**
+     * @description Parse ISO 8601 datetime string (e.g., "2026-03-22T10:45:00.000Z") to Apex Datetime
+     * Handles both formats with and without milliseconds and timezone
+     */
+    private static Datetime parseIsoDatetime(String isoString) {
+        if (String.isBlank(isoString)) {
+            return null;
+        }
+
+        // Remove milliseconds if present (.000)
+        String cleaned = isoString.replaceAll('\\.\\d{3}', '');
+
+        // Remove timezone indicator if present (Z or +00:00)
+        cleaned = cleaned.replace('Z', '');
+        cleaned = cleaned.replaceAll('[+-]\\d{2}:\\d{2}$', '');
+
+        // Replace T with space for Apex Datetime.valueOf format
+        cleaned = cleaned.replace('T', ' ');
+
+        try {
+            // Now it should be in format: YYYY-MM-DD HH:MM:SS
+            return Datetime.valueOf(cleaned);
+        } catch (Exception e) {
+            throw new AuraHandledException('Invalid datetime format: ' + isoString);
+        }
     }
 }

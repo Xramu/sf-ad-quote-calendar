@@ -1,0 +1,27 @@
+@import 'c/sharedStyles';
+
+.display-value {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.edit-button {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.info-field-box:hover .edit-button {
+    opacity: 1;
+}
+
+.edit-mode {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.button-group {
+    display: flex;
+    gap: 0.5rem;
+}

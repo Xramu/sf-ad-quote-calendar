@@ -6,7 +6,7 @@
     <div class="slds-p-around_medium modal-scrollable">
       <template if:true={item.adSpaceSpecification}>
         <h2 class="slds-text-heading_medium">Mainostilan Tiedot</h2>
-        <c-ad-space-specification-info-view ad-space-specification={item.adSpaceSpecification}></c-ad-space-specification-info-view>
+        <c-ad-space-specification-info-view ad-space-specification={item.adSpaceSpecification} record-id={adSpaceSpecificationRecordId}></c-ad-space-specification-info-view>
       </template>
       <h2 class="slds-text-heading_medium">Tuotteen Tiedot</h2>
       <c-item-info-view ean-code={eanCode} details-to-show={detailsToShow}> </c-item-info-view>
