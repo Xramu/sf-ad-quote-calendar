@@ -2,4 +2,13 @@
 
 .main-container {
   padding: var(--info-spacing);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--info-spacing);
+}
+
+.info-section {
+  display: grid;
+  gap: var(--info-spacing);
+  align-content: start;
 }
