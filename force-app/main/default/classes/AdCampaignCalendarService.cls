@@ -348,7 +348,12 @@ public with sharing class AdCampaignCalendarService {
         if (fieldName == 'AudienceSizeRating') {
             upd.AudienceSizeRating = String.isNotBlank(fieldValue) ? Decimal.valueOf(fieldValue) : null;
         } else if (fieldName == 'StartDateTime') {
-            upd.StartDateTime = String.isNotBlank(fieldValue) ? parseIsoDatetime(fieldValue) : null;
+            Datetime newStartDateTime = String.isNotBlank(fieldValue) ? parseIsoDatetime(fieldValue) : null;
+            upd.StartDateTime = newStartDateTime;
+            // Automatically set startWeekDay based on the new StartDateTime
+            if (newStartDateTime != null) {
+                upd.StartWeekDay = getWeekdayName(newStartDateTime);
+            }
         } else if (fieldName == 'EndDateTime') {
             upd.EndDateTime = String.isNotBlank(fieldValue) ? parseIsoDatetime(fieldValue) : null;
         } else {
@@ -508,5 +513,29 @@ public with sharing class AdCampaignCalendarService {
         } catch (Exception e) {
             throw new AuraHandledException('Invalid datetime format: ' + isoString);
         }
+    }
+
+    /**
+     * @description Get weekday name from a Datetime value
+     * Returns lowercase weekday name (sunday, monday, tuesday, etc.)
+     */
+    private static String getWeekdayName(Datetime dt) {
+        if (dt == null) {
+            return null;
+        }
+
+        // Use a reference Sunday (January 7, 1900 was a Sunday)
+        Date referenceDate = Date.newInstance(1900, 1, 7);
+        Date targetDate = dt.date();
+
+        Integer daysBetween = referenceDate.daysBetween(targetDate);
+        Integer dayOfWeek = Math.mod(daysBetween, 7);
+
+        // dayOfWeek: 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        List<String> weekdays = new List<String>{
+            'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+        };
+
+        return weekdays[dayOfWeek];
     }
 }

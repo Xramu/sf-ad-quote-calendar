@@ -48,9 +48,15 @@ export default class ItemInfoFieldEditableNumber extends LightningElement {
 
             this.showToast('Success', 'Field updated successfully', 'success');
 
-            // Dispatch custom event to notify parent component
+            // Dispatch custom event to notify parent component with full updated record
             this.dispatchEvent(new CustomEvent('fieldupdate', {
-                detail: { fieldName: this.fieldName, newValue: this.value }
+                detail: {
+                    fieldName: this.fieldName,
+                    newValue: this.value,
+                    updatedRecord: result
+                },
+                bubbles: true,
+                composed: true
             }));
         } catch (error) {
             this.showToast('Error', error.body?.message || 'Error updating field', 'error');

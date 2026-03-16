@@ -23,8 +23,12 @@ export default class AdSpaceSpecificationInfoView extends LightningElement {
 
   set adSpaceSpecification(value) {
     this._adSpaceSpecification = value;
+    this.refreshInfoSets();
+  }
 
-    if (!value) {
+  refreshInfoSets() {
+    if (!this._adSpaceSpecification) {
+      this.infoSetGroups = [];
       return;
     }
 
@@ -141,5 +145,17 @@ export default class AdSpaceSpecificationInfoView extends LightningElement {
 
   get hasInfoSets() {
     return this.infoSetGroups?.length > 0 && this.infoSetGroups?.[0]?.length;
+  }
+
+  handleFieldUpdate(event) {
+    const { updatedRecord } = event.detail;
+
+    // Update the internal specification object with the full updated record from Apex
+    if (updatedRecord && this._adSpaceSpecification) {
+      this._adSpaceSpecification = updatedRecord;
+
+      // Refresh the UI to show all updated values (including auto-calculated fields)
+      this.refreshInfoSets();
+    }
   }
 }

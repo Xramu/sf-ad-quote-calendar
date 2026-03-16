@@ -15,6 +15,7 @@
                 value={infoSet.value}
                 record-id={recordId}
                 field-name={infoSet.fieldName}
+                onfieldupdate={handleFieldUpdate}
               ></c-item-info-field-editable-number>
             </template>
             <!-- Editable Date Field -->
@@ -26,6 +27,7 @@
                 raw-value={infoSet.rawValue}
                 record-id={recordId}
                 field-name={infoSet.fieldName}
+                onfieldupdate={handleFieldUpdate}
               ></c-item-info-field-editable-date>
             </template>
           </template>
