@@ -12,5 +12,20 @@
         <members>WebAdCartStatusOptions</members>
         <name>GlobalValueSet</name>
     </types>
+    <types>
+        <members>AdWebCart__c-Ad Web Cart Layout</members>
+        <members>AdWebCartItem__c-Ad Web Cart Item Layout</members>
+        <name>Layout</name>
+    </types>
+    <types>
+        <members>AdQuoteCalendar</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
+        <members>Ad_Quote_Calendar_App</members>
+        <members>AdWebCart__c</members>
+        <members>AdWebCartItem__c</members>
+        <name>CustomTab</name>
+    </types>
     <version>65.0</version>
 </Package>
