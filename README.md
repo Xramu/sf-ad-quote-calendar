@@ -80,7 +80,7 @@ You will need to have your Visual Studio Code set up with Salesforce's extension
     Open the Agentforce Vibes chat inside your Visual Studio Code and run the command:
 
     ```sh
-    /deploy_calendar
+    /deploy_calendar.md
     ```
 
     ![Image of the command written into Agentforce Vibes chat window](images/agentforce_vibes_deploy_preview.png)
