@@ -39,7 +39,7 @@
 
     Deploy the metadata of the custom objects second. The object metadata needs to be deployed before the rest of the metadata.
 
-    Pass the sourceDir as `force-app/main/default/objects/` while using the tool:
+    Pass the sourceDir as `force-app/main/default/objects` while using the tool:
 
     ```sh
     deploy_metadata
