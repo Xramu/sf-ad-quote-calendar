@@ -27,5 +27,9 @@
         <members>AdWebCartItem__c</members>
         <name>CustomTab</name>
     </types>
+    <types>
+        <members>AdQuoteCalendarPermissions</members>
+        <name>PermissionSet</name>
+    </types>
     <version>65.0</version>
 </Package>
