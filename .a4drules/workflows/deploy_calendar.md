@@ -18,9 +18,23 @@
 
     This username will be used for the deployment of the metadata and the needed permissions.
 
-2. **Deploy the Metadata of the Objects**
+2. **Deploy the Metadata of the Global Value Sets**
 
-    Deploy the metadata of the custom objects first. The object metadata needs to be deployed before the rest of the metadata.
+    Deploy the metadata of the global value sets first. These are used inside object metadata that needs to be deployed second.
+
+    Pass the sourceDir as `force-app/main/default/globalValueSets` while using the tool:
+
+    ```sh
+    deploy_metadata
+    ```
+
+    If deployment was not successful, explain to the user what went wrong and ask for any missing information.
+    Do not proceed until deployment of global value set metadata was successful.
+
+
+3. **Deploy the Metadata of the Objects**
+
+    Deploy the metadata of the custom objects second. The object metadata needs to be deployed before the rest of the metadata.
 
     Pass the sourceDir as `force-app/main/default/objects` while using the tool:
 
@@ -31,7 +45,7 @@
     If deployment was not successful, explain to the user what went wrong and ask for any missing information.
     Do not proceed until deployment of object metadata was successful.
 
-2. **Deploy the Rest of the Metadata**
+4. **Deploy the Rest of the Metadata**
 
     Deploy the rest of the metadata after the object metadata has successfully deployed.
 
@@ -45,7 +59,7 @@
     Do not proceed until deployment of all metadata has succeeded.
 
 
-4. **Assign Permission Set to the User**
+5. **Assign Permission Set to the User**
 
     Assign the permission set named `AdQuoteCalendarPermissions` to the current user by using the tool:
 
@@ -56,7 +70,7 @@
     If the assignment was unsuccessful, run neccessary commands or ask the user for any missing information.
     If the assignment is still not working after a few tries, tell the user that they can follow the manual instructions in the GitHub project to manually assign the needed permission for their user.
 
-5. **Notify the User**
+6. **Notify the User**
 
     Notify the user that the project was successfully deployed if each command eventually succeeded.
 
