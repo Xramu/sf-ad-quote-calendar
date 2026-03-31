@@ -14,9 +14,9 @@ Rest of the code is written and tweaked by hand.
 
 ## Description
 
-A Lightning Web Component calendar to visualize advertiesement campaings that belong to the currently logged in user inside the Salesforce platform. 
+A Lightning Web Component calendar to visualize advertisement campaigns that belong to the currently logged-in user inside the Salesforce platform. 
 
-The calendar shows years in week-based cells that are colored based on the campaigns or events happening during them. Green colored cells indicate that the user has campaigns during that week, gray colored cells indicate that the week has other occupations during it.
+The calendar shows years in week-based cells that are colored based on the campaigns or events happening during them. Green-colored cells indicate that the user has campaigns during that week, gray-colored cells indicate that the week has other occupations during it.
 
 The campaigns and campaign items are records of custom Salesforce objects. Users can edit and save the details of their campaigns inside the calendar component.
 
@@ -28,7 +28,7 @@ Highlighted complex components of the project that were manually developed.
 
 ### EAN Scraper Service
 
-Apex service [EanScraperService.cls](force-app/main/default/classes/EanScraperService.cls) is used for scraping data using a HTTP request.
+Apex service [EanScraperService.cls](force-app/main/default/classes/EanScraperService.cls) is used for scraping data using an HTTP request.
 
 The HTTP request is made to the store's page by adding the EAN code to the path of the URL.
 
@@ -36,7 +36,7 @@ The website always sends a status of 308 for permanent redirect where the path g
 
 Once the HTML body is successfully retrieved, the service will find the script element that conveniently contains all of the data for the page inside it.
 
-The service parses the received JSON section of the script into a String, Object Map to read the data more efficiently.
+The service parses the received JSON section of the script into a String-Object Map to read the data more efficiently.
 
 [Item Info Utils](#item-info-utils) calls the service's fetchProductDetailsJsonFromEanCode to receive all of the data that is relevant to the product in a serialized JSON string.
 
@@ -54,10 +54,31 @@ ProductDataManager is a child class of ProductDataHandler but also includes Prod
 
 Secondary Lightning Web Component [itemInfoView](force-app/main/default/lwc/itemInfoView) is used for displaying specified data of a product based on the inputs of the component.
 
-The component takes input parameters for EAN code, preview image width & height and a comma seperated string of the details to be shown. For example [simpleItemInfoView](force-app/main/default/lwc/simpleItemInfoView) is just a wrapper component of this component, but exposes only a few specific details of the product.
+The component takes input parameters for EAN code, preview image width & height and a comma-seperated string of the details to be shown. For example [simpleItemInfoView](force-app/main/default/lwc/simpleItemInfoView) is just a wrapper component of this component but exposes only a few specific details of the product.
 
 ![Image of the product preview view.](images/item_info_view_preview.png)
 
 # Deployment Guide
 
-W.I.P
+[Resources for installing VSCode for Salesforce DX projects](https://developer.salesforce.com/docs/platform/sfvscode-extensions/overview)
+
+You will need to have your Visual Studio Code set up with Salesforce's extensions to deploy this project.
+
+## Deploying the Component to Your Org
+
+*Disclaimer: This is a demo project component and should not be deployed into a production org unless you know the component thoroughly!*
+
+1. ### Clone the Repository to Your Local Machine
+    Use git to clone the repository or download it and open it in Visual Studio Code.
+
+2. ### Connect to Your Org
+    Press `Command + Shift + P` on Mac or `Control + Shift + P` on Windows to bring up the Command Palette. Search for the command `SFDX: Authorize an Org` and run it.
+
+3. ### Deploy Using Agentforce Vibes Workflow
+    Open the Agentforce Vibes chat inside your Visual Studio Code and run the command:
+
+    ```sh
+    /deploy_calendar
+    ```
+
+    If the workflow was successfully run, the lightning web components and the required custom objects and permissions should be deployed to your connected org.
