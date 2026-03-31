@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Lightning App of the Ad Quote Calendar.</description>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>adQuoteCalendar</componentName>
+                <identifier>c_adQuoteCalendar</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>detailsToShow</name>
+                    <value>Image, Nutrients, Name, Description, Price, Comparison Price, Ingredients, Storage Guide, Country of Origin, Brand Name, Contact Information, EAN Code</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>eanCode</name>
+                    <value>6415712506032</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>imageHeight</name>
+                    <value>360</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>imageWidth</name>
+                    <value>360</value>
+                </componentInstanceProperties>
+                <componentName>itemInfoView</componentName>
+                <identifier>c_itemInfoView</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>eanCode</name>
+                    <value>6415712506032</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>imageHeight</name>
+                    <value>360</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>imageWidth</name>
+                    <value>360</value>
+                </componentInstanceProperties>
+                <componentName>simpleItemInfoView</componentName>
+                <identifier>c_simpleItemInfoView</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>main</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <masterLabel>Ad Quote Calendar App</masterLabel>
+    <template>
+        <name>flexipage:defaultAppHomeTemplate</name>
+    </template>
+    <type>AppPage</type>
+</FlexiPage>

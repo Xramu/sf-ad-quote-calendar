@@ -28,6 +28,11 @@
         <name>CustomTab</name>
     </types>
     <types>
+        <members>AdQuoteCalendarApp</members>
+        <members>Ad_Quote_Calendar_UtilityBar</members>
+        <name>FlexiPage</name>
+    </types>
+    <types>
         <members>AdQuoteCalendarPermissions</members>
         <name>PermissionSet</name>
     </types>
