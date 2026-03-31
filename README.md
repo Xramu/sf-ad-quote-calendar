@@ -83,6 +83,8 @@ You will need to have your Visual Studio Code set up with Salesforce's extension
     /deploy_calendar
     ```
 
+    ![Image of the command written into Agentforce Vibes chat window](images/agentforce_vibes_deploy_preview.png)
+
     If the workflow was successfully run, the Lightning Web Components and the required custom objects and permissions should be deployed to your connected org.
 
 ## Manual Deployment
