@@ -9,6 +9,10 @@
 - Always use the username from step 1, this workflow is supposed to be targetted at the default org.
 - Use compact and clear language whenever asking questions or describng the steps, don't explain too much in detail unless asked.
 
+## No Code Changes
+
+If the deployment was unsuccessful, never start editing the code under any circumstances. Let the user know what step went wrong and tell them to check the manual deployment steps from the README.md file inside the github repository.
+
 ## Instructions
 
 1. **Get the username**
