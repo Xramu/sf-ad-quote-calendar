@@ -33,6 +33,15 @@
         <name>FlexiPage</name>
     </types>
     <types>
+        <members>SKaupat</members>
+        <members>SKaupatImages</members>
+        <name>RemoteSiteSetting</name>
+    </types>
+    <types>
+        <members>SKaupatImages</members>
+        <name>CspTrustedSite</name>
+    </types>
+    <types>
         <members>AdQuoteCalendarPermissions</members>
         <name>PermissionSet</name>
     </types>
