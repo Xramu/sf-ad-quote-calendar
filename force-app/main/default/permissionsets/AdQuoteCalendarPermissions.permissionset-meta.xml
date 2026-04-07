@@ -265,6 +265,10 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
+        <tab>Ad_Quote_Calendar_App</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>standard-AdSpaceSpecification</tab>
         <visibility>Visible</visibility>
     </tabSettings>
