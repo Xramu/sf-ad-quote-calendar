@@ -11,6 +11,7 @@ Rest of the code is written and tweaked by hand.
 - [Description](#description)
 - [Highlights](#highlights)
 - [Deployment Guide](#deployment-guide)
+- [Deployment Troubleshooting](#deployment-troubleshooting)
 
 ## Description
 
@@ -66,6 +67,17 @@ For all the details that the Item Info View can show, see the getter `allDetailT
 
 You will need to have your Visual Studio Code set up with Salesforce's extensions to deploy this project.
 
+## ORG REQUIREMENTS
+
+This project requires the following objects:
+- Product2
+- AdSpaceSpecification
+- MediaChannel
+
+For demo org templates, you should use Media on Core IDO template.
+
+![Preview of the Media on Core IDO demo org.](images/demo_org_type_preview.png)
+
 ## Deploying the Component to Your Org (Agentforce Vibes Workflow)
 
 *Disclaimer: This is a demo project component and should not be deployed into a production org unless you know the component thoroughly!*
@@ -77,13 +89,24 @@ You will need to have your Visual Studio Code set up with Salesforce's extension
     Press `Command + Shift + P` on Mac or `Control + Shift + P` on Windows to bring up the Command Palette. Search for the command `SFDX: Authorize an Org` and run it.
 
 3. ### Deploy Using Agentforce Vibes Workflow
+
+    **IF AGENTFORCE VIBES RUNS INTO ISSUES, USE THE [MANUAL DEPLOYMENT STEPS](#manual-deployment)**
+
     Open the Agentforce Vibes chat inside your Visual Studio Code and run the command:
 
     ```sh
     /deploy_calendar.md
     ```
 
+    Preview of what giving the deploy command should look like in the chat window:
+
     ![Image of the command written into Agentforce Vibes chat window](images/agentforce_vibes_deploy_preview.png)
+
+    Agentforce Vibes will ask your permission to deploy metadata, keep pressing **Approve** as long as the tool Vibes is trying to use is **deploy_metadata**
+
+    Preview of the chat window when Agentforce Vibes is asking for deployment permission:
+
+    ![Image of the Agentforce Vibes asking for permission to deploy metadata.](images/agentforce_vibes_approve_preview.png)
 
     If the workflow was successfully run, the Lightning Web Components and the required custom objects and permissions should be deployed to your connected org.
 
@@ -97,16 +120,33 @@ If the deployment with Agentforce Vibes was unsuccessful, you can follow these s
 2. ### Connect to Your Org
     Press `Command + Shift + P` on Mac or `Control + Shift + P` on Windows to bring up the Command Palette. Search for the command `SFDX: Authorize an Org` and run it.
 
-3. ### Deploy The Source
+3. ### Deploy The Metadata
 
-    Right click the `force-app` folder and select `SFDX: Deploy This Source to Org`
+    These steps will make sure that the metadata is deployed in the right order. Otherwise the deployment might fail because of missing dependencies.
 
-    **OR**
+    1. **Deploy Global Value Sets** 
+    
+        Right click the folder `force-app/main/default/globalValueSets` and select **SFDX: Deploy This Source to Org**
 
-    Run the command
-    ```sh
-    sf project deploy start
-    ```
+    2. **Deploy Objects**
+    
+        Right click the folder `force-app/main/default/objects` and select **SFDX: Deploy This Source to Org**
+
+    3. **Deploy Apex Classes**
+    
+        Right click the folder `force-app/main/default/classes` and select **SFDX: Deploy This Source to Org**
+
+    4. **Deploy Lightning Web Components**
+    
+        Right click the folder `force-app/main/default/lwc` and select **SFDX: Deploy This Source to Org**
+
+    5. **Deploy Rest of the Metadata**
+    
+        Finally right click the `force-app` folder and select **SFDX: Deploy This Source to Org**
+
+    Preview of where the **SFDX: Deploy This Source to Org** is located on the dropdown menu:
+
+    ![Image previewing what the dropdown should look like.](images/deploy_this_source_preview.png)
 
 4. ### Assign Users To View The Calendar App
 
@@ -114,10 +154,50 @@ If the deployment with Agentforce Vibes was unsuccessful, you can follow these s
 
     Click the gear icon (cogwheel) on the top right and go to `Setup` and search for `Permission Sets` in the Quick Find.
 
-    Find and click the `Ad Quote Calendar Permissions` permission set.
+    Find and click the `Ad Quote Calendar Permissions` permission set. If you can not see the permission set, select `All` from the dropdown menu to show all permission sets.
+
+    ![Preview of the permission set highlighted in the list of permission sets.](images/permissions_list_preview.png)
 
     Click `Manage Assignments` and then `Add Assignment`
+
+    ![Preview of the Manage Assignments button highlighted.](images/permissions_manage_assignments_preview.png)
 
     Select yourself and anyone else needed from the list using the checkboxes on the left.
 
     Click `Next` and then `Assign`
+
+    You should now see yourself in the list of people who have the permission set assigned to them.
+
+    ![Preview of the assigned people.](images/permission_set_final_preview.png)
+
+5. ### View the Ad Quote Calendar App
+
+    Press `Command + R` on Mac or `Control + R` on Windows to refresh your window.
+
+    Click the App Launcher from the top left corner and search for `Ad Quote Calendar`
+
+    ![Preview of the App being highlighted inside the App Launcher search.](images/app_search_preview.png)
+
+    Click the `Ad Quote Calendar` to open the application with a tab containing the calendar component.
+
+
+# Deployment Troubleshooting
+
+### Agentforce Vibes is Stuck Deploying or Could Not Deploy the Project
+
+Agentforce Vibes might have slight randomness when running workflows, try to run the workflow again in a new chat by pressing the `+` Sign at the top of the chat window.
+
+![Preview of the + icon to start a new chat with Agentforce Vibes](images/new_task_preview.png)
+
+If the deployment is still running into issues please follow to the [Manual Deployment Steps](#manual-deployment)
+
+### Metadata Does Still Not Deploy
+
+Metadata deployment could fail because of the following reasons:
+
+- Metadata was not deployed in the right order. Make sure the follow the order in [Deploy The Metadata](#deploy-the-metadata)
+- The org that you're trying to deploy to, does not include the needed objects. See [ORG REQUIREMENTS](#org-requirements)
+
+### Metadata Deployed but Ad Quote Calendar is Not Visible
+
+Make sure you have followed the steps at [Assign Users To View The Calendar App](#assign-users-to-view-the-calendar-app) to make sure you have access to see the calendar app.
