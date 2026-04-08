@@ -10,13 +10,13 @@
   <section class="slds-grid slds-wrap">
     <div class="slds-col slds-size_1-of-1 custom-card">
       <div class="slds-grid slds-grid_align-spread slds-p-around_small">
-        <div class="slds-text-heading_medium">Kampanja Kalenteri</div>
+        <div class="slds-text-heading_medium">{calendarHeader}</div>
         <div class="slds-grid slds-grid_vertical-align-center yearControls">
-          <button class="btn-nav" title="Previous Year" onclick={handlePrevYear} aria-label="Previous Year">&#9664;</button>
+          <button class="btn-nav" title={previousYearButtonLabel} onclick={handlePrevYear} aria-label={previousYearButtonLabel}>&#9664;</button>
           <div class="slds-m-horizontal_small slds-text-heading_small" data-id="currentYear">
             {currentYearLabel}
           </div>
-          <button class="btn-nav" title="Next Year" onclick={handleNextYear} aria-label="Next Year">&#9654;</button>
+          <button class="btn-nav" title={nextYearButtonLabel} onclick={handleNextYear} aria-label={nextYearButtonLabel}>&#9654;</button>
         </div>
       </div>
     </div>

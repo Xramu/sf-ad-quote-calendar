@@ -12,7 +12,7 @@
  *  - Weeks are Sunday-start, week numbers computed on server
  *  - No inline math/concat in template per project rules
  */
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, api} from 'lwc';
 import getWeeklySummary from '@salesforce/apex/AdCampaignCalendarService.getWeeklySummary';
 
 export default class AdQuoteCalendar extends LightningElement {
@@ -23,6 +23,21 @@ export default class AdQuoteCalendar extends LightningElement {
   // Internal store for week summaries keyed by week number
   _weekSummariesByKey = {};
   @track weekSummariesArray = [];
+
+  // Translations
+  @api inEnglish = false;
+
+  get calendarHeader() {
+    return this.inEnglish ? 'Campaign Calendar' : 'Kampanja Kalenteri'
+  }
+
+  get nextYearButtonLabel() {
+    return this.inEnglish ? 'Next Year' : 'Seuraava Vuosi'
+  }
+
+  get previousYearButtonLabel() {
+    return this.inEnglish ? 'Previous Year' : 'Edellinen Vuosi'
+  }
 
   connectedCallback() {
     this.loadWeeklySummary();

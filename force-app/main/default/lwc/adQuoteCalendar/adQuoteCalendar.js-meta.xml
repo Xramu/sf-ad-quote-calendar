@@ -11,4 +11,13 @@
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
     </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage,lightningCommunity__Default">
+            <property
+                name="inEnglish"
+                label="Display in English"
+                description="When toggled on, the text inside the component will switch to English."
+                type="Boolean" />
+        </targetConfig>
+    </targetConfigs>
 </LightningComponentBundle>
