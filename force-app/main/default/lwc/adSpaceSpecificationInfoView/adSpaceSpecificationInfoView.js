@@ -2,15 +2,11 @@ import { LightningElement, track, api } from 'lwc';
 
 export default class AdSpaceSpecificationInfoView extends LightningElement {
   _adSpaceSpecification;
+  _inEnglish = false;
 
   @track infoSetGroups = [];
   @api recordId; // AdSpaceSpecification Id for updates
-
-  @api
-  get adSpaceSpecification() {
-    return this._adSpaceSpecification;
-  }
-
+  
   weekdayTranslations = {
     "sunday": "Sunnuntai",
     "monday": "Maanantai",
@@ -19,6 +15,21 @@ export default class AdSpaceSpecificationInfoView extends LightningElement {
     "thursday": "Torstai",
     "friday": "Perjantai",
     "saturday": "Lauantai",
+  }
+
+  @api
+  get inEnglish() {
+    return this._inEnglish;
+  }
+
+  set inEnglish(value) {
+    this._inEnglish = value;
+    this.refreshInfoSets();
+  }
+
+  @api
+  get adSpaceSpecification() {
+    return this._adSpaceSpecification;
   }
 
   set adSpaceSpecification(value) {
@@ -32,44 +43,95 @@ export default class AdSpaceSpecificationInfoView extends LightningElement {
       return;
     }
 
+    // Translated titles (This is quite the mess)
+    const titles = this.inEnglish ?
+    {
+      name: 'Name',
+      activityState: 'State',
+      audienceSizeRating: 'Audience Size Rating',
+      adSpaceType: 'Ad Space Type',
+      position: 'Position',
+      programRunType: 'Program Run Type',
+      creativeFormatType: 'Creative Format Type',
+      startWeekDay: 'Start Week Day',
+      broadcastDays: 'Broadcast Days',
+      startDateTime: 'Start Date',
+      endDateTime: 'End Date',
+      section: 'Section',
+      subSection: 'Subsection',
+      productName: 'Product Name',
+      productCode: 'Product Code',
+      productDescription: 'Product Description',
+      channelName: 'Media Channel Name',
+      channelMediaType: 'Media Channel Type',
+      channelPricingCategory: 'Media Channel Pricing Category',
+    } :
+    {
+      name: 'Nimi',
+      activityState: 'Tila',
+      audienceSizeRating: 'Näyttökertojen Arvio',
+      adSpaceType: 'Tyyppi',
+      position: 'Paikka',
+      programRunType: 'Ohjelma',
+      creativeFormatType: 'Tiedotusvälineen Tyyppi',
+      startWeekDay: 'Aloituksen Viikonpäivä',
+      broadcastDays: 'Näyttöpäivät',
+      startDateTime: 'Aloituspäivämäärä',
+      endDateTime: 'Lopetuspäivämäärä',
+      section: 'Osio',
+      subSection: 'Alaosio',
+      productName: 'Mainostuotteen Nimi',
+      productCode: 'Mainostuotteen Tuotekoodi',
+      productDescription: 'Mainostuotteen Kuvaus',
+      channelName: 'Mediakanavan Nimi',
+      channelMediaType: 'Mediakanavan Tyyppi',
+      channelPricingCategory: 'Mediakanavan Hintaluokka',
+    };
+
     const sets = [];
 
     // First section
     sets.push(this.createInfoSet({
-      'Nimi': { value: this.adSpaceSpecification?.name },
-      'Tila': { value: this.getIsActiveValue(this.adSpaceSpecification?.isActive) },
-      'Näyttökertojen Arvio': {
+      [titles.name]: { value: this.adSpaceSpecification?.name },
+      [titles.activityState]: { value: this.getIsActiveValue(this.adSpaceSpecification?.isActive) },
+      [titles.audienceSizeRating]: {
         value: this.adSpaceSpecification?.audienceSizeRating,
         editable: true,
         fieldName: 'AudienceSizeRating',
         type: 'number'
       },
-      'Tyyppi': { value: this.adSpaceSpecification?.adSpaceType },
-      'Paikka': { value: this.adSpaceSpecification?.position },
-      'Ohjelma': { value: this.adSpaceSpecification?.programRunType },
-      'Tiedotusvälineen Tyyppi': { value: this.adSpaceSpecification?.creativeFormatType },
+      [titles.adSpaceType]: { value: this.adSpaceSpecification?.adSpaceType },
+      [titles.position]: { value: this.adSpaceSpecification?.position },
+      [titles.programRunType]: { value: this.adSpaceSpecification?.programRunType },
+      [titles.creativeFormatType]: { value: this.adSpaceSpecification?.creativeFormatType },
     }));
 
     // Second section
     sets.push(this.createInfoSet({
-      'Aloituksen Viikonpäivä': { value: this.weekdayTranslations[this.adSpaceSpecification?.startWeekDay?.toLowerCase()] },
-      'Näyttöpäivät': { value: this.combineStringList(this.adSpaceSpecification?.broadcastDays?.map(day => this.weekdayTranslations[day.toLowerCase()])) },
-      'Aloituspäivämäärä': {
+      [titles.startWeekDay]: { value:
+        this.inEnglish ?
+          this.adSpaceSpecification?.startWeekDay :
+          this.weekdayTranslations[this.adSpaceSpecification?.startWeekDay?.toLowerCase()] },
+      [titles.broadcastDays]: { value:
+        this.inEnglish ?
+        this.combineStringList(this.adSpaceSpecification?.broadcastDays) :
+        this.combineStringList(this.adSpaceSpecification?.broadcastDays?.map(day => this.weekdayTranslations[day.toLowerCase()])) },
+      [titles.startDateTime]: {
         value: this.formatDate(this.adSpaceSpecification?.startDateTime),
         rawValue: this.adSpaceSpecification?.startDateTime,
         editable: true,
         fieldName: 'StartDateTime',
         type: 'date'
       },
-      'Lopetuspäivämäärä': {
+      [titles.endDateTime]: {
         value: this.formatDate(this.adSpaceSpecification?.endDateTime),
         rawValue: this.adSpaceSpecification?.endDateTime,
         editable: true,
         fieldName: 'EndDateTime',
         type: 'date'
       },
-      'Osio': { value: this.combineStringList(this.adSpaceSpecification?.section) },
-      'Alaosio': { value: this.combineStringList(this.adSpaceSpecification?.subSection) },
+      [titles.section]: { value: this.combineStringList(this.adSpaceSpecification?.section) },
+      [titles.subSection]: { value: this.combineStringList(this.adSpaceSpecification?.subSection) },
     }));
 
     // Third section
@@ -78,12 +140,12 @@ export default class AdSpaceSpecificationInfoView extends LightningElement {
 
     if (adSpaceProduct || mediaChannel) {
       sets.push(this.createInfoSet({
-        "Mainostuotteen Nimi": { value: adSpaceProduct?.name },
-        "Mainostuotteen Tuotekoodi": { value: adSpaceProduct?.productCode },
-        "Mainostuotteen Kuvaus": { value: adSpaceProduct?.description },
-        "Mediakanavan Nimi": { value: mediaChannel?.name },
-        "Mediakanavan Tyyppi": { value: mediaChannel?.mediaType },
-        "Mediakanavan Hintaluokka": { value: mediaChannel?.pricingCategory },
+        [titles.productName]: { value: adSpaceProduct?.name },
+        [titles.productCode]: { value: adSpaceProduct?.productCode },
+        [titles.productDescription]: { value: adSpaceProduct?.description },
+        [titles.channelName]: { value: mediaChannel?.name },
+        [titles.channelMediaType]: { value: mediaChannel?.mediaType },
+        [titles.channelPricingCategory]: { value: mediaChannel?.pricingCategory },
       }));
     }
 
@@ -140,7 +202,11 @@ export default class AdSpaceSpecificationInfoView extends LightningElement {
       return null;
     }
 
-    return isActive ? 'Aktiivinen' : 'Ei Aktiivinen'
+    if (this.inEnglish) {
+      return isActive ? 'Active' : 'Inactive';
+    }
+
+    return isActive ? 'Aktiivinen' : 'Ei Aktiivinen';
   }
 
   get hasInfoSets() {
