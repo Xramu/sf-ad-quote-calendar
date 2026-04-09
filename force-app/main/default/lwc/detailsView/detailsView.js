@@ -20,6 +20,8 @@ export default class DetailsView extends LightningElement {
   @api weekNumber;
   @api campaignId; // optionally preselected from parent
 
+  @api inEnglish = false;
+
   @track campaigns = [];
   @track selectedCampaignId = null;
 
@@ -39,6 +41,58 @@ export default class DetailsView extends LightningElement {
     'Pre-Booked': 'Ennakkovarattu',
     'Confirmed': 'Varmistettu'
   };
+
+  get weeksCampaignsTitle() {
+    return this.inEnglish ? `Week ${this.weekNumber || ''} Campaigns` : `Viikon ${this.weekNumber || ''} Kampanjat`;
+  }
+
+  get noWeekSelectedText() {
+    return this.inEnglish ? 'Select a week to see its campaigns' : 'Valitse viikko nähdäksesi sen kampanjat'
+  }
+
+  get campaignDetailsTitle() {
+    return this.inEnglish ? 'Campaign Details' : 'Kampanjan Tiedot'
+  }
+
+  get campaignNameTitle() {
+    return this.inEnglish ? 'Campaign Name' : 'Kampanjan Nimi';
+  }
+
+  get campaignTimePeriodTitle() {
+    return this.inEnglish ? 'Campaign Time Frame' : 'Kampanjan Aikaväli';
+  }
+
+  get campaignDescriptionTitle() {
+    return this.inEnglish ? 'Campaign Description' : 'Kampanjan Kuvaus';
+  }
+
+  get campaignStatusTitle() {
+    return this.inEnglish ? 'Campaign Status' : 'Kampanjan Tilanne';
+  }
+
+  get campaignProductsTitle() {
+    return this.inEnglish ? 'Campaign Products' : 'Kampanjan Tuotteet';
+  }
+
+  get saveButtonLabelText() {
+    return this.inEnglish ? 'Save' : 'Tallenna'
+  }
+
+  get savingSpinnerText() {
+    return this.inEnglish ? 'Saving...' : 'Tallennetaan...'
+  }
+
+  get noCampaignSelectedText() {
+    return this.inEnglish ? 'Select a campaign to see its details' : 'Valitse kampanja nähdäksesi sen tiedot'
+  }
+
+  get noCampaignsThisWeekText() {
+    return this.inEnglish ? 'No campaigns this week' : 'Ei kampanjoita tällä viikolla';
+  }
+
+  get noCampaignItemsText() {
+    return this.inEnglish ? 'No Products' : 'Ei Tuotteita';
+  }
 
   // Derived display fields (status/time period) resolved from selected campaign
   get hasWeek() {
@@ -182,7 +236,8 @@ export default class DetailsView extends LightningElement {
       await ItemInfoModal.open({
         size: 'medium',
         label: 'Product View',
-        item: modalInput
+        item: modalInput,
+        inEnglish: this.inEnglish
       });
     } catch (e) {
       console.log(e);
@@ -228,7 +283,7 @@ export default class DetailsView extends LightningElement {
   // Display helpers (read-only)
   get statusText() {
     const sel = this.campaigns.find((c) => c.id === this.selectedCampaignId);
-    return this.statusesTranslations[sel?.status] ?? '—';
+    return (this.inEnglish ? sel?.status : this.statusesTranslations[sel?.status]) ?? '—';
   }
 
   get timePeriodText() {

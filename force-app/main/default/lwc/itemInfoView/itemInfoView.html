@@ -3,10 +3,10 @@
     <!-- Left column: Product Data -->
     <div class="item-info-first-panel slds-grid slds-grid_vertical" data-id="product-data">
       <template if:true={dataManager.isLoadingData}>
-        <p>Haetaan tuotteen tietoja...</p>
+        <p>{fetchingProductDetailsText}</p>
       </template>
       <template if:true={dataManager.hasError}>
-        <p>Virhe ladattaessa tuotetta.</p>
+        <p>{failedFetchingProductDetailsText}</p>
         <p>{dataManager.errorMessage}</p>
       </template>
 
@@ -28,7 +28,7 @@
       <template if:true={hasProductNutrients}>
         <div class="item-info-nutrient-container">
           <div class="item-info-nutrient-box">
-            <p class="slds-text-title item-info-nutrient-title">Ravintosisältö:</p>
+            <p class="slds-text-title item-info-nutrient-title">{nutrientsTitle}:</p>
             <lightning-formatted-rich-text class="item-info-nutrient-value" value={productNutrientsReferenceQuantity}></lightning-formatted-rich-text>
           </div>
           <template for:each={productNutrients} for:item="pNutrient">

@@ -7,7 +7,7 @@ export class ProductDataHandler {
   hasError = false;
   errorMessage = '';
 
-  #errorPrefix = 'Tuotteen tietoja ei voitu hakea: ';
+  #errorPrefix = 'Could not fetch product data: ';
   #flagError = (errorMessage) => {
     this.hasError = true;
     this.errorMessage = errorMessage;
@@ -142,10 +142,11 @@ const createDataEntry = (title, value) => (value && title) ? ({title: title, val
  */
 export class ProductDataFormatter {
   dataHandler;
+  inEnglish = false;
 
   // Comparison price titles in finnish based on the unit
   #comparisonUnitTitleTable = {
-    'kg': 'Kilohinta'
+    'kg': this.inEnglish ? 'Price per Kilogram' : 'Kilohinta'
   }
 
   constructor(productDataHandler) {
@@ -154,15 +155,15 @@ export class ProductDataFormatter {
 
   // Creating title : value pairs with finnish titles
   createNameEntry() {
-    return createDataEntry('Nimi', this.dataHandler.getName());
+    return createDataEntry(this.inEnglish ? 'Name' : 'Nimi', this.dataHandler.getName());
   }
 
   createDescriptionEntry() {
-    return createDataEntry('Kuvaus', this.dataHandler.getDescription());
+    return createDataEntry(this.inEnglish ? 'Description' : 'Kuvaus', this.dataHandler.getDescription());
   }
 
   createPriceEntry() {
-    return createDataEntry('Hinta', this.dataHandler.getPriceWithUnit());
+    return createDataEntry(this.inEnglish ? 'Price' : 'Hinta', this.dataHandler.getPriceWithUnit());
   }
 
   createComparisonPriceEntry() {
@@ -170,27 +171,27 @@ export class ProductDataFormatter {
   }
 
   createIngredientsEntry() {
-    return createDataEntry('Ainesosat', this.dataHandler.getIngredients());
+    return createDataEntry(this.inEnglish ? 'Ingredients' : 'Ainesosat', this.dataHandler.getIngredients());
   }
 
   createStorageGuideForConsumerEntry() {
-    return createDataEntry('Säilytysohje', this.dataHandler.getStorageGuideForConsumer());
+    return createDataEntry(this.inEnglish ? 'Storage Instructions' : 'Säilytysohje', this.dataHandler.getStorageGuideForConsumer());
   }
 
   createCountryOfOriginEntry() {
-    return createDataEntry('Valmistusmaa', this.dataHandler.getCountryOfOrigin());
+    return createDataEntry(this.inEnglish ? 'Country of Origin' : 'Valmistusmaa', this.dataHandler.getCountryOfOrigin());
   }
 
   createBrandNameEntry() {
-    return createDataEntry('Valmistaja', this.dataHandler.getBrandName());
+    return createDataEntry(this.inEnglish ? 'Manufacturer' : 'Valmistaja', this.dataHandler.getBrandName());
   }
 
   createContactInformationEntry() {
-    return createDataEntry('Yhteystiedot', this.dataHandler.getContactInformation());
+    return createDataEntry(this.inEnglish ? 'Contact Information' : 'Yhteystiedot', this.dataHandler.getContactInformation());
   }
 
   createEanCodeEntry() {
-    return createDataEntry('EAN Koodi', this.dataHandler.getEanCode());
+    return createDataEntry(this.inEnglish ? 'EAN Code' : 'EAN Koodi', this.dataHandler.getEanCode());
   }
 
   createNutrientEntries(entryIndex) {

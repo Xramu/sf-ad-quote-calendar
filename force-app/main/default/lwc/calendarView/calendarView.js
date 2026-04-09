@@ -17,6 +17,8 @@ export default class CalendarView extends LightningElement {
   @track _weeks = [];
   @api selectedWeek = null;
 
+  @api inEnglish = false;
+
   connectedCallback() {
     this.computeWeeks();
   }
@@ -33,7 +35,7 @@ export default class CalendarView extends LightningElement {
   }
 
   get calendarTitle() {
-    return `Viikot ${this.year || ''}`;
+    return `${this.inEnglish ? 'Weeks' : 'Viikot'} ${this.year || ''}`;
   }
 
   get weeks() {

@@ -3,6 +3,7 @@ import LightningModal from 'lightning/modal';
 
 export default class ItemInfoModal extends LightningModal {
   @api item;
+  @api inEnglish = false;
 
   get detailsToShow() {
     return 'Image, Nutrients, Name, Description, Price, Comparison Price, Ingredients, Storage Guide, Country of Origin, Brand Name, Contact Information, EAN Code';
@@ -20,7 +21,19 @@ export default class ItemInfoModal extends LightningModal {
   }
 
   get modalTitle() {
-    return this.item?.itemName || "Lisätiedot";
+    return this.item?.itemName || (this.inEnglish ? 'Details' : "Lisätiedot");
+  }
+
+  get adSpaceSpecTitle() {
+    return this.inEnglish ? 'Ad Space Specifications' : 'Mainostilan Tiedot';
+  }
+
+  get productDetailsTitle() {
+    return this.inEnglish ? 'Product Details' : 'Tuotteen Tiedot';
+  }
+
+  get closeButtonLabelText() {
+    return this.inEnglish ? 'Close' : 'Sulje';
   }
 
   handleClose = () => {

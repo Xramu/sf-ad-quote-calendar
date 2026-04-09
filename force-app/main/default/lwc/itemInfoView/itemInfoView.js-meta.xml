@@ -45,6 +45,13 @@
                 description="Comma separated tags of each type of item info to be shown. Dictates the order of the info except for the image and nutrients. Default value includes all possible tags."
                 default="Image, Nutrients, Name, Description, Price, Comparison Price, Ingredients, Storage Guide, Country of Origin, Brand Name, Contact Information, EAN Code"
                 role="inputOnly" />
+            <property
+                name="inEnglish"
+                label="Display in English"
+                description="When toggled on, the text inside the component will switch to English."
+                type="Boolean"
+                default="False"
+                role="inputOnly" />
         </targetConfig>
         <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage,lightningCommunity__Default">
             <property
@@ -74,6 +81,12 @@
                 label="Details to Show"
                 description="Comma separated tags of each type of item info to be shown. Dictates the order of the info except for the image and nutrients. Default value includes all possible tags."
                 default="Image, Nutrients, Name, Description, Price, Comparison Price, Ingredients, Storage Guide, Country of Origin, Brand Name, Contact Information, EAN Code" />
+            <property
+                name="inEnglish"
+                label="Display in English"
+                description="When toggled on, the text inside the component will switch to English."
+                type="Boolean"
+                default="False" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

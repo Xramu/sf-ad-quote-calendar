@@ -12,7 +12,7 @@
   <section class="slds-grid slds-wrap">
     <!-- List View -->
     <div class="slds-col slds-size_1-of-1 list-pane">
-      <div class="slds-text-title_caps slds-p-around_x-small">Viikon {weekNumber} Kampanjat</div>
+      <div class="slds-text-title_caps slds-p-around_x-small">{weeksCampaignsTitle}</div>
       <div class="list-scroll">
         <template if:true={hasWeek}>
           <template if:true={hasCampaigns}>
@@ -32,25 +32,25 @@
           </template>
           </template>
           <template if:false={hasCampaigns}>
-            <div class="slds-p-around_small slds-text-color_weak">Ei kampanjoita tällä viikolla.</div>
+            <div class="slds-p-around_small slds-text-color_weak">{noCampaignsThisWeekText}</div>
           </template>
         </template>
         <template if:false={hasWeek}>
-          <div class="slds-p-around_small slds-text-color_weak">Valitse viikko nähdäksesi sen kampanjat</div>
+          <div class="slds-p-around_small slds-text-color_weak">{noWeekSelectedText}</div>
         </template>
       </div>
     </div>
 
     <!-- Edit View -->
     <div class="slds-col slds-size_1-of-1 edit-pane">
-      <div class="slds-text-title_caps slds-p-horizontal_x-small slds-p-top_x-small">Kampanjan Tiedot</div>
+      <div class="slds-text-title_caps slds-p-horizontal_x-small slds-p-top_x-small">{campaignDetailsTitle}</div>
       <template if:true={selectedCampaignId}>
         <div class="slds-p-around_small slds-grid slds-wrap slds-gutters_small">
           <!-- Name -->
           <div class="slds-col slds-size_1-of-1">
             <lightning-input
               type="text"
-              label="Kampanjan Nimi"
+              label={campaignNameTitle}
               value={nameValue}
               onchange={handleNameChange}
             ></lightning-input>
@@ -58,7 +58,7 @@
 
           <!-- Time Period (read-only formatted) -->
           <div class="slds-col slds-size_1-of-1">
-            <label class="slds-form-element__label">Kampanjan Aikaväli</label>
+            <label class="slds-form-element__label">{campaignTimePeriodTitle}</label>
             <div class="slds-form-element__control">
               <div class="slds-text-color_weak">{timePeriodText}</div>
             </div>
@@ -68,7 +68,7 @@
           <div class="slds-col slds-size_1-of-1">
             <lightning-input-rich-text
               label-visible
-              label="Kampanjan Kuvaus"
+              label={campaignDescriptionTitle}
               value={descriptionValue}
               onchange={handleDescriptionChange}
             ></lightning-input-rich-text>
@@ -76,7 +76,7 @@
 
           <!-- Confirmation Status (read-only display) -->
           <div class="slds-col slds-size_1-of-1">
-            <label class="slds-form-element__label">Kampanjan Tilanne</label>
+            <label class="slds-form-element__label">{campaignStatusTitle}</label>
             <div class="slds-form-element__control">
               <div class="slds-input slds-text-color_weak slds-truncate" title={statusText}>{statusText}</div>
             </div>
@@ -85,7 +85,7 @@
           <!-- Campaign Items -->
           <div class="slds-col slds-size_1-of-1">
             <div class="slds-m-top_small">
-              <div class="slds-text-title_caps slds-p-bottom_x-small">Kampanjan Tuotteet</div>
+              <div class="slds-text-title_caps slds-p-bottom_x-small"></div>
               <div class="slds-grid slds-wrap slds-gutters_xx-small">
                 <template for:each={selectedCampaignItems} for:item="it">
                   <div key={it.id} class="slds-m-right_xx-small slds-m-bottom_xx-small">
@@ -93,7 +93,7 @@
                   </div>
                 </template>
                 <template if:true={selectedCampaignItemsIsEmpty}>
-                  <div class="slds-text-color_weak slds-p-vertical_xx-small">Ei tuotteita.</div>
+                  <div class="slds-text-color_weak slds-p-vertical_xx-small">{noCampaignItemsText}</div>
                 </template>
               </div>
             </div>
@@ -103,18 +103,18 @@
           <div class="slds-col slds-size_1-of-1 slds-m-top_small">
             <lightning-button
               variant="brand"
-              label="Tallenna"
+              label={saveButtonLabelText}
               onclick={handleSave}
               disabled={isSaving}
             ></lightning-button>
             <template if:true={isSaving}>
-              <lightning-spinner size="small" alternative-text="Tallennetaan..."></lightning-spinner>
+              <lightning-spinner size="small" alternative-text={savingSpinnerText}></lightning-spinner>
             </template>
           </div>
         </div>
       </template>
       <template if:false={selectedCampaignId}>
-        <div class="slds-p-around_small slds-text-color_weak">Valitse kampanja nähdäksesi sen tiedot.</div>
+        <div class="slds-p-around_small slds-text-color_weak">{noCampaignSelectedText}</div>
       </template>
     </div>
   </section>

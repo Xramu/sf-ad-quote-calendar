@@ -7,6 +7,8 @@ export default class ItemInfoView extends LightningElement {
   @api imageHeight;
   @api detailsToShow;
 
+  @api inEnglish = false;
+
   @track productImageUrl= '';
   @track productData = [];
 
@@ -41,6 +43,10 @@ export default class ItemInfoView extends LightningElement {
   }
 
   async connectedCallback() {
+    // Set formatter language
+    this.dataManager.formatter.inEnglish = this.inEnglish;
+
+    // Fetch
     const success = await this.dataManager.fetchProductData(this.eanCode);
     success ? this.onFetchSuccess() : this.onFetchFail();
   }
@@ -95,5 +101,17 @@ export default class ItemInfoView extends LightningElement {
 
   get hasProductNutrients() {
     return this.productNutrients.length > 0;
+  }
+
+  get fetchingProductDetailsText() {
+    return this.inEnglish ? 'Fetching product details...' : 'Haetaan tuotteen tietoja...';
+  }
+
+  get failedFetchingProductDetailsText() {
+    return this.inEnglish ? 'Failed to fetch product details' : 'Virhe ladattaessa tuotetta';
+  }
+
+  get nutrientsTitle() {
+    return this.formatter.inEnglish /*this.inEnglish ? 'Nutrients' : 'Ravintosisältö'*/;
   }
 }
