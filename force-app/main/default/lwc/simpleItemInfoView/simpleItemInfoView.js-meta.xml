@@ -38,6 +38,13 @@
                 max="2160"
                 default="360"
                 role="inputOnly" />
+            <property
+                name="inEnglish"
+                label="Display in English"
+                description="When toggled on, the text inside the component will switch to English."
+                type="Boolean"
+                default="False"
+                role="inputOnly" />
         </targetConfig>
         <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage,lightningCommunity__Default">
             <property
@@ -61,6 +68,12 @@
                 min="32"
                 max="2160"
                 default="360" />
+            <property
+                name="inEnglish"
+                label="Display in English"
+                description="When toggled on, the text inside the component will switch to English."
+                type="Boolean"
+                default="False" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
