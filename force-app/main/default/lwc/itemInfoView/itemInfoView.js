@@ -29,23 +29,20 @@ export default class ItemInfoView extends LightningElement {
   // String to action references, lower case since the input strings are not case sensitive
   get detailEntryActionMap() {
     return {
-      'name': () => this.formatter.createNameEntry(),
-      'description': () => this.formatter.createDescriptionEntry(),
-      'price': () => this.formatter.createPriceEntry(),
-      'comparison price': () => this.formatter.createComparisonPriceEntry(),
-      'ingredients': () => this.formatter.createIngredientsEntry(),
-      'storage guide': () => this.formatter.createStorageGuideForConsumerEntry(),
-      'country of origin': () => this.formatter.createCountryOfOriginEntry(),
-      'brand name': () => this.formatter.createBrandNameEntry(),
-      'contact information': () => this.formatter.createContactInformationEntry(),
-      'ean code': () => this.formatter.createEanCodeEntry(),
+      'name': () => this.formatter.createNameEntry(this.inEnglish),
+      'description': () => this.formatter.createDescriptionEntry(this.inEnglish),
+      'price': () => this.formatter.createPriceEntry(this.inEnglish),
+      'comparison price': () => this.formatter.createComparisonPriceEntry(this.inEnglish),
+      'ingredients': () => this.formatter.createIngredientsEntry(this.inEnglish),
+      'storage guide': () => this.formatter.createStorageGuideForConsumerEntry(this.inEnglish),
+      'country of origin': () => this.formatter.createCountryOfOriginEntry(this.inEnglish),
+      'brand name': () => this.formatter.createBrandNameEntry(this.inEnglish),
+      'contact information': () => this.formatter.createContactInformationEntry(this.inEnglish),
+      'ean code': () => this.formatter.createEanCodeEntry(this.inEnglish),
     }
   }
 
   async connectedCallback() {
-    // Set formatter language
-    this.dataManager.formatter.inEnglish = this.inEnglish;
-
     // Fetch
     const success = await this.dataManager.fetchProductData(this.eanCode);
     success ? this.onFetchSuccess() : this.onFetchFail();
@@ -112,6 +109,6 @@ export default class ItemInfoView extends LightningElement {
   }
 
   get nutrientsTitle() {
-    return this.formatter.inEnglish /*this.inEnglish ? 'Nutrients' : 'Ravintosisältö'*/;
+    return this.inEnglish ? 'Nutrients' : 'Ravintosisältö';
   }
 }

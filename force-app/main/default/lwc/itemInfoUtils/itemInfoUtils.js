@@ -142,11 +142,14 @@ const createDataEntry = (title, value) => (value && title) ? ({title: title, val
  */
 export class ProductDataFormatter {
   dataHandler;
-  inEnglish = false;
 
   // Comparison price titles in finnish based on the unit
-  #comparisonUnitTitleTable = {
-    'kg': this.inEnglish ? 'Price per Kilogram' : 'Kilohinta'
+  #comparisonUnitTitleTableFi = {
+    'kg': 'Kilohinta'
+  }
+
+  #comparisonUnitTitleTableEn = {
+    'kg': 'Price per Kilogram'
   }
 
   constructor(productDataHandler) {
@@ -154,47 +157,47 @@ export class ProductDataFormatter {
   }
 
   // Creating title : value pairs with finnish titles
-  createNameEntry() {
-    return createDataEntry(this.inEnglish ? 'Name' : 'Nimi', this.dataHandler.getName());
+  createNameEntry(inEnglish = false) {
+    return createDataEntry(inEnglish ? 'Name' : 'Nimi', this.dataHandler.getName());
   }
 
-  createDescriptionEntry() {
-    return createDataEntry(this.inEnglish ? 'Description' : 'Kuvaus', this.dataHandler.getDescription());
+  createDescriptionEntry(inEnglish = false) {
+    return createDataEntry(inEnglish ? 'Description' : 'Kuvaus', this.dataHandler.getDescription());
   }
 
-  createPriceEntry() {
-    return createDataEntry(this.inEnglish ? 'Price' : 'Hinta', this.dataHandler.getPriceWithUnit());
+  createPriceEntry(inEnglish = false) {
+    return createDataEntry(inEnglish ? 'Price' : 'Hinta', this.dataHandler.getPriceWithUnit());
   }
 
-  createComparisonPriceEntry() {
-    return createDataEntry(this.#comparisonUnitTitleTable[this.dataHandler.getComparisonUnit()], this.dataHandler.getComparisonPriceWithUnit());
+  createComparisonPriceEntry(inEnglish = false) {
+    return createDataEntry(inEnglish ? this.#comparisonUnitTitleTableEn[this.dataHandler.getComparisonUnit()] : this.#comparisonUnitTitleTableFi[this.dataHandler.getComparisonUnit()], this.dataHandler.getComparisonPriceWithUnit());
   }
 
-  createIngredientsEntry() {
-    return createDataEntry(this.inEnglish ? 'Ingredients' : 'Ainesosat', this.dataHandler.getIngredients());
+  createIngredientsEntry(inEnglish = false) {
+    return createDataEntry(inEnglish ? 'Ingredients' : 'Ainesosat', this.dataHandler.getIngredients());
   }
 
-  createStorageGuideForConsumerEntry() {
-    return createDataEntry(this.inEnglish ? 'Storage Instructions' : 'Säilytysohje', this.dataHandler.getStorageGuideForConsumer());
+  createStorageGuideForConsumerEntry(inEnglish = false) {
+    return createDataEntry(inEnglish ? 'Storage Instructions' : 'Säilytysohje', this.dataHandler.getStorageGuideForConsumer());
   }
 
-  createCountryOfOriginEntry() {
-    return createDataEntry(this.inEnglish ? 'Country of Origin' : 'Valmistusmaa', this.dataHandler.getCountryOfOrigin());
+  createCountryOfOriginEntry(inEnglish = false) {
+    return createDataEntry(inEnglish ? 'Country of Origin' : 'Valmistusmaa', this.dataHandler.getCountryOfOrigin());
   }
 
-  createBrandNameEntry() {
-    return createDataEntry(this.inEnglish ? 'Manufacturer' : 'Valmistaja', this.dataHandler.getBrandName());
+  createBrandNameEntry(inEnglish = false) {
+    return createDataEntry(inEnglish ? 'Manufacturer' : 'Valmistaja', this.dataHandler.getBrandName());
   }
 
-  createContactInformationEntry() {
-    return createDataEntry(this.inEnglish ? 'Contact Information' : 'Yhteystiedot', this.dataHandler.getContactInformation());
+  createContactInformationEntry(inEnglish = false) {
+    return createDataEntry(inEnglish ? 'Contact Information' : 'Yhteystiedot', this.dataHandler.getContactInformation());
   }
 
-  createEanCodeEntry() {
-    return createDataEntry(this.inEnglish ? 'EAN Code' : 'EAN Koodi', this.dataHandler.getEanCode());
+  createEanCodeEntry(inEnglish = false) {
+    return createDataEntry(inEnglish ? 'EAN Code' : 'EAN Koodi', this.dataHandler.getEanCode());
   }
 
-  createNutrientEntries(entryIndex) {
+  createNutrientEntries(entryIndex = false) {
     const nutrients = this.dataHandler.getNutrientsEntry(entryIndex);
 
     if (!nutrients) {
