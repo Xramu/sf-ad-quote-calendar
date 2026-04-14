@@ -110,6 +110,8 @@ For demo org templates, you should use Media on Core IDO template.
 
     If the workflow was successfully run, the Lightning Web Components and the required custom objects and permissions should be deployed to your connected org.
 
+4. To view the calendar, check the [View the Ad Quote Calendar App](#view-the-ad-quote-calendar-app)
+
 ## Manual Deployment
 
 If the deployment with Agentforce Vibes was unsuccessful, you can follow these steps to manually deploy the project to your org.
@@ -170,15 +172,15 @@ If the deployment with Agentforce Vibes was unsuccessful, you can follow these s
 
     ![Preview of the assigned people.](images/permission_set_final_preview.png)
 
-5. ### View the Ad Quote Calendar App
+## View the Ad Quote Calendar App
 
-    Press `Command + R` on Mac or `Control + R` on Windows to refresh your window.
+Press `Command + R` on Mac or `Control + R` on Windows to refresh your browser window.
 
-    Click the App Launcher from the top left corner and search for `Ad Quote Calendar`
+Click the App Launcher from the top left corner and search for `Ad Quote Calendar`
 
-    ![Preview of the App being highlighted inside the App Launcher search.](images/app_search_preview.png)
+![Preview of the App being highlighted inside the App Launcher search.](images/app_search_preview.png)
 
-    Click the `Ad Quote Calendar` to open the application with a tab containing the calendar component.
+Click the `Ad Quote Calendar` to open the application with a tab containing the calendar component.
 
 
 # Deployment Troubleshooting
