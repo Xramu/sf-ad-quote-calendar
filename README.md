@@ -124,27 +124,7 @@ If the deployment with Agentforce Vibes was unsuccessful, you can follow these s
 
 3. ### Deploy The Metadata
 
-    These steps will make sure that the metadata is deployed in the right order. Otherwise the deployment might fail because of missing dependencies.
-
-    1. **Deploy Global Value Sets** 
-    
-        Right click the folder `force-app/main/default/globalValueSets` and select **SFDX: Deploy This Source to Org**
-
-    2. **Deploy Objects**
-    
-        Right click the folder `force-app/main/default/objects` and select **SFDX: Deploy This Source to Org**
-
-    3. **Deploy Apex Classes**
-    
-        Right click the folder `force-app/main/default/classes` and select **SFDX: Deploy This Source to Org**
-
-    4. **Deploy Lightning Web Components**
-    
-        Right click the folder `force-app/main/default/lwc` and select **SFDX: Deploy This Source to Org**
-
-    5. **Deploy Rest of the Metadata**
-    
-        Finally right click the `force-app` folder and select **SFDX: Deploy This Source to Org**
+    Right click the `force-app` folder and select **SFDX: Deploy This Source to Org**
 
     Preview of where the **SFDX: Deploy This Source to Org** is located on the dropdown menu:
 
@@ -195,10 +175,7 @@ If the deployment is still running into issues please follow to the [Manual Depl
 
 ### Metadata Still Does Not Deploy
 
-Metadata deployment could fail because of the following reasons:
-
-- Metadata was not deployed in the right order. Make sure to follow the order in [Deploy The Metadata](#deploy-the-metadata)
-- The org that you're trying to deploy to, does not include the needed objects. See [ORG REQUIREMENTS](#org-requirements)
+Make sure the org that you're deploying to has the needed Media objects. See [ORG REQUIREMENTS](#org-requirements)
 
 ### Metadata Deployed but Ad Quote Calendar is Not Visible
 
